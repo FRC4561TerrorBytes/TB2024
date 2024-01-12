@@ -6,6 +6,12 @@
     }
   },
   "NetworkTables Info": {
+    "AdvantageScope@1": {
+      "open": true
+    },
+    "Clients": {
+      "open": true
+    },
     "visible": true
   }
 }
