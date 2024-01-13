@@ -22,10 +22,11 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 /** Add your docs here. */
-public class ModuleIOTBSwerve {
+public class ModuleIOTBSwerve implements ModuleIO{
 
     private static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     private static final double TURN_GEAR_RATIO = 150.0 / 7.0;
@@ -122,6 +123,34 @@ public class ModuleIOTBSwerve {
             driveCurrent,
             turnAbsolutePosition);
         driveTalon.optimizeBusUtilization();
+    }
+
+    @Override
+    public void updateInputs(ModuleIOInputs inputs) {
+        BaseStatusSignal.refreshAll(
+            drivePosition,
+            driveVelocity,
+            driveAppliedVolts,
+            driveCurrent,
+            turnAbsolutePosition);
+    
+        inputs.drivePositionRad =
+            Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
+        inputs.driveVelocityRadPerSec =
+            Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DRIVE_GEAR_RATIO;
+        inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
+        inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
+
+        inputs.turnAbsolutePosition =
+            new Rotation2d(turnAbsolutePosition.getValueAsDouble())
+                .minus(absoluteEncoderOffset);
+        inputs.turnPosition =
+            Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
+        inputs.turnVelocityRadPerSec =
+            Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
+                / TURN_GEAR_RATIO;
+        inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
+        inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
     }
 
     public void setDriveVoltage(double volts) {
