@@ -20,6 +20,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,15 +29,25 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.LimelightHelpers.LimelightTarget_Retro;
 import frc.robot.util.LocalADStarAK;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import frc.robot.util.PoseEstimator;
+import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
@@ -56,7 +67,9 @@ public class Drive extends SubsystemBase {
   private Rotation2d lastGyroRotation = new Rotation2d();
 
   //CHANGE THE NUMBERS IN THE VECTOR BUILDER
-  private PoseEstimator m_poseEstimator = new PoseEstimator(VecBuilder.fill(0.001, 0.0001, 0.0001));
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  private PoseEstimator m_poseEstimator = new PoseEstimator(visionMeasurementStdDevs);
+  private LimelightTarget_Fiducial limelightHelpers;
 
   public Drive(
       GyroIO gyroIO,
@@ -147,8 +160,13 @@ public class Drive extends SubsystemBase {
         lastGyroRotation = gyroRotation;
       }
       // Apply the twist (change since last sample) to the current pose
-      pose = pose.exp(twist);
+
+      m_poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
+      //pose = pose.exp(twist);
     }
+    List<TimestampedVisionUpdate> list = Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), limelightHelpers.getRobotPose_FieldSpace().toPose2d(), visionMeasurementStdDevs));
+    addVisionData(list);
+    pose = getPose();
   }
 
   /**
@@ -221,12 +239,14 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return pose;
+    //return pose;
+    return m_poseEstimator.getLatestPose();
   }
 
   /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
-    return pose.getRotation();
+    //return pose.getRotation();
+    return m_poseEstimator.getLatestPose().getRotation();
   }
 
   /** Resets the current odometry pose. */
@@ -234,7 +254,7 @@ public class Drive extends SubsystemBase {
     this.pose = pose;
   }
 
-  public void addVisionData(List<TimeStampedVisionUpdate> visionData){
+  public void addVisionData(List<TimestampedVisionUpdate> visionData){
     m_poseEstimator.addVisionData(visionData);
   }
 
