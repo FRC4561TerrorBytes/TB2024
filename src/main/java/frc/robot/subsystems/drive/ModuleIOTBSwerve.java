@@ -16,10 +16,10 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -45,6 +45,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final RelativeEncoder turnRelativeEncoder;
 
     private final boolean isTurnMotorInverted = true;
+    private boolean isDriveMotorInverted = false;
     private final Rotation2d absoluteEncoderOffset;
 
     public ModuleIOTBSwerve(int index) {
@@ -52,13 +53,15 @@ public class ModuleIOTBSwerve implements ModuleIO{
         case 0:
             driveTalon = new TalonFX(Constants.FRONT_LEFT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_LEFT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.FRONT_LEFT_STEER_OFFSET); 
             break;
         case 1:
             driveTalon = new TalonFX(Constants.FRONT_RIGHT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            driveTalon.setInverted(Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_RIGHT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.FRONT_RIGHT_STEER_OFFSET); 
@@ -66,6 +69,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         case 2:
             driveTalon = new TalonFX(Constants.BACK_LEFT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_LEFT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.BACK_LEFT_STEER_OFFSET); 
@@ -73,6 +77,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         case 3:
             driveTalon = new TalonFX(Constants.BACK_RIGHT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_RIGHT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.BACK_RIGHT_STEER_OFFSET); 
@@ -84,6 +89,11 @@ public class ModuleIOTBSwerve implements ModuleIO{
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        if (isDriveMotorInverted) {
+            driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        } else {
+            driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        }
         driveTalon.getConfigurator().apply(driveConfig);
         setDriveBrakeMode(true);
         
@@ -163,7 +173,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
     public void setDriveBrakeMode(boolean enable) {
         var config = new MotorOutputConfigs();
-        config.Inverted = InvertedValue.CounterClockwise_Positive;
         config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
         driveTalon.getConfigurator().apply(config);
     }
