@@ -23,6 +23,7 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -101,7 +102,10 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
         turnSparkMax.setCANTimeout(250);
 
-        cancoder.getConfigurator().apply(new CANcoderConfiguration());
+        var canCoderConfiguration = new CANcoderConfiguration();
+        //canCoderConfiguration.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRadians()*2;
+        cancoder.getConfigurator().apply(canCoderConfiguration);
+
         turnRelativeEncoder = turnSparkMax.getEncoder();
 
         turnSparkMax.setInverted(isTurnMotorInverted);
