@@ -73,7 +73,7 @@ public final class Constants {
   public static final int FRONT_LEFT_STEER_ENCODER = 23;
   public static final boolean FRONT_LEFT_DRIVE_MOTOR_INVERTED = true;
   public static final boolean FRONT_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double FRONT_LEFT_STEER_OFFSET = 0.4675292;
+  public static final double FRONT_LEFT_STEER_OFFSET = -0.4675292;
 
   public static final int FRONT_RIGHT_DRIVE_MOTOR = 3;
   public static final int FRONT_RIGHT_STEER_MOTOR = 4;
@@ -87,14 +87,14 @@ public final class Constants {
   public static final int BACK_LEFT_STEER_ENCODER = 24;
   public static final boolean BACK_LEFT_DRIVE_MOTOR_INVERTED = false;
   public static final boolean BACK_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_LEFT_STEER_OFFSET = 0.0771484375;
+  public static final double BACK_LEFT_STEER_OFFSET = -0.0771484375;
 
   public static final int BACK_RIGHT_DRIVE_MOTOR = 1;
   public static final int BACK_RIGHT_STEER_MOTOR = 2;
   public static final int BACK_RIGHT_STEER_ENCODER = 21;
   public static final boolean BACK_RIGHT_DRIVE_MOTOR_INVERTED = true;
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_RIGHT_STEER_OFFSET = 0.333251953;
+  public static final double BACK_RIGHT_STEER_OFFSET = -0.333251953;
 
   public static final double DRIVE_CURRENT_LIMIT = 80.0;
   public static final int TURN_CURRENT_LIMIT = 40;
