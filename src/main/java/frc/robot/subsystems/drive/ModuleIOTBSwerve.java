@@ -87,6 +87,14 @@ public class ModuleIOTBSwerve implements ModuleIO{
             throw new RuntimeException("Invalid module index");
         }
 
+        new WaitCommand(1);
+
+        var canCoderConfiguration = new CANcoderConfiguration();
+        //canCoderConfiguration.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
+        cancoder.getConfigurator().apply(canCoderConfiguration);
+
+        new WaitCommand(1);
+
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -102,9 +110,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
         turnSparkMax.setCANTimeout(250);
 
-        var canCoderConfiguration = new CANcoderConfiguration();
-        //canCoderConfiguration.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRadians()*2;
-        cancoder.getConfigurator().apply(canCoderConfiguration);
 
         turnRelativeEncoder = turnSparkMax.getEncoder();
 
@@ -156,7 +161,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
         inputs.turnAbsolutePosition =
-            new Rotation2d(turnAbsolutePosition.getValueAsDouble())
+            Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
                 .minus(absoluteEncoderOffset);
         inputs.turnPosition =
             Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
