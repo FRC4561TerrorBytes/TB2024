@@ -46,14 +46,14 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final RelativeEncoder turnRelativeEncoder;
 
     private final boolean isTurnMotorInverted = true;
-    private boolean isDriveMotorInverted = false;
+    private InvertedValue isDriveMotorInverted = InvertedValue.CounterClockwise_Positive;
     private final Rotation2d absoluteEncoderOffset;
 
     public ModuleIOTBSwerve(int index) {
         switch (index) {
         case 0:
             driveTalon = new TalonFX(Constants.FRONT_LEFT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
             isDriveMotorInverted = Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_LEFT_STEER_ENCODER);
@@ -61,7 +61,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 1:
             driveTalon = new TalonFX(Constants.FRONT_RIGHT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED);
             isDriveMotorInverted = Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_RIGHT_STEER_ENCODER);
@@ -69,7 +69,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 2:
             driveTalon = new TalonFX(Constants.BACK_LEFT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
             isDriveMotorInverted = Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_LEFT_STEER_ENCODER);
@@ -77,7 +77,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 3:
             driveTalon = new TalonFX(Constants.BACK_RIGHT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
             isDriveMotorInverted = Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_RIGHT_STEER_ENCODER);
@@ -98,13 +98,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        if (isDriveMotorInverted) {
-            driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        } else {
-            driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        }
         driveTalon.getConfigurator().apply(driveConfig);
-        setDriveBrakeMode(true);
+        setDriveBrakeMode(true, isDriveMotorInverted);
         
         turnSparkMax.restoreFactoryDefaults();
 
@@ -180,9 +175,10 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.setVoltage(volts);
     }
 
-    public void setDriveBrakeMode(boolean enable) {
+    public void setDriveBrakeMode(boolean enable, InvertedValue inversion) {
         var config = new MotorOutputConfigs();
         config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        config.Inverted = inversion;
         driveTalon.getConfigurator().apply(config);
     }
 
