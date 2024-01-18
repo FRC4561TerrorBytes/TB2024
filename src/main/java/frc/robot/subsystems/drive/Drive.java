@@ -93,12 +93,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void periodic() {
-    odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
-    for (var module : modules) {
-      module.updateInputs();
-    }
-    odometryLock.unlock();
     Logger.processInputs("Drive/Gyro", gyroInputs);
     for (var module : modules) {
       module.periodic();
@@ -117,32 +112,24 @@ public class Drive extends SubsystemBase {
     }
 
     // Update odometry
-    int deltaCount =
-        gyroInputs.connected ? gyroInputs.odometryYawPositions.length : Integer.MAX_VALUE;
+    SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
     for (int i = 0; i < 4; i++) {
-      deltaCount = Math.min(deltaCount, modules[i].getPositionDeltas().length);
+      wheelDeltas[i] = modules[i].getPositionDelta();
     }
-    for (int deltaIndex = 0; deltaIndex < deltaCount; deltaIndex++) {
-      // Read wheel deltas from each module
-      SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
-      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-        wheelDeltas[moduleIndex] = modules[moduleIndex].getPositionDeltas()[deltaIndex];
-      }
-
-      // The twist represents the motion of the robot since the last
-      // sample in x, y, and theta based only on the modules, without
-      // the gyro. The gyro is always disconnected in simulation.
-      var twist = kinematics.toTwist2d(wheelDeltas);
-      if (gyroInputs.connected) {
-        // If the gyro is connected, replace the theta component of the twist
-        // with the change in angle since the last sample.
-        Rotation2d gyroRotation = gyroInputs.odometryYawPositions[deltaIndex];
-        twist = new Twist2d(twist.dx, twist.dy, gyroRotation.minus(lastGyroRotation).getRadians());
-        lastGyroRotation = gyroRotation;
-      }
-      // Apply the twist (change since last sample) to the current pose
-      pose = pose.exp(twist);
+    // The twist represents the motion of the robot since the last
+    // loop cycle in x, y, and theta based only on the modules,
+    // without the gyro. The gyro is always disconnected in simulation.
+    var twist = kinematics.toTwist2d(wheelDeltas);
+    if (gyroInputs.connected) {
+      // If the gyro is connected, replace the theta component of the twist
+      // with the change in angle since the last loop cycle.
+      twist =
+          new Twist2d(
+              twist.dx, twist.dy, gyroInputs.yawPosition.minus(lastGyroRotation).getRadians());
+      lastGyroRotation = gyroInputs.yawPosition;
     }
+    // Apply the twist (change since last loop cycle) to the current pose
+    pose = pose.exp(twist);
   }
 
   /**
@@ -202,7 +189,7 @@ public class Drive extends SubsystemBase {
     return driveVelocityAverage / 4.0;
   }
 
-  /** Returns the module states (turn angles and drive velocitoes) for all of the modules. */
+  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
