@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.Queue;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -23,7 +21,6 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -37,7 +34,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final CANcoder cancoder;
 
     private final StatusSignal<Double> drivePosition;
-    private final Queue<Double> drivePositionQueue;
     private final StatusSignal<Double> driveVelocity;
     private final StatusSignal<Double> driveAppliedVolts;
     private final StatusSignal<Double> driveCurrent;
@@ -87,13 +83,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
             throw new RuntimeException("Invalid module index");
         }
 
-        new WaitCommand(1);
-
-        var canCoderConfiguration = new CANcoderConfiguration();
-        //canCoderConfiguration.MagnetSensor.MagnetOffset = absoluteEncoderOffset.getRotations();
-        cancoder.getConfigurator().apply(canCoderConfiguration);
-
-        new WaitCommand(1);
+        cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
@@ -102,19 +92,13 @@ public class ModuleIOTBSwerve implements ModuleIO{
         setDriveBrakeMode(true, isDriveMotorInverted);
         
         turnSparkMax.restoreFactoryDefaults();
-
         turnSparkMax.setCANTimeout(250);
-
-
         turnRelativeEncoder = turnSparkMax.getEncoder();
-
         turnSparkMax.setInverted(isTurnMotorInverted);
         turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
         turnSparkMax.enableVoltageCompensation(12.0);
 
         drivePosition = driveTalon.getPosition();
-        drivePositionQueue =
-            PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
         driveCurrent = driveTalon.getStatorCurrent();
@@ -129,7 +113,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.burnFlash();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            Module.ODOMETRY_FREQUENCY, drivePosition);
+            100.0, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             driveVelocity,
