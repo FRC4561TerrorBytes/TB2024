@@ -148,7 +148,12 @@ public class Drive extends SubsystemBase {
       lastGyroRotation = gyroInputs.yawPosition;
     }
     // Apply the twist (change since last loop cycle) to the current pose
-    pose = pose.exp(twist);
+
+      m_poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
+    //pose = pose.exp(twist);
+    List<TimestampedVisionUpdate> list = Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), limelightHelpers.getRobotPose_FieldSpace().toPose2d(), visionMeasurementStdDevs));
+    addVisionData(list);
+    pose = getPose();
   }
 
   /**
