@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pickup2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pickup-3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot 3"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

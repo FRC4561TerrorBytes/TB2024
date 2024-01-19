@@ -8,13 +8,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Testpickup"
+            "pathName": "1grab"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "1shoot"
           }
         }
       ]
