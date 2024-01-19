@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pickup Outside"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot Outside"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

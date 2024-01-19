@@ -3,33 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4074180498442035,
-        "y": 5.556746197230914
+        "x": 1.411886043653233,
+        "y": 5.547810209612856
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.144637028332562,
-        "y": 5.829293819581577
+        "x": 2.6025713522263487,
+        "y": 7.610137659887319
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot1"
     },
     {
       "anchor": {
-        "x": 2.7226441151219607,
-        "y": 6.756582444281278
+        "x": 7.948514519356831,
+        "y": 7.429315761244349
       },
       "prevControl": {
-        "x": 2.2669087466009805,
-        "y": 6.274039112906123
+        "x": 5.72556964591364,
+        "y": 7.419566003027494
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "pickup1"
+      "linkedName": "Pickupoutside1"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.5,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -39,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.530765609948155,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
