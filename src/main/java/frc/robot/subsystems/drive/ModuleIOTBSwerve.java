@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.List;
 import java.util.Queue;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -21,11 +22,14 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.subsystems.SelfCheck.SelfChecking;
+import frc.robot.subsystems.SelfCheck.SelfCheckingPhoenixMotor;
 
 /** Add your docs here. */
 public class ModuleIOTBSwerve implements ModuleIO{
@@ -36,6 +40,9 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final TalonFX driveTalon;
     private final CANSparkMax turnSparkMax;
     private final CANcoder cancoder;
+
+    private final SelfCheckingPhoenixMotor driveTrainSelfCheck;
+    private final String errorLabel;
 
     private final StatusSignal<Double> drivePosition;
     private final Queue<Double> drivePositionQueue;
@@ -57,31 +64,41 @@ public class ModuleIOTBSwerve implements ModuleIO{
             turnSparkMax = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_LEFT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.FRONT_LEFT_STEER_OFFSET); 
+            errorLabel = "Module0";
             break;
         case 1:
             driveTalon = new TalonFX(Constants.FRONT_RIGHT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
             turnSparkMax = new CANSparkMax(Constants.FRONT_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_RIGHT_STEER_ENCODER);
-            absoluteEncoderOffset = new Rotation2d(Constants.FRONT_RIGHT_STEER_OFFSET); 
+            absoluteEncoderOffset = new Rotation2d(Constants.FRONT_RIGHT_STEER_OFFSET);
+            errorLabel = "Module1"; 
             break;
         case 2:
             driveTalon = new TalonFX(Constants.BACK_LEFT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
             turnSparkMax = new CANSparkMax(Constants.BACK_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_LEFT_STEER_ENCODER);
-            absoluteEncoderOffset = new Rotation2d(Constants.BACK_LEFT_STEER_OFFSET); 
+            absoluteEncoderOffset = new Rotation2d(Constants.BACK_LEFT_STEER_OFFSET);
+            errorLabel = "Module2"; 
             break;
         case 3:
             driveTalon = new TalonFX(Constants.BACK_RIGHT_DRIVE_MOTOR);
             driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
             turnSparkMax = new CANSparkMax(Constants.BACK_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_RIGHT_STEER_ENCODER);
-            absoluteEncoderOffset = new Rotation2d(Constants.BACK_RIGHT_STEER_OFFSET); 
+            absoluteEncoderOffset = new Rotation2d(Constants.BACK_RIGHT_STEER_OFFSET);
+            errorLabel = "Module3"; 
             break;
         default:
             throw new RuntimeException("Invalid module index");
         }
+
+        driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
+
+        driveTrainSelfCheck.checkForFaults();
+
+        Logger.recordOutput(errorLabel, driveTrainSelfCheck.checkForFaults());
 
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
