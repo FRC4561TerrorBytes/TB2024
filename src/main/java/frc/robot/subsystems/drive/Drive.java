@@ -258,6 +258,14 @@ public class Drive extends SubsystemBase {
     return MAX_ANGULAR_SPEED;
   }
 
+  private int getGPCount(LimelightResults results) {
+    int count = 0;
+    for ( LimelightTarget_Detector targets : results.targetingResults.targets_Detector) {
+      count++;
+    }
+    return count;
+  }
+
   private LimelightTarget_Fiducial getClosestTag(String cameraName) {
     double closest = 100;
     LimelightTarget_Fiducial target = null;
