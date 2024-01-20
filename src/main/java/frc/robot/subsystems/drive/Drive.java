@@ -13,6 +13,13 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Collections;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -35,24 +42,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.LimelightHelpers.LimelightTarget_Retro;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.util.LocalADStarAK;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 import frc.robot.util.PoseEstimator;
 import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
-  private static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
-  private static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
+  private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
+  private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
   private static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
@@ -69,7 +67,6 @@ public class Drive extends SubsystemBase {
   //CHANGE THE NUMBERS IN THE VECTOR BUILDER
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
   private PoseEstimator m_poseEstimator = new PoseEstimator(visionMeasurementStdDevs);
-  private LimelightTarget_Fiducial limelightHelpers;
 
   public Drive(
       GyroIO gyroIO,
@@ -150,9 +147,16 @@ public class Drive extends SubsystemBase {
     // Apply the twist (change since last loop cycle) to the current pose
 
       m_poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
-    //pose = pose.exp(twist);
-    List<TimestampedVisionUpdate> list = Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), limelightHelpers.getRobotPose_FieldSpace().toPose2d(), visionMeasurementStdDevs));
-    addVisionData(list);
+
+    LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
+
+    if (results.targetingResults.valid) {
+        m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
+        Logger.recordOutput("updating with tags", true);
+    } else {
+        Logger.recordOutput("updating with tags", false);
+      }
+
     pose = getPose();
   }
 
@@ -239,10 +243,6 @@ public class Drive extends SubsystemBase {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     this.pose = pose;
-  }
-
-  public void addVisionData(List<TimestampedVisionUpdate> visionData){
-    m_poseEstimator.addVisionData(visionData);
   }
 
   /** Returns the maximum linear speed in meters per sec. */
