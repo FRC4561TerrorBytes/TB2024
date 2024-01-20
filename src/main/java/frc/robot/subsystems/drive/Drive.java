@@ -43,6 +43,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers.LimelightTarget_Detector;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.PoseEstimator;
 import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
@@ -150,12 +152,13 @@ public class Drive extends SubsystemBase {
 
     LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
 
-    if (results.targetingResults.valid) {
-        m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
-        Logger.recordOutput("updating with tags", true);
+    var closestTag = getClosestTag("limelight-test");
+    if (results.targetingResults.valid && closestTag != null) {
+      m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
+      Logger.recordOutput("updating with tags", true);
     } else {
-        Logger.recordOutput("updating with tags", false);
-      }
+      Logger.recordOutput("updating with tags", false);
+    }
 
     pose = getPose();
   }
@@ -253,6 +256,20 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
+  }
+
+  private LimelightTarget_Fiducial getClosestTag(String cameraName) {
+    double closest = 100;
+    LimelightTarget_Fiducial target = null;
+    LimelightTarget_Fiducial[] targetList = LimelightHelpers.getLatestResults(cameraName).targetingResults.targets_Fiducials;
+    for (LimelightTarget_Fiducial i : targetList) {
+      double value = i.tx;
+      if (value < closest) {
+        closest = value;
+        target = i;
+      }
+    }
+    return target;
   }
 
   /** Returns an array of module translations. */
