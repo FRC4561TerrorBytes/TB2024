@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.4074180498442035,
+      "y": 5.556746197230914
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -27,18 +33,6 @@
           "type": "path",
           "data": {
             "pathName": "shoot2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "pickup-3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Shoot 3"
           }
         }
       ]

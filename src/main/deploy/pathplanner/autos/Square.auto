@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 5.0,
+      "y": 7.0
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,7 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Square"
+            "pathName": "SquarePt1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SquarePt2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SquarePt3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SquarePt4"
           }
         }
       ]

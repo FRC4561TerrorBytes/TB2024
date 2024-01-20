@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4074180498442035,
-      "y": 5.556746197230914
+      "x": 1.0,
+      "y": 5.0
     },
     "rotation": 0
   },
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1grab"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1shoot"
+            "pathName": "meter striaght"
           }
         }
       ]

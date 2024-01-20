@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Shoot Piece",
+  "folder": "shoot",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

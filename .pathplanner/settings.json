@@ -1,14 +1,15 @@
 {
-  "robotWidth": 0.7,
-  "robotLength": 0.7,
+  "robotWidth": 0.762,
+  "robotLength": 0.76,
   "holonomicMode": true,
   "pathFolders": [
-    "Shoot Piece",
-    "Pickup Piece"
+    "Square",
+    "grab",
+    "shoot"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 4.0,
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

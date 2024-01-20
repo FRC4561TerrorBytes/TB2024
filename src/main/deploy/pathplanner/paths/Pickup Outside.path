@@ -55,7 +55,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Pickup Piece",
+  "folder": "grab",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
