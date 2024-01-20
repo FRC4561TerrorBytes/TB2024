@@ -13,6 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
