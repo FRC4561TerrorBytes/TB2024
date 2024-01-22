@@ -31,6 +31,7 @@ public class SubSystemFaults {
       }
     
 
+      //Custom Boolean Code Comparing to Specific Object
       @Override
   public boolean equals(Object comparison) {
     if (this == comparison) {

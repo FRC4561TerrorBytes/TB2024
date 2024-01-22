@@ -94,11 +94,11 @@ public class ModuleIOTBSwerve implements ModuleIO{
             throw new RuntimeException("Invalid module index");
         }
 
+        //initialize and Log Self Check
         driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
-
         driveTrainSelfCheck.checkForFaults();
-
-        Logger.recordOutput(errorLabel, driveTrainSelfCheck.checkForFaults());
+        driveTrainSelfCheck.faultsInArray();
+        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
 
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;

@@ -22,6 +22,7 @@ public class SelfCheckingPhoenixMotor implements SelfChecking {
   private TalonFX motor;
   private StatusSignal<Double> statusSignal;
 
+  //Generates the Faults List Name and Motor
   public SelfCheckingPhoenixMotor(String label, TalonFX motor) {
     this.label = label;
     this.motor = motor;
@@ -71,5 +72,11 @@ public class SelfCheckingPhoenixMotor implements SelfChecking {
     }
 
     return faults;
+  }
+
+  //Converts Faults List to Array
+  public String[] faultsInArray(){
+    String[] arr = checkForFaults().toArray(new String[0]);
+    return arr;
   }
 }
