@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -45,6 +46,7 @@ import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final IntakeSubsystem m_intakeSubsystem;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -78,7 +80,10 @@ public class RobotContainer {
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
+        m_intakeSubsystem = new IntakeSubsystem();
+        m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0)));
         break;
+
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -89,6 +94,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
+        m_intakeSubsystem = new IntakeSubsystem();
         break;
 
       default:
@@ -100,6 +106,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        m_intakeSubsystem = new IntakeSubsystem();
         break;
     }
 
@@ -132,6 +139,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
+    controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.1)));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
