@@ -71,6 +71,10 @@ public class SelfCheckingPhoenixMotor implements SelfChecking {
       faults.add(new SubSystemFaults(String.format("[%s]: device is unreachable", label)));
     }
 
+    if (faults.size() == 0){
+      faults.add(new SubSystemFaults(String.format("No Faults Found", label)));
+    }
+
     return faults;
   }
 
