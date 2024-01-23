@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     m_topRoller.setInverted(false);
-    m_bottomRoller.setInverted(false);
+    m_bottomRoller.setInverted(true);
   }
 
   public void setRollerSpeed(double speed) {

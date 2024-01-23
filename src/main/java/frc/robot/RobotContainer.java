@@ -81,7 +81,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
-        m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0)));
+        m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
         break;
 
 
@@ -139,7 +139,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.1)));
+    controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.1), m_intakeSubsystem));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
