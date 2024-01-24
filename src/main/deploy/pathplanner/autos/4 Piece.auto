@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4074180498442035,
+      "y": 5.556746197230914
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1grab"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "pickup2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot2"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -17,13 +17,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -45,7 +40,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final String errorLabel;
 
     private final StatusSignal<Double> drivePosition;
-    private final Queue<Double> drivePositionQueue;
     private final StatusSignal<Double> driveVelocity;
     private final StatusSignal<Double> driveAppliedVolts;
     private final StatusSignal<Double> driveCurrent;
@@ -54,13 +48,15 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final RelativeEncoder turnRelativeEncoder;
 
     private final boolean isTurnMotorInverted = true;
+    private InvertedValue isDriveMotorInverted = InvertedValue.CounterClockwise_Positive;
     private final Rotation2d absoluteEncoderOffset;
 
     public ModuleIOTBSwerve(int index) {
         switch (index) {
         case 0:
             driveTalon = new TalonFX(Constants.FRONT_LEFT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_LEFT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.FRONT_LEFT_STEER_OFFSET); 
@@ -68,7 +64,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 1:
             driveTalon = new TalonFX(Constants.FRONT_RIGHT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.FRONT_LEFT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.FRONT_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.FRONT_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.FRONT_RIGHT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.FRONT_RIGHT_STEER_OFFSET);
@@ -76,7 +73,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 2:
             driveTalon = new TalonFX(Constants.BACK_LEFT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.BACK_LEFT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_LEFT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_LEFT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.BACK_LEFT_STEER_OFFSET);
@@ -84,7 +82,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
             break;
         case 3:
             driveTalon = new TalonFX(Constants.BACK_RIGHT_DRIVE_MOTOR);
-            driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
+            //driveTalon.setInverted(Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED);
+            isDriveMotorInverted = Constants.BACK_RIGHT_DRIVE_MOTOR_INVERTED;
             turnSparkMax = new CANSparkMax(Constants.BACK_RIGHT_STEER_MOTOR, MotorType.kBrushless);
             cancoder = new CANcoder(Constants.BACK_RIGHT_STEER_ENCODER);
             absoluteEncoderOffset = new Rotation2d(Constants.BACK_RIGHT_STEER_OFFSET);
@@ -94,32 +93,20 @@ public class ModuleIOTBSwerve implements ModuleIO{
             throw new RuntimeException("Invalid module index");
         }
 
-        //initialize and Log Self Check
-        driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
-        driveTrainSelfCheck.checkForFaults();
-        driveTrainSelfCheck.faultsInArray();
-        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
-
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         driveTalon.getConfigurator().apply(driveConfig);
-        setDriveBrakeMode(true);
+        setDriveBrakeMode(true, isDriveMotorInverted);
         
         turnSparkMax.restoreFactoryDefaults();
-
         turnSparkMax.setCANTimeout(250);
-
-        cancoder.getConfigurator().apply(new CANcoderConfiguration());
         turnRelativeEncoder = turnSparkMax.getEncoder();
-
         turnSparkMax.setInverted(isTurnMotorInverted);
         turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
         turnSparkMax.enableVoltageCompensation(12.0);
 
         drivePosition = driveTalon.getPosition();
-        drivePositionQueue =
-            PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
         driveCurrent = driveTalon.getStatorCurrent();
@@ -134,7 +121,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.burnFlash();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            Module.ODOMETRY_FREQUENCY, drivePosition);
+            100.0, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             driveVelocity,
@@ -161,7 +148,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
 
         inputs.turnAbsolutePosition =
-            new Rotation2d(turnAbsolutePosition.getValueAsDouble())
+            Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
                 .minus(absoluteEncoderOffset);
         inputs.turnPosition =
             Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
@@ -180,10 +167,10 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.setVoltage(volts);
     }
 
-    public void setDriveBrakeMode(boolean enable) {
+    public void setDriveBrakeMode(boolean enable, InvertedValue inversion) {
         var config = new MotorOutputConfigs();
-        config.Inverted = InvertedValue.CounterClockwise_Positive;
         config.NeutralMode = enable ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+        config.Inverted = inversion;
         driveTalon.getConfigurator().apply(config);
     }
 
