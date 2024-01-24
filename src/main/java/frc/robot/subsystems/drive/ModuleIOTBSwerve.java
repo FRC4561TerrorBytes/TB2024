@@ -7,6 +7,8 @@ package frc.robot.subsystems.drive;
 import java.util.List;
 import java.util.Queue;
 
+
+import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -17,6 +19,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -115,6 +119,12 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnRelativeEncoder.setPosition(0.0);
         turnRelativeEncoder.setMeasurementPeriod(10);
         turnRelativeEncoder.setAverageDepth(2);
+
+        //initialize and Log Self Check
+        driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
+        driveTrainSelfCheck.checkForFaults();
+        driveTrainSelfCheck.faultsInArray();
+        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
 
         turnSparkMax.setCANTimeout(0);
 
