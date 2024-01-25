@@ -9,13 +9,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-  private static double distance = 4.5;
-  private static double velocity;
-  private static double angle;
-  private static double height = 0.7;
+  private double distance = 4.5;
+  private double velocity;
+  private double angle;
+  private double height = 0.7;
 
-  private static double midpointY = 1.974;
-  private static double midpointX = 0.196;
+  private double midpointY = 1.974;
+  private double midpointX = 0.196;
+
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -27,7 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
-  public static double findVelocity(double x){
+  public double findVelocity(double x){
     return Math.sqrt((((
                     (-1*(9.8*Math.pow(-x, 2)))
               /((midpointY + height)/(-x*Math.tan(angle))))
@@ -35,11 +36,11 @@ public class ShooterSubsystem extends SubsystemBase {
                                 /2);
   }
 
-  public static double  findTrajectoryPoint(double x){
+  public double  findTrajectoryPoint(double x){
     return((distance + x)*Math.tan(angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(angle), 2))));
   }
 
-  public static double findBestAngle(){
+  public double findBestAngle(){
     double add = 0.1;
     int searchLength = 100;
     if(findTrajectoryPoint(-midpointX) < midpointX){
