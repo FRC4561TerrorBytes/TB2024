@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -63,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
     for(int i = 0; i < searchLength; i++){
       angle = Units.degreesToRadians(angles[i]);
       double error = Math.abs(findTrajectoryPoint(-midpointX) - (midpointY - height));
-      
+
       if (error < closestError){
         closestError = error;
         angleIndex = i;
