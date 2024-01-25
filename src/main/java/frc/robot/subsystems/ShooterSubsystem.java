@@ -17,6 +17,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double midpointY = 1.974;
   private double midpointX = 0.196;
 
+  private double wheelCircMeters = 0.316484;
+
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -28,6 +30,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   }
 
+  public double rpmFromMPS(double mps) {
+    return mps * 60 / wheelCircMeters;
+  }
+
   public double findVelocity(double x){
     return Math.sqrt((((
                     (-1*(9.8*Math.pow(-x, 2)))
@@ -36,7 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
                                 /2);
   }
 
-  public double  findTrajectoryPoint(double x){
+  public double findTrajectoryPoint(double x){
     return((distance + x)*Math.tan(angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(angle), 2))));
   }
 
