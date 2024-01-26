@@ -26,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private static double flywheelOffset = Units.degreesToRadians(60); //60 degrees tilted up
   private static double elevatorXOffset = Units.inchesToMeters(-1);
 
+  private double wheelCircMeters = 0.316484;
+
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -35,6 +37,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
+  }
+
+  public double rpmFromMPS(double mps) {
+    return mps * 60 / wheelCircMeters;
   }
 
   public static double findVelocity(double x){
