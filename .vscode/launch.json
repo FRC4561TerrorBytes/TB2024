@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ShooterSubsystem",
+      "request": "launch",
+      "mainClass": "frc.robot.subsystems.ShooterSubsystem",
+      "projectName": "TB2024"
+    },
+    {
+      "type": "java",
       "name": "IntakeSubsystem",
       "request": "launch",
       "mainClass": "frc.robot.subsystems.IntakeSubsystem",
