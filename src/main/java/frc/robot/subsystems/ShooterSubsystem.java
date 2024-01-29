@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private static double shooterFromElevator = Units.inchesToMeters(7);
   private static double pivotAngle = 0;
   //relative to ground
-  private static double flywheelOffset = Units.degreesToRadians(60); //60 degrees tilted up
+  private static double flywheelOffset = Units.degreesToRadians(30); //60 degrees tilted up
   private static double elevatorXOffset = Units.inchesToMeters(-1); //positive further back negative further forward
 
   private double wheelCircMeters = 0.316484;
