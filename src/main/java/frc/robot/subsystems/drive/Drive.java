@@ -70,6 +70,8 @@ public class Drive extends SubsystemBase {
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
   private PoseEstimator m_poseEstimator = new PoseEstimator(visionMeasurementStdDevs);
 
+  // private CANSparkMax motorTemp = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -159,6 +161,9 @@ public class Drive extends SubsystemBase {
     } else {
       Logger.recordOutput("updating with tags", false);
     }
+
+    // System.out.println("Motor Temp: " + motorTemp.getMotorTemperature());
+    // System.out.println("Motor Voltage: " + motorTemp.getBusVoltage());
 
     pose = getPose();
   }

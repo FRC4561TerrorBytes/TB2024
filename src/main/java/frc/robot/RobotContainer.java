@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
@@ -36,6 +37,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,6 +51,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
+  private final Elevator elevator;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -81,6 +86,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
+        elevator = new Elevator(null);
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
         break;
 
@@ -95,6 +101,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
@@ -107,6 +114,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
 
@@ -141,6 +149,8 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
+    controller.povUp().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(12)));
+    controller.povDown().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(-12)));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));

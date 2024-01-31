@@ -220,7 +220,7 @@ public final class Constants {
   public static final double AUTO_THETA_KI = 0.0;
   public static final double AUTO_THETA_KD = 0.0;
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
