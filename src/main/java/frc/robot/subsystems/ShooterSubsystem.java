@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
@@ -36,15 +37,16 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
     //constructor go brrrrrrr
+    var shooterConfig = new TalonFXConfiguration();
+    shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters;
+
+    m_leftMotor.getConfigurator().apply(shooterConfig);
+    m_rightMotor.getConfigurator().apply(shooterConfig);
   }
 
   @Override
   public void periodic() {
 
-  }
-
-  public double rpmFromMPS(double mps) {
-    return mps * 60 / wheelCircMeters;
   }
 
   public double findVelocity(double x){
@@ -111,9 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getPivotAngle(){
     return Units.radiansToDegrees(pivotAngle);
   }
-  public double getRpm(){
-    return rpmFromMPS(velocity);
-  }
+
   public void setFlywheelSpeed(){
     //stuff here
   }
