@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,6 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double wheelCircMeters = 0.316484;
 
+  private TalonFX m_rightMotor = new TalonFX(0);
+  private TalonFX m_leftMotor = new TalonFX(1);
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -93,14 +97,24 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void calculateShooter(){
     angle = findBestAngle();
-    velocity = findVelocity(distance);
 
-    angle = Units.degreesToRadians(angle);
     double originalDistance = distance;
     double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
     distance = originalDistance - xOffset + elevatorXOffset;
+    velocity = findVelocity(distance);
+
+    angle = Units.degreesToRadians(angle);
     height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
-    
     pivotAngle = angle - Units.radiansToDegrees(flywheelOffset);
+  }
+
+  public double getPivotAngle(){
+    return Units.radiansToDegrees(pivotAngle);
+  }
+  public double getRpm(){
+    return rpmFromMPS(velocity);
+  }
+  public void setFlywheelSpeed(){
+    //stuff here
   }
 }
