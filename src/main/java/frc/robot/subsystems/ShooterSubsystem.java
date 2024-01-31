@@ -9,22 +9,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-  private static double distance = 3;
+  private double distance = 3;
   private double distanceOffset;
-  private static double velocity;
-  private static double angle;
-  private static double height;
+  private double velocity;
+  private double angle;
+  private double height;
 
-  private static double midpointY = 1.974;
-  private static double midpointX = 0.196;
+  private double midpointY = 1.974;
+  private double midpointX = 0.196;
 
-  private static double elevatorPivotHeight = Units.inchesToMeters(23.75);
-  private static double elevatorPivotLength = Units.inchesToMeters(12);
-  private static double shooterFromElevator = Units.inchesToMeters(7);
-  private static double pivotAngle = 0;
+  private double elevatorPivotHeight = Units.inchesToMeters(23.75);
+  private double elevatorPivotLength = Units.inchesToMeters(12);
+  private double shooterFromElevator = Units.inchesToMeters(7);
+  private double pivotAngle = 0;
   //relative to ground
-  private static double flywheelOffset = Units.degreesToRadians(30); //60 degrees tilted up
-  private static double elevatorXOffset = Units.inchesToMeters(-1); //positive further back negative further forward
+  private double flywheelOffset = Units.degreesToRadians(30); //60 degrees tilted up
+  private double elevatorXOffset = Units.inchesToMeters(-1); //positive further back negative further forward
 
   private double wheelCircMeters = 0.316484;
 
@@ -43,7 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return mps * 60 / wheelCircMeters;
   }
 
-  public static double findVelocity(double x){
+  public double findVelocity(double x){
     return Math.sqrt((((
                     (-1*(9.8*Math.pow(-x, 2)))
               /((midpointY + height)/(-x*Math.tan(angle))))
@@ -51,11 +51,11 @@ public class ShooterSubsystem extends SubsystemBase {
                                 /2);
   }
 
-  public static double findTrajectoryPoint(double x){
+  public double findTrajectoryPoint(double x){
     return((distance + x)*Math.tan(angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(angle), 2))));
   }
 
-  public static double findBestAngle(){
+  public double findBestAngle(){
     double add = 0.1;
     int searchLength = 100;
     if(findTrajectoryPoint(-midpointX) < midpointX){
@@ -78,11 +78,8 @@ public class ShooterSubsystem extends SubsystemBase {
     for(int i = 0; i < searchLength; i++){
       angle = Units.degreesToRadians(angles[i]);
       height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
-      //System.out.println("\nheight offset: " + height);
-      //System.out.println("Angle: " + Units.radiansToDegrees(angle));
 
       double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
-      //System.out.println("distance offset: " + xOffset + "\n");
       distance = originalDistance - xOffset + elevatorXOffset;
       double error = Math.abs(findTrajectoryPoint(-midpointX) - (midpointY - height));
 
@@ -94,26 +91,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return angles[angleIndex];
   }
 
-  public static void calculateShooter(){
+  public void calculateShooter(){
     angle = findBestAngle();
     velocity = findVelocity(distance);
 
-    
-    System.out.println("best angle: " + angle);
-
     angle = Units.degreesToRadians(angle);
-    // height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
-    // double originalDistance = distance;
+    double originalDistance = distance;
     double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
+    distance = originalDistance - xOffset + elevatorXOffset;
     height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
-    // distance = originalDistance - xOffset + elevatorXOffset;
-    System.out.println("x offset: " + xOffset);
-    System.out.println("height: " + height);
+    
     pivotAngle = angle - Units.radiansToDegrees(flywheelOffset);
-    System.out.println("pivot angle: " + pivotAngle);
-  }
-
-  public static void main(String[] args){
-    calculateShooter();
   }
 }
