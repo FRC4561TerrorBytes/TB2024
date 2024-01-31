@@ -38,7 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     //constructor go brrrrrrr
     var shooterConfig = new TalonFXConfiguration();
-    shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters;
+    shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters / 60;
 
     m_leftMotor.getConfigurator().apply(shooterConfig);
     m_rightMotor.getConfigurator().apply(shooterConfig);
