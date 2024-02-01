@@ -8,19 +8,32 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase {
 
   private ElevatorIO io;
-  private ElevatorIOInputsAutoLogged inputs;
+  private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+  private MechanismLigament2d m_elevator;
   private SimpleMotorFeedforward elevatorFeedForward;
   private PIDController elevatorFeedback;
   private Double positionSetpoint;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
+
+    Mechanism2d mech = new Mechanism2d(3, 3);
+
+    MechanismRoot2d root = mech.getRoot("base", 2, 0);
+
+    m_elevator = root.append(new MechanismLigament2d("elevator", 3, 90));
+
+    SmartDashboard.putData("Mech 2d", mech);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -47,5 +60,7 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator/IO", inputs);
+
+    m_elevator.setLength(inputs.elevatorPositionMeters);
   }
 }

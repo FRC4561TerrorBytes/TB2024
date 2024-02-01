@@ -6,6 +6,7 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** Add your docs here. */
@@ -14,11 +15,14 @@ public class ElevatorIOSim implements ElevatorIO {
 
     private double elevatorAppliedVolts = 0.0;
 
-    private DCMotorSim rightMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), 6.75, 0.025);
+    private DCMotorSim rightMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), 16.15, 0.025);
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         rightMotorSim.update(LOOP_PERIOD_SECS);
+
+        inputs.elevatorPositionMeters = Units.radiansToDegrees(rightMotorSim.getAngularPositionRad());
+        inputs.elevatorVelocityRadPerSec = rightMotorSim.getAngularVelocityRadPerSec();
 
         inputs.elevatorAppliedVolts = elevatorAppliedVolts;
         inputs.elevatorCurrentAmps = new double[] {Math.abs(rightMotorSim.getCurrentDrawAmps())};

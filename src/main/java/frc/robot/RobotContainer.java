@@ -88,6 +88,7 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         elevator = new Elevator(null);
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
+        elevator.setDefaultCommand(new InstantCommand(() -> elevator.runWithVoltage(0), elevator));
         break;
 
 
@@ -151,18 +152,23 @@ public class RobotContainer {
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
     controller.povUp().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(12)));
     controller.povDown().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(-12)));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
-    controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+
+    controller.a().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(12)));
+    controller.b().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(-12)));
+    controller.y().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(0)));
+
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
+    // controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //                 () ->
+    //                     drive.setPose(
+    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+    //                 drive)
+    //             .ignoringDisable(true));
    
   }
 

@@ -11,6 +11,7 @@ public interface ElevatorIO {
     @AutoLog
     public static class ElevatorIOInputs {
         public double elevatorPositionMeters = 0.0;
+        public double elevatorVelocityRadPerSec = 0.0;
 
         public double elevatorAppliedVolts = 0.0;
         public double[] elevatorCurrentAmps = new double[] {};
