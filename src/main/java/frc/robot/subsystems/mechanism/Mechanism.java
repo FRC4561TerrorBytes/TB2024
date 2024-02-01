@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.mechanism;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -12,19 +12,22 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Elevator extends SubsystemBase {
+public class Mechanism extends SubsystemBase {
 
-  private ElevatorIO io;
-  private ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
+  private MechanismIO io;
+  private MechanismIOInputsAutoLogged inputs = new MechanismIOInputsAutoLogged();
   private MechanismLigament2d m_elevator;
+  private MechanismLigament2d m_arm;
   private SimpleMotorFeedforward elevatorFeedForward;
   private PIDController elevatorFeedback;
   private Double positionSetpoint;
 
-  public Elevator(ElevatorIO io) {
+  public Mechanism(MechanismIO io) {
     this.io = io;
 
     Mechanism2d mech = new Mechanism2d(3, 3);
@@ -32,6 +35,7 @@ public class Elevator extends SubsystemBase {
     MechanismRoot2d root = mech.getRoot("base", 2, 0);
 
     m_elevator = root.append(new MechanismLigament2d("elevator", 3, 90));
+    m_arm = m_elevator.append(new MechanismLigament2d("arm", 1, 180, 6, new Color8Bit(Color.kPurple)));
 
     SmartDashboard.putData("Mech 2d", mech);
 
@@ -52,8 +56,12 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  public void runWithVoltage(double volts) {
+  public void runElevatorWithVoltage(double volts) {
     io.setElevatorVoltage(volts);
+  }
+
+  public void runArmWithVoltage(double volts) {
+    io.setArmVoltage(volts);
   }
 
   @Override
@@ -62,5 +70,6 @@ public class Elevator extends SubsystemBase {
     Logger.processInputs("Elevator/IO", inputs);
 
     m_elevator.setLength(inputs.elevatorPositionMeters);
+    m_arm.setAngle(inputs.armAngleDegrees);
   }
 }

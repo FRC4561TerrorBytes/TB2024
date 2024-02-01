@@ -19,12 +19,9 @@ import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,9 +34,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.mechanism.Mechanism;
+import frc.robot.subsystems.mechanism.MechanismIO;
+import frc.robot.subsystems.mechanism.MechanismIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,7 +48,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
-  private final Elevator elevator;
+  private final Mechanism mechanism;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -86,9 +83,9 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
-        elevator = new Elevator(null);
+        mechanism = new Mechanism(null);
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
-        elevator.setDefaultCommand(new InstantCommand(() -> elevator.runWithVoltage(0), elevator));
+        mechanism.setDefaultCommand(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0), mechanism));
         break;
 
 
@@ -102,7 +99,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
-        elevator = new Elevator(new ElevatorIOSim());
+        mechanism = new Mechanism(new MechanismIOSim());
         break;
 
       default:
@@ -115,7 +112,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
-        elevator = new Elevator(new ElevatorIO() {});
+        mechanism = new Mechanism(new MechanismIO() {});
         break;
     }
 
@@ -150,12 +147,14 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
-    controller.povUp().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(12)));
-    controller.povDown().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(-12)));
+    controller.povUp().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(12)));
+    controller.povDown().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(-12)));
 
-    controller.a().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(12)));
-    controller.b().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(-12)));
-    controller.y().whileTrue(new InstantCommand(() -> elevator.runWithVoltage(0)));
+    controller.a().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(12)));
+    controller.b().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
+    controller.x().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(-12)));
+    controller.y().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0))
+      .alongWith(new InstantCommand(() -> mechanism.runArmWithVoltage(0))));
 
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
