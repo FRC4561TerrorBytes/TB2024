@@ -47,6 +47,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
+  private final ShooterSubsystem m_shooterSubsystem;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -139,11 +140,13 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
+    m_shooterSubsystem.setDefaultCommand(m_shooterSubsystem.setFlywheelSpeed)(-0.025);
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
+    controller.povUp().whileTrue(new RunCommand(() -> m_shooterSubsystem.setFlywheelSpeed(0.7), m_shooterSubsystem));
     controller
         .b()
         .onTrue(
