@@ -97,6 +97,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.setInverted(isTurnMotorInverted);
         turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
         turnSparkMax.enableVoltageCompensation(12.0);
+        turnSparkMax.setIdleMode(IdleMode.kBrake);
 
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();
