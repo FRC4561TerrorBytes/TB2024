@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -82,6 +83,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
+        m_shooterSubsystem = new ShooterSubsystem();
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
         break;
 
@@ -96,6 +98,7 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
+        m_shooterSubsystem = new ShooterSubsystem();
         break;
 
       default:
@@ -108,6 +111,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
+        m_shooterSubsystem = new ShooterSubsystem();
         break;
     }
 
@@ -140,7 +144,7 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    m_shooterSubsystem.setDefaultCommand(m_shooterSubsystem.setFlywheelSpeed)(-0.025);
+    m_shooterSubsystem.setDefaultCommand(new RunCommand( () -> m_shooterSubsystem.setFlywheelSpeed(-0.00025),m_shooterSubsystem));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
