@@ -70,35 +70,35 @@ public final class Constants {
       new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
           -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
    //MODULE 0
-  public static final int FRONT_LEFT_DRIVE_MOTOR = 5;
-  public static final int FRONT_LEFT_STEER_MOTOR = 6;
+  public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
+  public static final int FRONT_LEFT_STEER_MOTOR = 2;
   public static final int FRONT_LEFT_STEER_ENCODER = 21;
-  public static final InvertedValue FRONT_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue FRONT_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
   public static final boolean FRONT_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double FRONT_LEFT_STEER_OFFSET = 1.0;//0.2393010029 Fulcrum drivebase
+  public static final double FRONT_LEFT_STEER_OFFSET = Units.degreesToRadians(102.4711046);//0.2393010029 Fulcrum drivebase
 
   //MODULE 1
-  public static final int FRONT_RIGHT_DRIVE_MOTOR = 3;
-  public static final int FRONT_RIGHT_STEER_MOTOR = 4;
+  public static final int FRONT_RIGHT_DRIVE_MOTOR = 7;
+  public static final int FRONT_RIGHT_STEER_MOTOR = 8;
   public static final int FRONT_RIGHT_STEER_ENCODER = 24;
-  public static final InvertedValue FRONT_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue FRONT_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
   public static final boolean FRONT_RIGHT_TURN_MOTOR_INVERTED = true;
-  public static final double FRONT_RIGHT_STEER_OFFSET = -1.7221008;//1.73646625; Fulcrum drivebase
+  public static final double FRONT_RIGHT_STEER_OFFSET = Units.degreesToRadians(76);//1.73646625; Fulcrum drivebase
   //MODULE 2
-  public static final int BACK_LEFT_DRIVE_MOTOR = 7;
-  public static final int BACK_LEFT_STEER_MOTOR = 8;
+  public static final int BACK_LEFT_DRIVE_MOTOR = 3;
+  public static final int BACK_LEFT_STEER_MOTOR = 4;
   public static final int BACK_LEFT_STEER_ENCODER = 22;
-  public static final InvertedValue BACK_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
+  public static final InvertedValue BACK_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
   public static final boolean BACK_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_LEFT_STEER_OFFSET = 2.23737604;//-2.5632818; Fulcrum drivebase
+  public static final double BACK_LEFT_STEER_OFFSET = Units.degreesToRadians(-140);//-2.5632818; Fulcrum drivebase
 
   //MODULE 3
-  public static final int BACK_RIGHT_DRIVE_MOTOR = 1;
-  public static final int BACK_RIGHT_STEER_MOTOR = 2;
+  public static final int BACK_RIGHT_DRIVE_MOTOR = 5;
+  public static final int BACK_RIGHT_STEER_MOTOR = 6;
   public static final int BACK_RIGHT_STEER_ENCODER = 23;
-  public static final InvertedValue BACK_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
+  public static final InvertedValue BACK_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_RIGHT_STEER_OFFSET = 1.6443;//-2.1184274; Fulcrum drivebase
+  public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
   public static final double DRIVE_CURRENT_LIMIT = 80.0;
   public static final int TURN_CURRENT_LIMIT = 40;
