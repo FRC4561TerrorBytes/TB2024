@@ -19,6 +19,8 @@ public interface MechanismIO {
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
         public double[] armCurrentAmps = new double[] {};
+
+        public double elevatorSetpoint = 0.0;
     }
 
     /** Updates the set of loggable inputs. */
@@ -28,4 +30,6 @@ public interface MechanismIO {
     public default void setElevatorVoltage(double volts) {}
 
     public default void setArmVoltage(double volts) {}
+
+    public default void setElevatorSetpoint(double setpoint) {}
 }

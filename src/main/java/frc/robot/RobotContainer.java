@@ -85,7 +85,7 @@ public class RobotContainer {
         m_intakeSubsystem = new IntakeSubsystem();
         mechanism = new Mechanism(null);
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
-        mechanism.setDefaultCommand(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0), mechanism));
+        mechanism.setDefaultCommand(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0.0), mechanism));
         break;
 
 
@@ -147,13 +147,12 @@ public class RobotContainer {
             () -> -controller.getRightX()));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
-    controller.povUp().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(12)));
-    controller.povDown().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(-12)));
+    controller.povUp().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(2)));
+    controller.povDown().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0.5)));
 
-    controller.a().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(12)));
     controller.b().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.x().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(-12)));
-    controller.y().whileTrue(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0))
+    controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
       .alongWith(new InstantCommand(() -> mechanism.runArmWithVoltage(0))));
 
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));

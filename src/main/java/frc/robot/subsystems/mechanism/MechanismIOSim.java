@@ -16,6 +16,7 @@ public class MechanismIOSim implements MechanismIO {
 
     private double elevatorAppliedVolts = 0.0;
     private double armAppliedVolts = 0.0;
+    private double elevatorSetpoint;
 
     private DCMotorSim elevatorMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.ELEVATOR_MOTOR_GEAR_RATIO, 0.025);
     private DCMotorSim armMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), 50, 0.025);
@@ -34,6 +35,8 @@ public class MechanismIOSim implements MechanismIO {
         inputs.armVelocityRadPerSec = armMotorSim.getAngularVelocityRadPerSec();
         inputs.armAppliedVolts = armAppliedVolts;
         inputs.armCurrentAmps = new double[] {Math.abs(armMotorSim.getCurrentDrawAmps())};
+
+        inputs.elevatorSetpoint = elevatorSetpoint;
     }
 
     public double getMetersPerDegree() {
@@ -49,5 +52,9 @@ public class MechanismIOSim implements MechanismIO {
     public void setArmVoltage(double volts) {
         armAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         armMotorSim.setInputVoltage(armAppliedVolts);
+    }
+
+    public void setElevatorSetpoint(double setpoint) {
+        elevatorSetpoint = setpoint;
     }
 }
