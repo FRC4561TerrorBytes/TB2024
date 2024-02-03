@@ -63,4 +63,12 @@ public class MechanismIOSim implements MechanismIO {
     public void setArmSetpoint(double setpoint) {
         armSetpoint = setpoint;
     }
+
+    public void incrementArmAngle(double inc) {
+        armSetpoint += inc;
+    }
+
+    public void decrementArmAngle(double inc) {
+        armSetpoint -= inc;
+    }
 }

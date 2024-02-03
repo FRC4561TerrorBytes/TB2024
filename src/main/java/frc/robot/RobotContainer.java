@@ -151,11 +151,13 @@ public class RobotContainer {
     controller.povUp().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(2)));
     controller.povDown().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0.5)));
 
-    controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
+    // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
+    controller.a().onTrue(new InstantCommand(() -> mechanism.incrementArmAngle(10)));
+    controller.y().onTrue(new InstantCommand(() -> mechanism.decrementArmAngle(10)));
     controller.b().whileTrue(new InstantCommand(() -> mechanism.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> mechanism.setArmSetpoint(0)));
-    controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
-      .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
+    controller.x().whileTrue(new InstantCommand(() -> mechanism.setArmSetpoint(360)));
+    // controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
+    //   .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
 
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));

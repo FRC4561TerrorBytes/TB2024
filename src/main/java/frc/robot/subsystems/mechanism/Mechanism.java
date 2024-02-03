@@ -23,6 +23,7 @@ public class Mechanism extends SubsystemBase {
   private MechanismIOInputsAutoLogged inputs = new MechanismIOInputsAutoLogged();
   private MechanismLigament2d m_elevator;
   private MechanismLigament2d m_arm;
+  private MechanismLigament2d m_shooter;
 
   private SimpleMotorFeedforward elevatorFeedForward;
   private PIDController elevatorFeedback;
@@ -30,15 +31,18 @@ public class Mechanism extends SubsystemBase {
   private SimpleMotorFeedforward armFeedforward;
   private PIDController armFeedback;
 
+  private double elevatorMinLenth = 0.5;
+
   public Mechanism(MechanismIO io) {
     this.io = io;
 
-    Mechanism2d mech = new Mechanism2d(3, 3);
+    Mechanism2d mech = new Mechanism2d(4, 4);
 
-    MechanismRoot2d root = mech.getRoot("base", 1.5, 0);
+    MechanismRoot2d root = mech.getRoot("base", 2, 0);
 
-    m_elevator = root.append(new MechanismLigament2d("elevator", 2, 270));
-    m_arm = m_elevator.append(new MechanismLigament2d("arm", 1, 30, 6, new Color8Bit(Color.kPurple)));
+    m_elevator = root.append(new MechanismLigament2d("elevator", elevatorMinLenth, 90));
+    m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.3, 90, 6, new Color8Bit(Color.kPurple)));
+    m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.2, 120, 6, new Color8Bit(Color.kHotPink)));
 
     SmartDashboard.putData("Mech 2d", mech);
 
@@ -89,6 +93,14 @@ public class Mechanism extends SubsystemBase {
     return inputs.armAngleDegrees;
   }
 
+  public void incrementArmAngle(double inc) {
+    io.incrementArmAngle(inc);
+  }
+
+  public void decrementArmAngle(double inc) {
+    io.decrementArmAngle(inc);
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -102,7 +114,7 @@ public class Mechanism extends SubsystemBase {
       armFeedforward.calculate(inputs.armVelocityRadPerSec)
         + armFeedback.calculate(inputs.armAngleDegrees, inputs.armSetpoint));
 
-    m_elevator.setLength(inputs.elevatorPositionMeters);
+    m_elevator.setLength(elevatorMinLenth + inputs.elevatorPositionMeters);
     m_arm.setAngle(inputs.armAngleDegrees);
   }
 }

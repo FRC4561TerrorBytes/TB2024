@@ -35,4 +35,8 @@ public interface MechanismIO {
     public default void setElevatorSetpoint(double setpoint) {}
 
     public default void setArmSetpoint(double setpoint) {}
+
+    public default void incrementArmAngle(double inc) {}
+
+    public default void decrementArmAngle(double inc) {}
 }
