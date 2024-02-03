@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
@@ -144,13 +145,14 @@ public class RobotContainer {
             () -> -controller.getLeftY(),
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
-    m_shooterSubsystem.setDefaultCommand(new RunCommand( () -> m_shooterSubsystem.setFlywheelSpeed(-0.00025),m_shooterSubsystem));
+    // m_shooterSubsystem.setDefaultCommand(new RunCommand( () -> m_shooterSubsystem.stop(), m_shooterSubsystem));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
-    controller.povUp().whileTrue(new RunCommand(() -> m_shooterSubsystem.setFlywheelSpeed(0.7), m_shooterSubsystem));
+    controller.povUp().whileTrue(new InstantCommand(() -> m_shooterSubsystem.setFlywheelSpeed(), m_shooterSubsystem))
+      .whileFalse(new InstantCommand(() -> m_shooterSubsystem.stop()));
     controller
         .b()
         .onTrue(
