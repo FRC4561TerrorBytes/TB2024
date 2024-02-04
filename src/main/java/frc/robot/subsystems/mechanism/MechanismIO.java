@@ -10,7 +10,7 @@ public interface MechanismIO {
 
     @AutoLog
     public static class MechanismIOInputs {
-        public double elevatorPositionMeters = 0.0;
+        public double elevatorPositionMeters = 0.705;
         public double elevatorVelocityRadPerSec = 0.0;
         public double elevatorAppliedVolts = 0.0;
         public double[] elevatorCurrentAmps = new double[] {};

@@ -148,8 +148,8 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
-    controller.povUp().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(2)));
-    controller.povDown().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0.5)));
+    controller.povUp().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0.419)));
+    controller.povDown().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0)));
 
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.a().onTrue(new InstantCommand(() -> mechanism.incrementArmAngle(10)));

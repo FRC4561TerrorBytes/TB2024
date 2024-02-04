@@ -8,6 +8,9 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -31,8 +34,6 @@ public class Mechanism extends SubsystemBase {
   private SimpleMotorFeedforward armFeedforward;
   private PIDController armFeedback;
 
-  private double elevatorMinLenth = 0.5;
-
   public Mechanism(MechanismIO io) {
     this.io = io;
 
@@ -40,9 +41,9 @@ public class Mechanism extends SubsystemBase {
 
     MechanismRoot2d root = mech.getRoot("base", 2, 0);
 
-    m_elevator = root.append(new MechanismLigament2d("elevator", elevatorMinLenth, 90));
-    m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.3, 90, 6, new Color8Bit(Color.kPurple)));
-    m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.2, 120, 6, new Color8Bit(Color.kHotPink)));
+    m_elevator = root.append(new MechanismLigament2d("elevator", 0, 90));
+    m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.324, 0, 6, new Color8Bit(Color.kPurple)));
+    m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.118, 120, 4, new Color8Bit(Color.kHotPink)));
 
     SmartDashboard.putData("Mech 2d", mech);
 
@@ -114,7 +115,11 @@ public class Mechanism extends SubsystemBase {
       armFeedforward.calculate(inputs.armVelocityRadPerSec)
         + armFeedback.calculate(inputs.armAngleDegrees, inputs.armSetpoint));
 
-    m_elevator.setLength(elevatorMinLenth + inputs.elevatorPositionMeters);
+    Logger.recordOutput("Tes", new Pose3d(0, 0, inputs.elevatorPositionMeters, new Rotation3d()));
+    Logger.recordOutput("Test2", new Pose3d(0, 0, inputs.elevatorPositionMeters, new Rotation3d(Units.degreesToRadians(inputs.armAngleDegrees), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("Test3", new Pose3d());
+
+    m_elevator.setLength(inputs.elevatorPositionMeters);
     m_arm.setAngle(inputs.armAngleDegrees);
   }
 }
