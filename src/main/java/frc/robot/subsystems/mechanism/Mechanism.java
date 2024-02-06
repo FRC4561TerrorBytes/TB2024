@@ -32,7 +32,7 @@ public class Mechanism extends SubsystemBase {
   private PIDController elevatorFeedback;
 
   private SimpleMotorFeedforward armFeedforward;
-  private PIDController armFeedback;
+  public PIDController armFeedback;
 
   public Mechanism(MechanismIO io) {
     this.io = io;

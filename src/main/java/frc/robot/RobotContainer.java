@@ -18,6 +18,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ElevatorUpCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.drive.Drive;
@@ -116,6 +118,7 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("Elevator", new ElevatorUpCommand(mechanism));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

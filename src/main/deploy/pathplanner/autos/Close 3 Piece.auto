@@ -18,9 +18,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "1shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator"
+                }
+              }
+            ]
           }
         },
         {
