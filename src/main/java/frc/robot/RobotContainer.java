@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ElevatorUpCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -39,9 +38,9 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
-import frc.robot.subsystems.mechanism.Elevator;
-import frc.robot.subsystems.mechanism.ElevatorIO;
-import frc.robot.subsystems.mechanism.ElevatorIOSim;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -126,7 +125,8 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("Elevator", new ElevatorUpCommand(elevator));
+    NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

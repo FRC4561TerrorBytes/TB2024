@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.4399011268331336,
-        "y": 6.834580510016127
+        "x": 7.89976572827255,
+        "y": 4.1046482092964185
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0985779694380344,
-        "y": 6.07055356867225
+        "x": 6.788122256320779,
+        "y": 4.1046482092964185
       },
       "isLocked": false,
-      "linkedName": "pickup1"
+      "linkedName": "out3"
     },
     {
       "anchor": {
-        "x": 1.386927239412675,
+        "x": 3.892615101144693,
         "y": 5.547612425391122
       },
       "prevControl": {
-        "x": 1.856066589360742,
-        "y": 5.84696801059608
+        "x": 4.711594791360605,
+        "y": 3.6561593313210383
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shoot1"
+      "linkedName": "shootPose"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "shoot",
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "folder": "New Gen Path",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }
