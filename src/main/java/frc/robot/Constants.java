@@ -121,6 +121,28 @@ public final class Constants {
       * 0.10033 * Math.PI
       / CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
 
+  // fyi: offset right means lateral offset from center
+  public static final double LEFT_CAMERA_OFFSET_RIGHT = Units.inchesToMeters(11.75);
+  public static final double RIGHT_CAMERA_OFFSET_RIGHT = Units.inchesToMeters(-11.75);
+  public static final double LEFT_CAMERA_OFFSET_BACK = Units.inchesToMeters(20);
+  public static final double RIGHT_CAMERA_OFFSET_BACK = Units.inchesToMeters(20);
+  public static final double VISION_ROTATION_SCALING = 0.1;
+  public static final double VISION_LATERAL_SCALING = 2;
+
+  public static final double VISION_ROTATION_FLOOR_CLAMP = 2;
+  public static final double VISION_ROTATION_CEILING_CLAMP = 50;
+  public static final double VISION_ROTATION_DEADBAND = 6;
+  public static final double VISION_ROTATION_TOLERANCE = 2;
+
+  public static final double VISION_LATERAL_FLOOR_CLAMP = 0.2;
+  public static final double VISION_LATERAL_CEILING_CLAMP = 0.5;
+  public static final double VISION_LATERAL_DEADBAND = 0.1;
+  public static final double VISION_LATERAL_TOLERANCE = 0.05;
+
+  public static final double VISION_END_DISTANCE = Units.inchesToMeters(9);
+  public static final double VISION_FORWARD_FLOOR_CLAMP = 0.2;
+  public static final double VISION_FORWARD_CEILING_CLAMP = 1;
+
 //   public static final SparkPIDConfig TURN_MOTOR_CONFIG = new SparkPIDConfig(
 //       false,
 //       NEO_MAX_RPM,
@@ -136,13 +158,54 @@ public final class Constants {
 //       NEO_MAX_RPM,
 //       TURN_MOTOR_CONVERSION_FACTOR);
 
-    public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
-    public static final double ELEVATOR_RATIO = 11.0/720.0;
+  public static final int ELBOW_MOTOR = 11;
+  public static final int SHOULDER_MOTOR = 10;
+  public static final int WRIST_MOTOR = 13;
+
+  public static final double ELBOW_ROTATIONS_PER_DEGREE = 225.0 / 360.0;
+  public static final double ELBOW_MAX_VOLTAGE_FF = 2.0;
+  public static final double ELBOW_PROPORTIONAL_GAIN_SLOT_0 = 1.5; //UP
+  public static final double ELBOW_PROPORTIONAL_GAIN_SLOT_1 = 0.025; //DOWN
+  public static final double ELBOW_DERIVATIVE_GAIN_SLOT_0 = 0.0009;
+  public static final double ELBOW_DERIVATIVE_GAIN_SLOT_1 = 0.0001;
+  public static final double ELBOW_INTEGRAL_GAIN = 0.000015;
+  public static final double ELBOW_IZONE = 5.0;
+  public static final double ELBOW_TOLERANCE = ELBOW_ROTATIONS_PER_DEGREE / 2.0;
+  public static final double ELBOW_NUDGE_DEGREES = 3.0;
+  public static final int ELBOW_ENCODER_COUNT_PER_REV = 8192;
+  public static final double ELBOW_POSITION_OFFSET = 9;
+
+  public static final double SHOULDER_ROTATIONS_PER_DEGREE = 500.0 / 360.0;
+  // needs fixing; moves to fast and with to much force.
+  public static final double SHOULDER_MAX_VOLTAGE_FF = 0.1;
+  public static final double SHOULDER_PROPORTIONAL_GAIN_SLOT_0 = 0.001; // Scoring (May change to 0.022)
+  public static final double SHOULDER_PROPORTIONAL_GAIN_SLOT_1 = 0.025; // Returning from score (May change to 0.033)
+  public static final double SHOULDER_INTEGRAL_GAIN_SLOT_0 = 0.00005;
+  public static final double SHOULDER_DERIVATIVE_GAIN = 0.06;
+  public static final double SHOULDER_TOLERANCE = SHOULDER_ROTATIONS_PER_DEGREE / 2.0;
+  public static final double SHOULDER_NUDGE_DEGREES = 3.0; //Placeholder value, this will 
+  public static final int SHOULDER_ENCODER_COUNT_PER_REV = 8192;
+  public static final double SHOULDER_ENCODER_ROTATIONS_PER_DEGREE = 1.89;
+  public static final double SHOULDER_POSITION_OFFSET = 3.5;
+  
+  public static final double WRIST_ROTATIONS_PER_DEGREE = 60.0 / 360.0;
+  //TODO maybe tune this?
+  public static final double WRIST_MAX_VOLTAGE_FF = 0.0;
+  //TODO this is really snappy, but it might be too high.
+  public static final double WRIST_PROPORTIONAL_GAIN = 0.01;
+  public static final double WRIST_TOLERANCE = WRIST_ROTATIONS_PER_DEGREE / 2.0;
+  public static final double WRIST_NUDGE_DEGREES = 4.0;
+  public static final int WRIST_ENCODER_COUNTS_PER_REV = 8192;
+  public static final double WRIST_ENCODER_OFFSET = -7.5;
+  public static final double WRIST_ENCODER_ZERO_THRESHOLD = 3.0; // random test value
 
   public static final int ROLLER_MOTOR = 12;
 
   public static final double INTAKE_SPEED = 0.4;
   public static final double INTAKE_HOLD_SPEED = 0.05;
+
+  public static final double SCORE_SPEED_CONE = -0.35;
+  public static final double SCORE_SPEED_CUBE = -0.25;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;

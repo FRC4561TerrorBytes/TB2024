@@ -29,7 +29,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -70,8 +69,6 @@ public class Drive extends SubsystemBase {
   //CHANGE THE NUMBERS IN THE VECTOR BUILDER
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
   private PoseEstimator m_poseEstimator = new PoseEstimator(visionMeasurementStdDevs);
-
-  // private CANSparkMax motorTemp = new CANSparkMax(Constants.FRONT_LEFT_STEER_MOTOR, MotorType.kBrushless);
 
   public Drive(
       GyroIO gyroIO,
@@ -163,9 +160,6 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("updating with tags", false);
     // }
 
-    // System.out.println("Motor Temp: " + motorTemp.getMotorTemperature());
-    // System.out.println("Motor Voltage: " + motorTemp.getBusVoltage());
-
     pose = getPose();
   }
 
@@ -241,11 +235,6 @@ public class Drive extends SubsystemBase {
   public Pose2d getPose() {
     //return pose;
     return m_poseEstimator.getLatestPose();
-  }
-
-  @AutoLogOutput(key = "Odometry/3dRobot")
-  public Pose3d get3dPose() {
-    return new Pose3d(m_poseEstimator.getLatestPose());
   }
 
   /** Returns the current odometry rotation. */

@@ -2,16 +2,10 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Auto Choices": "String Chooser",
-      "/SmartDashboard/Mech 2d": "Mechanism2d"
+      "/SmartDashboard/Auto Choices": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Auto Choices": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Mech 2d": {
         "window": {
           "visible": true
         }
@@ -20,6 +14,9 @@
   },
   "NetworkTables Info": {
     "AdvantageScope@1": {
+      "open": true
+    },
+    "Clients": {
       "open": true
     },
     "visible": true
