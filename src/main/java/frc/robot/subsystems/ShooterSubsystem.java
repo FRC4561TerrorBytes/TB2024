@@ -4,97 +4,109 @@
 
 package frc.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-  private double distance = 3;
-  private double distanceOffset;
-  private double velocity;
-  private double angle;
-  private double height;
+  private double m_velocity;
+  private double m_angle;
+  private double m_height;
 
-  private double midpointY = 1.974; //+ Units.inchesToMeters(3);
-  private double midpointX = 0.196;
+  private double m_pivotAngle;
 
-  private double elevatorPivotHeight = Units.inchesToMeters(23.75);
-  private double elevatorPivotLength = Units.inchesToMeters(12);
-  private double shooterFromElevator = Units.inchesToMeters(7);
-  private double pivotAngle = 0;
-  //relative to ground
-  private double flywheelOffset = Units.degreesToRadians(30); //60 degrees tilted up
-  private double elevatorXOffset = Units.inchesToMeters(-1); //positive further back negative further forward
-
-  private double wheelCircMeters = Math.PI*Units.inchesToMeters(4);
-
-  //TODO check rev client and add new device ids
-  private final CANSparkMax m_topMotor = new CANSparkMax(13, MotorType.kBrushless);
-  private final CANSparkMax m_bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
-
-  private PIDController m_topController = new PIDController(0.00023*0.9, 0, 0.1);
-  private PIDController m_bottomController = new PIDController(0.00027*0.8, 0, 0.1);
+  private TalonFX m_leftFlywheel = new TalonFX(Constants.LEFT_FLYWHEEL);
+  private TalonFX m_rightFlywheel = new TalonFX(Constants.RIGHT_FLYWHEEL);
+  private CANSparkMax m_indexer = new CANSparkMax(Constants.INDEXER, MotorType.kBrushless);
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
     //constructor go brrrrrrr
-    // var shooterConfig = new TalonFXConfiguration();
-    // shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters / 60;
+    var leftConfig = new TalonFXConfiguration();
+    //set inverted here
+    leftConfig.Feedback.SensorToMechanismRatio = Constants.FLYWHEEL_CIRCUMFERENCE/60;
+    leftConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    // m_leftMotor.getConfigurator().apply(shooterConfig);
-    // m_rightMotor.getConfigurator().apply(shooterConfig);
+    var leftSlot0Config = leftConfig.Slot0;
+    leftSlot0Config.kS = 0.25; // Add 0.25 V output to overcome static friction
+    leftSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    leftSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    leftSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    leftSlot0Config.kI = 0; // no output for integrated error
+    leftSlot0Config.kD = 0; // no output for error derivative
 
-    m_topMotor.restoreFactoryDefaults();
-    m_bottomMotor.restoreFactoryDefaults();
+    var leftMotionMagicConfig = leftConfig.MotionMagic;
+    leftMotionMagicConfig.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    leftMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
-    m_bottomMotor.setInverted(true);
-    m_topMotor.setInverted(false);
-    m_bottomMotor.getEncoder().setVelocityConversionFactor(24/18);
+    m_leftFlywheel.getConfigurator().apply(leftConfig);
 
-    m_topMotor.setSmartCurrentLimit(40);
-    m_bottomMotor.setSmartCurrentLimit(40);
+    var rightConfig = new TalonFXConfiguration();
+    //set inverted here
+    rightConfig.Feedback.SensorToMechanismRatio = Constants.FLYWHEEL_CIRCUMFERENCE/60;
+    rightConfig.CurrentLimits.SupplyCurrentLimit = 40;
+    rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    m_topMotor.burnFlash();
-    m_bottomMotor.burnFlash();
+    var rightSlot0Config = leftConfig.Slot0;
+    rightSlot0Config.kS = 0.25; // Add 0.25 V output to overcome static friction
+    rightSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    rightSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    rightSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    rightSlot0Config.kI = 0; // no output for integrated error
+    rightSlot0Config.kD = 0; // no output for error derivative
+
+    var rightMotionMagicConfig = leftConfig.MotionMagic;
+    rightMotionMagicConfig.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    rightMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+
+    m_rightFlywheel.getConfigurator().apply(rightConfig);
+
+    m_indexer.restoreFactoryDefaults();
+    //set inverted here
+    m_indexer.setSmartCurrentLimit(20);
+    m_indexer.setIdleMode(IdleMode.kBrake);
+    m_indexer.burnFlash();
   }
 
   @Override
   public void periodic() {
-    Logger.recordOutput("Top Veloctiy", m_topMotor.getEncoder().getVelocity());
-    Logger.recordOutput("Bottom Velocity", m_bottomMotor.getEncoder().getVelocity());
-    Logger.recordOutput("Velocity Setpoint", RPMFromMPS(findVelocity(distance)));
+
   }
 
   public double RPMFromMPS(double mps){
-    return mps * 60 / wheelCircMeters;
+    return mps * 60 / Constants.FLYWHEEL_CIRCUMFERENCE;
   }
 
   public double findVelocity(double x){
     return Math.sqrt((((
                     (-1*(9.8*Math.pow(-x, 2)))
-              /((midpointY + height)/(-x*Math.tan(angle))))
-                /Math.pow(Math.cos(angle), 2)))
+              /((Constants.TARGET_Y + m_height)/(-x*Math.tan(m_angle))))
+                /Math.pow(Math.cos(m_angle), 2)))
                                 /2);
   }
 
-  public double findTrajectoryPoint(double x){
-    return((distance + x)*Math.tan(angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(angle), 2))));
+  public double findTrajectoryPoint(double x, double distance){
+    return((distance + x)*Math.tan(m_angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(m_angle), 2))));
   }
 
-  public double findBestAngle(){
+  public double findBestAngle(double distance){
     double add = 0.1;
     int searchLength = 100;
-    if(findTrajectoryPoint(-midpointX) < midpointX){
+    if(findTrajectoryPoint(-Constants.TARGET_X, distance) < Constants.TARGET_X){
       add *= -1;
     }
 
-    double startAngle = Units.radiansToDegrees(Math.atan((midpointY-height)/(distance - midpointX)))+6;
+    double startAngle = Units.radiansToDegrees(Math.atan((Constants.TARGET_Y-m_height)/(distance - Constants.TARGET_X)))+6;
     double[] angles = new double[searchLength];
 
     for(int i = 0; i < searchLength; i++){
@@ -108,12 +120,12 @@ public class ShooterSubsystem extends SubsystemBase {
     double originalDistance = distance;
 
     for(int i = 0; i < searchLength; i++){
-      angle = Units.degreesToRadians(angles[i]);
-      height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
+      m_angle = Units.degreesToRadians(angles[i]);
+      m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
 
-      double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
-      distance = originalDistance - xOffset + elevatorXOffset;
-      double error = Math.abs(findTrajectoryPoint(-midpointX) - (midpointY - height));
+      double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
+      distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
+      double error = Math.abs(findTrajectoryPoint(-Constants.TARGET_X, distance) - (Constants.TARGET_Y - m_height));
 
       if (error < closestError){
         closestError = error;
@@ -123,37 +135,38 @@ public class ShooterSubsystem extends SubsystemBase {
     return angles[angleIndex];
   }
 
-  public void calculateShooter(){
-    angle = findBestAngle();
+  public void calculateShooter(double distance){
+    m_angle = findBestAngle(distance);
 
     double originalDistance = distance;
-    double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
-    distance = originalDistance - xOffset + elevatorXOffset;
-    velocity = findVelocity(distance);
+    double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
+    distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
+    m_velocity = findVelocity(distance);
 
-    angle = Units.degreesToRadians(angle);
-    height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
-    pivotAngle = angle - Units.radiansToDegrees(flywheelOffset);
+    m_angle = Units.degreesToRadians(m_angle);
+    m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
+    m_pivotAngle = m_angle - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
   }
 
   public double getPivotAngle(){
-    return Units.radiansToDegrees(pivotAngle);
+    return Units.radiansToDegrees(m_pivotAngle);
   }
 
-  public void setFlywheelSpeed(){
-    distance = 4.6;
-    angle = Units.degreesToRadians(30);
-    height = Units.inchesToMeters(13.5);
-
-    m_topController.setSetpoint(RPMFromMPS(findVelocity(distance)));
-    m_bottomController.setSetpoint(RPMFromMPS(findVelocity(distance)));
-
-    m_bottomMotor.set(m_bottomController.calculate(m_bottomMotor.getEncoder().getVelocity())*0.95);
-    m_topMotor.set(m_topController.calculate(m_topMotor.getEncoder().getVelocity()));
+  public void setFlywheelSpeed(double velocity){
+    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+    m_rightFlywheel.setControl(m_request.withVelocity(velocity));
+    m_leftFlywheel.setControl(m_request.withVelocity(velocity));
+  }
+  public void stopFlywheel(){
+    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+    m_rightFlywheel.setControl(m_request.withVelocity(0));
+    m_leftFlywheel.setControl(m_request.withVelocity(0));
   }
 
-  public void stop(){
-    m_topMotor.set(0);
-    m_bottomMotor.set(0);
+  public void setIndexerSpeed(double speed){
+    m_indexer.set(speed);
+  }
+  public void stopIndexer(){
+    m_indexer.set(0);
   }
 }
