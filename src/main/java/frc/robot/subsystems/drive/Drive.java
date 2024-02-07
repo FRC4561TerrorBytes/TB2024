@@ -291,14 +291,23 @@ public class Drive extends SubsystemBase {
     };
   }
 
-  public double getDistanceFromSpeaker(){
-    Translation2d speaker = new Translation2d();
+  public Pose2d getSpeakerPose(){
+    Pose2d speaker = new Pose2d();
     if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-      speaker = new Translation2d(0, 5.54);
+      speaker = new Pose2d(new Translation2d(0, 5.54), new Rotation2d());
     }
     else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      speaker = new Translation2d(16.54, 5.54);
+      speaker = new Pose2d(new Translation2d(16.54, 5.54), new Rotation2d());
     }
-    return speaker.getDistance(pose.getTranslation());
+    return speaker;
+  }
+
+  public double getDistanceFromSpeaker(){
+    return getSpeakerPose().getTranslation().getDistance(pose.getTranslation());
+  }
+
+  public double getRotationFromSpeaker(){
+    //TODO Test that this gets the right rotation of the robot to face the speaker
+    return getSpeakerPose().relativeTo(pose).getRotation().getDegrees();
   }
 }
