@@ -32,3 +32,10 @@ jobs:
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
+
+    - name: Check and print all dependencies
+      run: ./gradlew dependencies
+
+    - name: Check and print all Java Toolchain
+      run: ./gradlew javaToolchains
+      
