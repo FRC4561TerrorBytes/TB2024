@@ -112,6 +112,24 @@
           "data": {
             "name": "ElevatorDown"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New12"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New13"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorUp"
+          }
         }
       ]
     }
