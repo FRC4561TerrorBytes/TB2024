@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.mechanism.Mechanism;
+import frc.robot.subsystems.mechanism.Elevator;
 
 public class ElevatorUpCommand extends Command {
 
-  private Mechanism mechanism;
+  private Elevator elevator;
   /** Creates a new ElevatorUpCommand. */
-  public ElevatorUpCommand(Mechanism mech) {
-    mechanism = mech;
+  public ElevatorUpCommand(Elevator mech) {
+    elevator = mech;
     addRequirements(mech);
   }
 
@@ -23,7 +23,7 @@ public class ElevatorUpCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mechanism.setElevatorSetpoint(0.419);
+    elevator.setElevatorSetpoint(0.419);
   }
 
   // Called once the command ends or is interrupted.
@@ -33,6 +33,6 @@ public class ElevatorUpCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mechanism.armFeedback.atSetpoint();
+    return elevator.elevatorFeedback.atSetpoint();
   }
 }

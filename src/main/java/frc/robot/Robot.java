@@ -13,15 +13,25 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,6 +42,10 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+
+  public MechanismLigament2d m_arm;
+  public MechanismLigament2d m_elevator;
+  private MechanismLigament2d m_shooter;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -92,12 +106,30 @@ public class Robot extends LoggedRobot {
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
+
+    Mechanism2d mech = new Mechanism2d(4, 4);
+
+    MechanismRoot2d root = mech.getRoot("base", 2, 0);
+
+    m_elevator = root.append(new MechanismLigament2d("elevator", 0, 90));
+    m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.324, 0, 6, new Color8Bit(Color.kPurple)));
+    m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.118, 120, 4, new Color8Bit(Color.kHotPink)));
+
+    SmartDashboard.putData("Mech 2d", mech);
+
     robotContainer = new RobotContainer();
   }
 
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
+
+    Logger.recordOutput("Tes", new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d()));
+    Logger.recordOutput("Test2", new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90))));
+    Logger.recordOutput("Test3", new Pose3d());
+
+    m_elevator.setLength(robotContainer.getElevatorPositionMeters());
+    m_arm.setAngle(robotContainer.getArmAngleDegrees());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.

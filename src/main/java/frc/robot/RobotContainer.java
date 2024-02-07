@@ -30,15 +30,18 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorUpCommand;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
-import frc.robot.subsystems.mechanism.Mechanism;
-import frc.robot.subsystems.mechanism.MechanismIO;
-import frc.robot.subsystems.mechanism.MechanismIOSim;
+import frc.robot.subsystems.mechanism.Elevator;
+import frc.robot.subsystems.mechanism.ElevatorIO;
+import frc.robot.subsystems.mechanism.ElevatorIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,7 +53,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
-  private final Mechanism mechanism;
+  private final Elevator elevator;
+  private final Arm arm;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -85,9 +89,11 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
-        mechanism = new Mechanism(null);
+        elevator = new Elevator(null);
+        arm = new Arm(null);
+
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
-        mechanism.setDefaultCommand(new InstantCommand(() -> mechanism.runElevatorWithVoltage(0.0), mechanism));
+        elevator.setDefaultCommand(new InstantCommand(() -> elevator.runElevatorWithVoltage(0.0), elevator));
         break;
 
 
@@ -101,7 +107,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
-        mechanism = new Mechanism(new MechanismIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        arm = new Arm(new ArmIOSim());
         break;
 
       default:
@@ -114,11 +121,12 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
-        mechanism = new Mechanism(new MechanismIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        arm = new Arm(new ArmIO() {});
         break;
     }
 
-    NamedCommands.registerCommand("Elevator", new ElevatorUpCommand(mechanism));
+    NamedCommands.registerCommand("Elevator", new ElevatorUpCommand(elevator));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -151,14 +159,14 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
-    controller.povUp().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0.419)));
-    controller.povDown().onTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(0)));
+    controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
-    controller.a().onTrue(new InstantCommand(() -> mechanism.incrementArmAngle(10)));
-    controller.y().onTrue(new InstantCommand(() -> mechanism.decrementArmAngle(10)));
-    controller.b().whileTrue(new InstantCommand(() -> mechanism.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> mechanism.setArmSetpoint(360)));
+    controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
+    controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
+    controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
+    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(360)));
     // controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
     //   .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
 
@@ -175,6 +183,14 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
    
+  }
+
+  public double getElevatorPositionMeters() {
+    return elevator.getElevatorPositionMeters();
+  }
+
+  public double getArmAngleDegrees() {
+    return arm.getArmAngleDegrees();
   }
 
   /**

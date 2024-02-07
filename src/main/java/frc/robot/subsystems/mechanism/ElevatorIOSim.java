@@ -11,34 +11,24 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
 
 /** Add your docs here. */
-public class MechanismIOSim implements MechanismIO {
+public class ElevatorIOSim implements ElevatorIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
 
     private double elevatorAppliedVolts = 0.0;
-    private double armAppliedVolts = 0.0;
     private double elevatorSetpoint = 0.0;
-    private double armSetpoint = 0.0;
 
     private DCMotorSim elevatorMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.ELEVATOR_MOTOR_GEAR_RATIO, 0.025);
-    private DCMotorSim armMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), 50, 0.025);
 
     @Override
-    public void updateInputs(MechanismIOInputs inputs) {
+    public void updateInputs(ElevatorIOInputs inputs) {
         elevatorMotorSim.update(LOOP_PERIOD_SECS);
-        armMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.elevatorPositionMeters = getMetersPerDegree();
         inputs.elevatorVelocityRadPerSec = elevatorMotorSim.getAngularVelocityRadPerSec();
         inputs.elevatorAppliedVolts = elevatorAppliedVolts;
         inputs.elevatorCurrentAmps = new double[] {Math.abs(elevatorMotorSim.getCurrentDrawAmps())};
 
-        inputs.armAngleDegrees = Units.radiansToDegrees(armMotorSim.getAngularPositionRad());
-        inputs.armVelocityRadPerSec = armMotorSim.getAngularVelocityRadPerSec();
-        inputs.armAppliedVolts = armAppliedVolts;
-        inputs.armCurrentAmps = new double[] {Math.abs(armMotorSim.getCurrentDrawAmps())};
-
         inputs.elevatorSetpoint = elevatorSetpoint;
-        inputs.armSetpoint = armSetpoint;
     }
 
     public double getMetersPerDegree() {
@@ -51,24 +41,7 @@ public class MechanismIOSim implements MechanismIO {
         elevatorMotorSim.setInputVoltage(elevatorAppliedVolts);
     }
 
-    public void setArmVoltage(double volts) {
-        armAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-        armMotorSim.setInputVoltage(armAppliedVolts);
-    }
-
     public void setElevatorSetpoint(double setpoint) {
         elevatorSetpoint = setpoint;
-    }
-
-    public void setArmSetpoint(double setpoint) {
-        armSetpoint = setpoint;
-    }
-
-    public void incrementArmAngle(double inc) {
-        armSetpoint += inc;
-    }
-
-    public void decrementArmAngle(double inc) {
-        armSetpoint -= inc;
     }
 }

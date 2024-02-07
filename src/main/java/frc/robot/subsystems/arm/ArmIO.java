@@ -2,37 +2,26 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.mechanism;
+package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface MechanismIO {
+/** Add your docs here. */
+public interface ArmIO {
 
     @AutoLog
-    public static class MechanismIOInputs {
-        public double elevatorPositionMeters = 0.705;
-        public double elevatorVelocityRadPerSec = 0.0;
-        public double elevatorAppliedVolts = 0.0;
-        public double[] elevatorCurrentAmps = new double[] {};
-
+    public static class ArmIOInputs {
         public double armAngleDegrees = 0.0;
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
         public double[] armCurrentAmps = new double[] {};
 
-        public double elevatorSetpoint = 0.0;
         public double armSetpoint = 0.0;
     }
 
-    /** Updates the set of loggable inputs. */
-    public default void updateInputs(MechanismIOInputs inputs) {}
-
-    /** Run the drive motor at the specified voltage. */
-    public default void setElevatorVoltage(double volts) {}
+    public default void updateInputs(ArmIOInputs inputs) {}
 
     public default void setArmVoltage(double volts) {}
-
-    public default void setElevatorSetpoint(double setpoint) {}
 
     public default void setArmSetpoint(double setpoint) {}
 
