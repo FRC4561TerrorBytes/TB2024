@@ -4,11 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double angle;
   private double height;
 
-  private double midpointY = 1.974;
+  private double midpointY = 1.974; //+ Units.inchesToMeters(3);
   private double midpointX = 0.196;
 
   private double elevatorPivotHeight = Units.inchesToMeters(23.75);
@@ -33,11 +34,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private double flywheelOffset = Units.degreesToRadians(30); //60 degrees tilted up
   private double elevatorXOffset = Units.inchesToMeters(-1); //positive further back negative further forward
 
-  private double wheelCircMeters = 0.316484;
+  private double wheelCircMeters = Math.PI*Units.inchesToMeters(4);
 
   //TODO check rev client and add new device ids
-  private final CANSparkMax m_rightMotor = new CANSparkMax(15, MotorType.kBrushless);
-  private final CANSparkMax m_leftMotor = new CANSparkMax(15, MotorType.kBrushless);
+  private final CANSparkMax m_topMotor = new CANSparkMax(13, MotorType.kBrushless);
+  private final CANSparkMax m_bottomMotor = new CANSparkMax(5, MotorType.kBrushless);
+
+  private PIDController m_topController = new PIDController(0.00017, 0, 0.1);
+  private PIDController m_bottomController = new PIDController(0.0001855, 0, 0.1);
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -48,13 +52,20 @@ public class ShooterSubsystem extends SubsystemBase {
     // m_leftMotor.getConfigurator().apply(shooterConfig);
     // m_rightMotor.getConfigurator().apply(shooterConfig);
 
-    m_leftMotor.setInverted(false);
-    m_rightMotor.setInverted(false);
+    m_bottomMotor.setInverted(true);
+    m_topMotor.setInverted(false);
+    m_bottomMotor.getEncoder().setVelocityConversionFactor(24/18);
   }
 
   @Override
   public void periodic() {
+    Logger.recordOutput("Top Veloctiy", m_topMotor.getEncoder().getVelocity());
+    Logger.recordOutput("Bottom Velocity", m_bottomMotor.getEncoder().getVelocity());
+    Logger.recordOutput("Velocity Setpoint", RPMFromMPS(findVelocity(distance)));
+  }
 
+  public double RPMFromMPS(double mps){
+    return mps * 60 / wheelCircMeters;
   }
 
   public double findVelocity(double x){
@@ -122,12 +133,22 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.radiansToDegrees(pivotAngle);
   }
 
-  public void setFlywheelSpeed(double speed){
-    m_leftMotor.set(speed);
-    m_rightMotor.set(-speed);
+  public void setFlywheelSpeed(){
+    distance = 4.6;
+    angle = Units.degreesToRadians(30);
+    height = Units.inchesToMeters(13.5);
+
+    System.out.println("DOIBWADVWADUWA\n" + RPMFromMPS(findVelocity(distance)) + "\nDwaD\n\n\n\n");
+
+    m_topController.setSetpoint(RPMFromMPS(findVelocity(distance)));
+    m_bottomController.setSetpoint(RPMFromMPS(findVelocity(distance)));
+
+    m_bottomMotor.set(m_bottomController.calculate(m_bottomMotor.getEncoder().getVelocity()));
+    m_topMotor.set(m_topController.calculate(m_topMotor.getEncoder().getVelocity()));
   }
 
   public void stop(){
-    setFlywheelSpeed(0);
+    m_topMotor.set(0);
+    m_bottomMotor.set(0);
   }
 }
