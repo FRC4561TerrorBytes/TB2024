@@ -315,7 +315,16 @@ public class Drive extends SubsystemBase {
   }
 
   public double getRotationFromSpeaker(){
-    //TODO Test that this gets the right rotation of the robot to face the speaker
-    return getSpeakerPose().relativeTo(pose).getRotation().getDegrees();
+    
+    //using the convention of 0 facing forward on blue origin(facing red)
+    Pose2d relative = getSpeakerPose().relativeTo(pose);
+    double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+      return angle+180;
+    }
+    else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      return angle;
+    }
+    return 0;
   }
 }
