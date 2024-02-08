@@ -38,10 +38,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   //TODO check rev client and add new device ids
   private final CANSparkMax m_topMotor = new CANSparkMax(13, MotorType.kBrushless);
-  private final CANSparkMax m_bottomMotor = new CANSparkMax(5, MotorType.kBrushless);
+  private final CANSparkMax m_bottomMotor = new CANSparkMax(14, MotorType.kBrushless);
 
-  private PIDController m_topController = new PIDController(0.00017, 0, 0.1);
-  private PIDController m_bottomController = new PIDController(0.0001855, 0, 0.1);
+  private PIDController m_topController = new PIDController(0.00023*0.9, 0, 0.1);
+  private PIDController m_bottomController = new PIDController(0.00027*0.8, 0, 0.1);
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
@@ -52,9 +52,18 @@ public class ShooterSubsystem extends SubsystemBase {
     // m_leftMotor.getConfigurator().apply(shooterConfig);
     // m_rightMotor.getConfigurator().apply(shooterConfig);
 
+    m_topMotor.restoreFactoryDefaults();
+    m_bottomMotor.restoreFactoryDefaults();
+
     m_bottomMotor.setInverted(true);
     m_topMotor.setInverted(false);
     m_bottomMotor.getEncoder().setVelocityConversionFactor(24/18);
+
+    m_topMotor.setSmartCurrentLimit(40);
+    m_bottomMotor.setSmartCurrentLimit(40);
+
+    m_topMotor.burnFlash();
+    m_bottomMotor.burnFlash();
   }
 
   @Override
@@ -138,12 +147,10 @@ public class ShooterSubsystem extends SubsystemBase {
     angle = Units.degreesToRadians(30);
     height = Units.inchesToMeters(13.5);
 
-    System.out.println("DOIBWADVWADUWA\n" + RPMFromMPS(findVelocity(distance)) + "\nDwaD\n\n\n\n");
-
     m_topController.setSetpoint(RPMFromMPS(findVelocity(distance)));
     m_bottomController.setSetpoint(RPMFromMPS(findVelocity(distance)));
 
-    m_bottomMotor.set(m_bottomController.calculate(m_bottomMotor.getEncoder().getVelocity()));
+    m_bottomMotor.set(m_bottomController.calculate(m_bottomMotor.getEncoder().getVelocity())*0.95);
     m_topMotor.set(m_topController.calculate(m_topMotor.getEncoder().getVelocity()));
   }
 
