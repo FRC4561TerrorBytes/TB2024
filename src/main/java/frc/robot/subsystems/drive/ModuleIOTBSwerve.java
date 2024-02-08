@@ -101,10 +101,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
         }
 
         cancoder.getConfigurator().apply(new CANcoderConfiguration());
-        driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
-        driveTrainSelfCheck.checkForFaults();
-        driveTrainSelfCheck.faultsInArray();
-        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
 
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
