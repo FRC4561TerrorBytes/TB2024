@@ -116,7 +116,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return Units.radiansToDegrees(pivotAngle);
   }
 
-  public void setFlywheelSpeed(){
-    //stuff here
+  public void setFlywheelSpeed(double speed){
+    m_leftMotor.set(speed);
+    m_rightMotor.set(-speed);
   }
 }
