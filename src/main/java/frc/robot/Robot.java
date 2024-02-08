@@ -124,9 +124,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
 
-    Logger.recordOutput("Tes", new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d()));
-    Logger.recordOutput("Test2", new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90))));
-    Logger.recordOutput("Test3", new Pose3d());
+    Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
+    Pose3d armPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d intakePose = new Pose3d();
+
+  Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
     m_elevator.setLength(robotContainer.getElevatorPositionMeters());
     m_arm.setAngle(robotContainer.getArmAngleDegrees());
