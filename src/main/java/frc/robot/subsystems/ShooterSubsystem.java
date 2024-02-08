@@ -42,11 +42,14 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
     //constructor go brrrrrrr
-    var shooterConfig = new TalonFXConfiguration();
-    shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters / 60;
+    // var shooterConfig = new TalonFXConfiguration();
+    // shooterConfig.Feedback.SensorToMechanismRatio = wheelCircMeters / 60;
 
-    m_leftMotor.getConfigurator().apply(shooterConfig);
-    m_rightMotor.getConfigurator().apply(shooterConfig);
+    // m_leftMotor.getConfigurator().apply(shooterConfig);
+    // m_rightMotor.getConfigurator().apply(shooterConfig);
+
+    m_leftMotor.setInverted(false);
+    m_rightMotor.setInverted(false);
   }
 
   @Override
@@ -122,5 +125,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setFlywheelSpeed(double speed){
     m_leftMotor.set(speed);
     m_rightMotor.set(-speed);
+  }
+
+  public void stop(){
+    setFlywheelSpeed(0);
   }
 }
