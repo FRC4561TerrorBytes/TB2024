@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,8 +35,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double wheelCircMeters = 0.316484;
 
-  private TalonFX m_rightMotor = new TalonFX(0);
-  private TalonFX m_leftMotor = new TalonFX(1);
+  //TODO check rev client and add new device ids
+  private final CANSparkMax m_rightMotor = new CANSparkMax(15, MotorType.kBrushless);
+  private final CANSparkMax m_leftMotor = new CANSparkMax(15, MotorType.kBrushless);
 
   /** Creates a new IntakeSubsystem. */
   public ShooterSubsystem() {
