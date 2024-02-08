@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,6 +29,7 @@ public class SelfCheckingPhoenixMotor implements SelfChecking {
   }
 
   @Override
+  @AutoLogOutput(key = "(label) Faults")
   public List<SubSystemFaults> checkForFaults() {
     List<SubSystemFaults> faults = new ArrayList<>();
 
