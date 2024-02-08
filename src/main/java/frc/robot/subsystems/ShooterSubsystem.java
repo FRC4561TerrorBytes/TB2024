@@ -18,7 +18,6 @@ import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
-  private final CANSparkMax topShooterMotor;
 
   private double m_velocity;
   private double m_angle;
@@ -138,16 +137,19 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void calculateShooter(double distance){
-    m_angle = findBestAngle(distance);
+    m_angle = Units.degreesToRadians(findBestAngle(distance));
 
     double originalDistance = distance;
     double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
     distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
     m_velocity = findVelocity(distance);
 
-    m_angle = Units.degreesToRadians(m_angle);
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
     m_pivotAngle = m_angle - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
+  }
+
+  public double getVelocity(){
+    return m_velocity;
   }
 
   public double getPivotAngle(){
@@ -163,6 +165,10 @@ public class ShooterSubsystem extends SubsystemBase {
     final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
     m_rightFlywheel.setControl(m_request.withVelocity(0));
     m_leftFlywheel.setControl(m_request.withVelocity(0));
+  }
+
+  public boolean flywheelUpToSpeed(double mps){
+    return m_leftFlywheel.getVelocity().getValueAsDouble() >= mps && m_rightFlywheel.getVelocity().getValueAsDouble() >= mps;
   }
 
   public void setIndexerSpeed(double speed){
