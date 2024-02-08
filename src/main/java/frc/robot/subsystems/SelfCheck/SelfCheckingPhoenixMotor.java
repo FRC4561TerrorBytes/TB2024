@@ -6,15 +6,11 @@ package frc.robot.subsystems.SelfCheck;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import frc.robot.subsystems.SelfCheck.SubSystemFaults;
 
 public class SelfCheckingPhoenixMotor implements SelfChecking {
   /** Creates a new SelfCheckingPheonixMotor. */
