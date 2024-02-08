@@ -16,6 +16,8 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
+import com.ctre.phoenix6.StatusSignal;
+
 public interface ModuleIO {
   @AutoLog
   public static class ModuleIOInputs {
