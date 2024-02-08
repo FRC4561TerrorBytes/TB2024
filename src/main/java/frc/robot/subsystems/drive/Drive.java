@@ -308,14 +308,14 @@ public class Drive extends SubsystemBase {
 
   public double getRotationFromSpeaker(){
     
-    //using the convention of 0 facing forward on blue origin(facing red)
+    //using the convention of 0 facing forward on blue origin(facing red) and 0 facing forward on red is facing blue wall
     Pose2d relative = getSpeakerPose().relativeTo(pose);
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
       return angle+180;
     }
     else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      return angle;
+      return angle+180;
     }
     return 0;
   }
