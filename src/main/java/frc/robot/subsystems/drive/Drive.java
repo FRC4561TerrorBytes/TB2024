@@ -48,6 +48,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
@@ -296,5 +297,16 @@ public class Drive extends SubsystemBase {
       new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
       new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
+  }
+
+  public double getDistanceFromSpeaker(){
+    Translation2d speaker = new Translation2d();
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
+      speaker = new Translation2d(0, 5.54);
+    }
+    else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      speaker = new Translation2d(16.54, 5.54);
+    }
+    return speaker.getDistance(pose.getTranslation());
   }
 }

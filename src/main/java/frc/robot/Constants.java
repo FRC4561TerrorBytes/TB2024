@@ -201,11 +201,24 @@ public final class Constants {
 
   public static final int ROLLER_MOTOR = 12;
 
-  public static final double INTAKE_SPEED = 0.4;
-  public static final double INTAKE_HOLD_SPEED = 0.05;
+  public static final int LEFT_FLYWHEEL = 99;
+  public static final int RIGHT_FLYWHEEL = 99;
+  public static final int INDEXER = 99;
 
-  public static final double SCORE_SPEED_CONE = -0.35;
-  public static final double SCORE_SPEED_CUBE = -0.25;
+  public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
+  public static final double TARGET_X = 0.196;
+
+  public static final double ELEVATOR_PIVOT_HEIGHT = Units.inchesToMeters(23.75);
+  public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(12);
+  public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
+
+  //relative to ground
+  public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
+  public static final double ELEVATOR_X_OFFSET = Units.inchesToMeters(-1); //positive further back negative further forward
+
+  public static final double FLYWHEEL_CIRCUMFERENCE = Math.PI*Units.inchesToMeters(4);
+
+  public static final double INDEXER_FEED_SPEED = 0.05;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;

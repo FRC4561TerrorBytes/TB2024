@@ -153,8 +153,6 @@ public class RobotContainer {
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
     controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
-    controller.povUp().whileTrue(new InstantCommand(() -> m_shooterSubsystem.setFlywheelSpeed(), m_shooterSubsystem))
-      .whileFalse(new InstantCommand(() -> m_shooterSubsystem.stop()));
     controller
         .b()
         .onTrue(
