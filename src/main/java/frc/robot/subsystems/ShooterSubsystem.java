@@ -12,16 +12,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  /** Creates a new ShooterSubsystem. */
 
-  private double m_velocity;
-  private double m_angle;
-  private double m_height;
+  private static double distance = 3;
+  private double distanceOffset;
+  private static double velocity;
+  private static double angle;
+  private static double height;
 
   private double m_pivotAngle;
 
@@ -136,45 +138,26 @@ public class ShooterSubsystem extends SubsystemBase {
     return angles[angleIndex];
   }
 
-  public void calculateShooter(double distance){
-    m_angle = Units.degreesToRadians(findBestAngle(distance));
+  public static void calculateShooter(){
+    angle = findBestAngle();
+    velocity = findVelocity(distance);
 
-    double originalDistance = distance;
-    double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
-    distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
-    m_velocity = findVelocity(distance);
+    
+    System.out.println("best angle: " + angle);
 
-    m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
-    m_pivotAngle = m_angle - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
+    angle = Units.degreesToRadians(angle);
+    // height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
+    // double originalDistance = distance;
+    double xOffset = (elevatorPivotLength*Math.sin(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(Units.degreesToRadians(90) - angle));
+    height = elevatorPivotHeight-(elevatorPivotLength*Math.cos(angle - flywheelOffset)) + (shooterFromElevator*Math.sin(angle));
+    // distance = originalDistance - xOffset + elevatorXOffset;
+    System.out.println("x offset: " + xOffset);
+    System.out.println("height: " + height);
+    pivotAngle = angle - Units.radiansToDegrees(flywheelOffset);
+    System.out.println("pivot angle: " + pivotAngle);
   }
 
-  public double getVelocity(){
-    return m_velocity;
-  }
-
-  public double getPivotAngle(){
-    return Units.radiansToDegrees(m_pivotAngle);
-  }
-
-  public void setFlywheelSpeed(double velocity){
-    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-    m_rightFlywheel.setControl(m_request.withVelocity(velocity));
-    m_leftFlywheel.setControl(m_request.withVelocity(velocity));
-  }
-  public void stopFlywheel(){
-    final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-    m_rightFlywheel.setControl(m_request.withVelocity(0));
-    m_leftFlywheel.setControl(m_request.withVelocity(0));
-  }
-
-  public boolean flywheelUpToSpeed(double mps){
-    return m_leftFlywheel.getVelocity().getValueAsDouble() >= mps && m_rightFlywheel.getVelocity().getValueAsDouble() >= mps;
-  }
-
-  public void setIndexerSpeed(double speed){
-    m_indexer.set(speed);
-  }
-  public void stopIndexer(){
-    m_indexer.set(0);
+  public static void main(String[] args){
+    calculateShooter();
   }
 }
