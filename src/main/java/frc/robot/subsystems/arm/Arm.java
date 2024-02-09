@@ -55,7 +55,7 @@ public class Arm extends SubsystemBase {
         io.incrementArmAngle(inc);
     }
     
-      public void decrementArmAngle(double inc) {
+    public void decrementArmAngle(double inc) {
         io.decrementArmAngle(inc);
     }
 

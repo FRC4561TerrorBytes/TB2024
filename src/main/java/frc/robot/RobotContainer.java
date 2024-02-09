@@ -166,7 +166,7 @@ public class RobotContainer {
     controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
     controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
     controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(360)));
+    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(0)));
     // controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
     //   .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
 

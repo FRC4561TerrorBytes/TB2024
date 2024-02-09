@@ -20,10 +20,12 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -124,11 +126,16 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
 
-    Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
-    Pose3d armPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    // Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
+    // Pose3d armPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d elevatorPose = new Pose3d();
+    // Pose3d armPose = new Pose3d(0, 0, 0, new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d armPose = new Pose3d(-0.025, 0, 0.605, new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
     Pose3d intakePose = new Pose3d();
 
-  Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
+    Logger.recordOutput("random 2d thing", new Pose2d());
+
+    Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
     m_elevator.setLength(robotContainer.getElevatorPositionMeters());
     m_arm.setAngle(robotContainer.getArmAngleDegrees());
