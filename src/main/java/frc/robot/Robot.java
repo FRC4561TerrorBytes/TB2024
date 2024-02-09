@@ -25,7 +25,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -128,7 +127,9 @@ public class Robot extends LoggedRobot {
 
     Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
     Pose3d armPose = new Pose3d(-0.025, 0, 0.605, new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
-    Pose3d intakePose = new Pose3d();
+    // Pose3d intakePose = new Pose3d(0.4175, 0, 0.02, new Rotation3d(0, 0, 0));
+    Pose3d intakePose = new Pose3d(0.63, 0, 0.4, new Rotation3d(0, -90, 0));
+
 
     Logger.recordOutput("random 2d thing", new Pose2d());
 
