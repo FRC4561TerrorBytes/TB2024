@@ -14,29 +14,26 @@
 package frc.robot;
 
 
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -58,6 +55,8 @@ public class RobotContainer {
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
   private final ShooterSubsystem m_shooterSubsystem;
+  private final Elevator elevator;
+  private final Arm arm;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -93,6 +92,9 @@ public class RobotContainer {
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
         m_shooterSubsystem = new ShooterSubsystem();
+        elevator = new Elevator(null);
+        arm = new Arm(null);
+
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
         break;
 
@@ -107,6 +109,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
         m_shooterSubsystem = new ShooterSubsystem();
+        elevator = new Elevator(new ElevatorIOSim());
+        arm = new Arm(new ArmIOSim());
         break;
 
       default:
@@ -120,6 +124,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
         m_shooterSubsystem = new ShooterSubsystem();
+        elevator = new Elevator(new ElevatorIO() {});
+        arm = new Arm(new ArmIO() {});
         break;
     }
 
@@ -181,6 +187,14 @@ public class RobotContainer {
     //                 drive)
     //             .ignoringDisable(true));
    
+  }
+
+  public double getArmAngleDegrees() {
+    return arm.getArmAngleDegrees();
+  }
+
+  public double getElevatorPositionMeters() {
+    return elevator.getElevatorPositionMeters();
   }
 
   /**
