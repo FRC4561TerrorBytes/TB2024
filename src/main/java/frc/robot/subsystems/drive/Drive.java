@@ -166,8 +166,11 @@ public class Drive extends SubsystemBase {
     //   m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
     //   Logger.recordOutput("updating with tags", true);
     // } else {
-    Logger.recordOutput("updating with tags", false);
+    //   Logger.recordOutput("updating with tags", false);
     // }
+
+    // System.out.println("Motor Temp: " + motorTemp.getMotorTemperature());
+    // System.out.println("Motor Voltage: " + motorTemp.getBusVoltage());
 
     pose = getPose();
   }

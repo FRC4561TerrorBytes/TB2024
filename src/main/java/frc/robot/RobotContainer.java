@@ -157,18 +157,29 @@ public class RobotContainer {
     // m_shooterSubsystem.setDefaultCommand(new RunCommand( () -> m_shooterSubsystem.stop(), m_shooterSubsystem));
     controller.leftBumper().whileTrue(new RunCommand( () -> m_intakeSubsystem.setRollerSpeed(0.7), m_intakeSubsystem));
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
-    controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-                    drive)
-                .ignoringDisable(true));
+    controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+
+    // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
+    controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
+    controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
+    controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
+    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(0)));
+    // controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
+    //   .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
+
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
+    // controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //                 () ->
+    //                     drive.setPose(
+    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+    //                 drive)
+    //             .ignoringDisable(true));
    
   }
 

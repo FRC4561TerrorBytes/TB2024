@@ -12,11 +12,22 @@
       }
     }
   },
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "Retained Values": {
+      "open": false
+    }
+  },
   "NetworkTables Info": {
     "AdvantageScope@1": {
       "open": true
     },
     "Clients": {
+      "open": true
+    },
+    "Connections": {
       "open": true
     },
     "visible": true
