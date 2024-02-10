@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.ShootCommandIO;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -43,6 +44,10 @@ import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
+import frc.robot.subsystems.shooter.ShooterIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,9 +59,9 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final IntakeSubsystem m_intakeSubsystem;
-  private final ShooterSubsystem m_shooterSubsystem;
   private final Elevator elevator;
   private final Arm arm;
+  private final Shooter shooter;
 
   private final TalonFX m_musicTalon = new TalonFX(5);
 
@@ -91,9 +96,9 @@ public class RobotContainer {
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         m_intakeSubsystem = new IntakeSubsystem();
-        m_shooterSubsystem = new ShooterSubsystem();
         elevator = new Elevator(null);
         arm = new Arm(null);
+        shooter = new Shooter(new ShooterIOReal());
 
         m_intakeSubsystem.setDefaultCommand(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(0), m_intakeSubsystem));
         break;
@@ -108,9 +113,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         m_intakeSubsystem = new IntakeSubsystem();
-        m_shooterSubsystem = new ShooterSubsystem();
         elevator = new Elevator(new ElevatorIOSim());
         arm = new Arm(new ArmIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
 
       default:
@@ -123,9 +128,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         m_intakeSubsystem = new IntakeSubsystem();
-        m_shooterSubsystem = new ShooterSubsystem();
         elevator = new Elevator(new ElevatorIO() {});
         arm = new Arm(new ArmIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         break;
     }
 
@@ -165,6 +170,8 @@ public class RobotContainer {
     controller.rightBumper().whileTrue(new RunCommand(() -> m_intakeSubsystem.setRollerSpeed(-0.7)));
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+
+    controller.rightBumper().onTrue(new ShootCommandIO(shooter, drive));
 
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));

@@ -158,8 +158,12 @@ public final class Constants {
 //       NEO_MAX_RPM,
 //       TURN_MOTOR_CONVERSION_FACTOR);
 
-    public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
-    public static final double ELEVATOR_RATIO = 11.0/720.0;
+  public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
+  public static final double ELEVATOR_RATIO = 11.0/720.0;
+
+    public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
+    
+    public static final double INDEXER_MOTOR_GEAR_RATIO = 1.0;
 
   public static final int ROLLER_MOTOR = 12;
 
@@ -194,7 +198,7 @@ public final class Constants {
   public static final double AUTO_THETA_KI = 0.0;
   public static final double AUTO_THETA_KD = 0.0;
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
