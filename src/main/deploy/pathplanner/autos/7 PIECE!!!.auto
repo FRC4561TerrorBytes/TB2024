@@ -1,0 +1,121 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.328428690111538,
+      "y": 5.537862667174266
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorDown"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New8"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New9"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New10"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New11"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorDown"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "New Folder",
+  "choreoAuto": false
+}
