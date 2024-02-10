@@ -174,7 +174,7 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
 
-    controller.leftBumper().whileTrue(shooter.intakeCommand());
+    controller.leftBumper().whileTrue(shooter.indexCommand());
 
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));

@@ -28,8 +28,8 @@ public class Shooter extends SubsystemBase {
     private double m_pivotAngle;
 
     private double launchSpeedFeeder = 0.75;
-    private double intakeSpeedLauncher = 0.0;
-    private double intakeSpeedFeeder = 1.0;
+    private double indexerSpeedLauncher = 0.0;
+    private double indexerSpeedFeeder = 1.0;
     private double launchDelay = 1.0;
 
     public Shooter(ShooterIO io) {
@@ -156,11 +156,11 @@ public class Shooter extends SubsystemBase {
   }
 
     /** Returns a command that intakes a note. */
-  public Command intakeCommand() {
+  public Command indexCommand() {
     return startEnd(
         () -> {
-          io.setFlywheelSpeed(intakeSpeedLauncher);
-          io.setIndexerSpeed(intakeSpeedFeeder);
+          io.setFlywheelSpeed(indexerSpeedLauncher);
+          io.setIndexerSpeed(indexerSpeedFeeder);
         },
         () -> {
           io.setFlywheelSpeed(0.0);
