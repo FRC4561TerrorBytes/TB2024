@@ -14,19 +14,19 @@ import frc.robot.Constants;
 public class ShooterIOSim implements ShooterIO{
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private double shooterAppliedVolts = 0.0;
+    private double indexerAppliedVolts = 0.0;
 
-    private DCMotorSim shooterMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.SHOOTER_MOTOR_GEAR_RATIO, 4.0);
+    private DCMotorSim shooterMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.SHOOTER_MOTOR_GEAR_RATIO, 8.0);
     private DCMotorSim indexerMotorSim = new DCMotorSim(DCMotor.getNeo550(1), Constants.INDEXER_MOTOR_GEAR_RATIO, 0.025);
 
-    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(0.75, 0.3);
-    private PIDController shooterFeedback = new PIDController(25, 0.0, 0.0);
+    private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(1.0, 0.1);
+    private PIDController shooterFeedback = new PIDController(250.0, 0.0, 0.0);
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         shooterMotorSim.update(LOOP_PERIOD_SECS);
 
-        inputs.shooterAppliedVolts = shooterAppliedVolts;
+        inputs.indexerAppliedVolts = indexerAppliedVolts;
         inputs.shooterVelocityMPS = shooterMotorSim.getAngularVelocityRPM() * Constants.FLYWHEEL_CIRCUMFERENCE / 60;
         inputs.shooterCurrentAmps = new double[] {Math.abs(shooterMotorSim.getCurrentDrawAmps())};
 
@@ -44,6 +44,7 @@ public class ShooterIOSim implements ShooterIO{
     }
 
     public void setIndexerSpeed(double speed){
+        indexerAppliedVolts = speed / 12;
         indexerMotorSim.setInputVoltage(speed / 12);
     }
 

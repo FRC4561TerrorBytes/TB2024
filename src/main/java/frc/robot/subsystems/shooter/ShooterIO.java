@@ -11,7 +11,7 @@ public interface ShooterIO {
 
     @AutoLog
     public static class ShooterIOInputs {
-        public double shooterAppliedVolts = 0.0;
+        public double indexerAppliedVolts = 0.0;
         public double shooterVelocityMPS = 0.0;
         public double[] shooterCurrentAmps = new double[] {};
     }

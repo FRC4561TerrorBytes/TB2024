@@ -7,11 +7,13 @@ package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
@@ -19,13 +21,16 @@ public class Shooter extends SubsystemBase {
     private ShooterIO io;
     private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
-    private CANSparkMax m_indexer;
-
-    private double m_velocitySetpoint;
+    public double m_velocitySetpoint;
     private double m_angle;
     private double m_height;
   
     private double m_pivotAngle;
+
+    private double launchSpeedFeeder = 0.75;
+    private double intakeSpeedLauncher = 0.0;
+    private double intakeSpeedFeeder = 1.0;
+    private double launchDelay = 1.0;
 
     public Shooter(ShooterIO io) {
         this.io = io;
@@ -131,7 +136,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps;
+    return inputs.shooterVelocityMPS >= mps - 0.2;
   }
 
   public void setIndexerSpeed(double speed){
@@ -148,5 +153,40 @@ public class Shooter extends SubsystemBase {
   public boolean noteShot(){
     //return the beam break after the flywheels here
     return false;
+  }
+
+    /** Returns a command that intakes a note. */
+  public Command intakeCommand() {
+    return startEnd(
+        () -> {
+          io.setFlywheelSpeed(intakeSpeedLauncher);
+          io.setIndexerSpeed(intakeSpeedFeeder);
+        },
+        () -> {
+          io.setFlywheelSpeed(0.0);
+          io.setIndexerSpeed(0.0);
+        });
+  }
+
+  /** Returns a command that launches a note. */
+  public Command launchCommand() {
+    return Commands.sequence(
+            runOnce(
+                () -> {
+                  io.setFlywheelSpeed(m_velocitySetpoint);
+                }),
+            Commands.waitSeconds(launchDelay),
+            runOnce(
+                () -> {
+                  io.setIndexerSpeed(launchSpeedFeeder);
+                }),
+                new PrintCommand("udwaibdwa \n\n\n"),
+                NoteVisualizer.shoot(),
+            Commands.idle())
+        .finallyDo(
+            () -> {
+              io.setFlywheelSpeed(0.0);
+              io.setIndexerSpeed(0.0);
+            });
   }
 }

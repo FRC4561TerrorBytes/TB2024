@@ -71,7 +71,7 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.shooterAppliedVolts = m_leftFlywheel.getMotorVoltage().getValueAsDouble();
+        inputs.indexerAppliedVolts = m_indexer.getAppliedOutput();
         inputs.shooterVelocityMPS = m_leftFlywheel.getVelocity().getValueAsDouble();
         inputs.shooterCurrentAmps = new double[] {m_leftFlywheel.getSupplyCurrent().getValueAsDouble()};
     }
