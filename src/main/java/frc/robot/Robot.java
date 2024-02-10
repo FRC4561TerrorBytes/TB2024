@@ -96,6 +96,15 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during all modes. */
   @Override
   public void robotPeriodic() {
+
+    Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
+    Pose3d armPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d intakePose = new Pose3d();
+
+  Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
+
+    m_elevator.setLength(robotContainer.getElevatorPositionMeters());
+    m_arm.setAngle(robotContainer.getArmAngleDegrees());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.
