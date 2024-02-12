@@ -10,6 +10,7 @@ import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +60,17 @@ public class IntakeIOReal implements IntakeIO{
         m_rotatorRoller.setInverted(false);
 
         m_backIntake.follow(m_frontIntake, false);
+
+        m_intakeRotater.enableSoftLimit(SoftLimitDirection.kForward,true);
+        m_intakeRotater.enableSoftLimit(SoftLimitDirection.kReverse,true);
+
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 0.0);
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 0.0);
+
+        m_frontIntake.burnFlash();
+        m_backIntake.burnFlash();
+        m_intakeRotater.burnFlash();
+        m_rotatorRoller.burnFlash();
 
         //Get encoder
         m_intakeEncoder = m_intakeRotater.getEncoder();

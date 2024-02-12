@@ -44,6 +44,10 @@ import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
@@ -62,6 +66,7 @@ public class RobotContainer {
   private final Elevator elevator;
   private final Arm arm;
   private final Shooter shooter;
+  private final Intake intake;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   private final TalonFX m_musicTalon = new TalonFX(5);
@@ -99,6 +104,7 @@ public class RobotContainer {
         elevator = new Elevator(null);
         arm = new Arm(null);
         shooter = new Shooter(new ShooterIOReal());
+        intake = new Intake(new IntakeIOReal());
 
         break;
 
@@ -114,6 +120,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       default:
@@ -128,6 +135,8 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        intake = new Intake(new IntakeIO() {});
+
         break;
     }
 
@@ -168,14 +177,16 @@ public class RobotContainer {
             () -> -controller.getRightX()));
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(0.0), shooter));
-
+    intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     controller.rightBumper().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
 
     controller.leftBumper().whileTrue(shooter.indexCommand());
-
+    controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
+    controller.povLeft().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
+    controller.povRight().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
     controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));

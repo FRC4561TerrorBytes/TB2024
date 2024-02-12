@@ -170,6 +170,10 @@ public final class Constants {
 
   public static final int ROLLER_MOTOR = 12;
 
+  public static final double INTAKE_SPEED = 0.7;
+  public static final double INTAKE_LOW_POSITION = 180;
+  public static final double INTAKE_HIGH_POSITION = 90;
+
   public static final int LEFT_FLYWHEEL = 99;
   public static final int RIGHT_FLYWHEEL = 99;
   public static final int INDEXER = 99;
