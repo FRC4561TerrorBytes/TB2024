@@ -54,7 +54,7 @@ public class Shooter extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Shooter/IO", inputs);
 
-        Logger.recordOutput("Shooter/Angle", m_angle);
+        Logger.recordOutput("Shooter/Angle", Units.radiansToDegrees(m_angle));
         Logger.recordOutput("Shooter/Height", m_height);
     }
 
@@ -115,7 +115,7 @@ public class Shooter extends SubsystemBase {
     m_velocitySetpoint = findVelocity(distance);
 
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
-    m_pivotAngle = m_angle - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
+    m_pivotAngle = m_angle - Constants.FLYWHEEL_OFFSET;
   }
 
   @AutoLogOutput(key = "Shooter/VelocitySetpoint")
@@ -181,7 +181,7 @@ public class Shooter extends SubsystemBase {
                   io.setIndexerSpeed(launchSpeedFeeder);
                 }),
                 new PrintCommand("udwaibdwa \n\n\n"),
-                NoteVisualizer.shoot(),
+                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
             Commands.idle())
         .finallyDo(
             () -> {

@@ -130,6 +130,7 @@ public class RobotContainer {
         break;
     }
 
+    NoteVisualizer.setElevatorSystem(elevator);
     NoteVisualizer.setRobotPoseSupplier(drive::getPose);
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
@@ -171,17 +172,14 @@ public class RobotContainer {
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.rightBumper().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
+    controller.b().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
 
     controller.leftBumper().whileTrue(shooter.intakeCommand());
 
-    // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
     controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
     controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
-    controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(0)));
-    // controller.y().whileTrue(new InstantCommand(() -> mechanism.setElevatorSetpoint(mechanism.getElevatorPositionMeters()))
-    //   .alongWith(new InstantCommand(() -> mechanism.setArmSetpoint(mechanism.getArmAngleDegrees()))));
+    // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
+    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
 
     // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
