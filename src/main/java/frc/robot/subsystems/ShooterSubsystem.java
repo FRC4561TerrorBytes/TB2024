@@ -144,7 +144,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_velocity = findVelocity(distance);
 
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
-    m_pivotAngle = m_angle - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
+    m_pivotAngle = m_angle - Constants.FLYWHEEL_OFFSET;
   }
 
   public double getVelocity(){
