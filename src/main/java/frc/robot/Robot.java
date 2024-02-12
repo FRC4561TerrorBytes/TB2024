@@ -20,7 +20,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
@@ -123,12 +122,12 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
 
     Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
-    Pose3d armPose = new Pose3d(-0.025, 0, 0.605, new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d armPose = new Pose3d(-0.025, 0, 0.605 + robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
     // Pose3d intakePose = new Pose3d(0.4175, 0, 0.02, new Rotation3d(0, 0, 0));
-    Pose3d intakePose = new Pose3d(0.63, 0, 0.4, new Rotation3d(0, -90, 0));
+    Pose3d intakePose = new Pose3d(0.407, 0, 0.277, new Rotation3d(0, Units.degreesToRadians(0), 0));
 
 
-    Logger.recordOutput("random 2d thing", new Pose2d());
+    Logger.recordOutput("random 2d thing", new Pose3d());
 
     Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
