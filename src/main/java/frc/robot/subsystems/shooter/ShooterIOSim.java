@@ -20,7 +20,7 @@ public class ShooterIOSim implements ShooterIO{
     private DCMotorSim indexerMotorSim = new DCMotorSim(DCMotor.getNeo550(1), Constants.INDEXER_MOTOR_GEAR_RATIO, 0.025);
 
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(1.0, 0.1);
-    private PIDController shooterFeedback = new PIDController(250.0, 0.0, 0.0);
+    private PIDController shooterFeedback = new PIDController(2000.0, 0.0, 300.0);
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
