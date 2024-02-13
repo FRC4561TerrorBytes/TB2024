@@ -19,8 +19,10 @@ public interface ArmIO {
         public double armSetpoint = 0.0;
     }
 
-    public default void updateInputs(ArmIOInputs inputs) {}
+    public default void seedEncoders() {}
 
+    public default void updateInputs(ArmIOInputs inputs) {}
+    
     public default void setArmVoltage(double volts) {}
 
     public default void setArmSetpoint(double setpoint) {}
