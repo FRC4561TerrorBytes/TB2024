@@ -5,12 +5,14 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 
 public class ArmIOReal implements ArmIO {
     private double armSetPoint = 0.0;
     private TalonFX m_armMotorLeft;
     private TalonFX m_armMotorRight;
+    private DutyCycleEncoder encoder;
 
 public void updateInputs(ArmIOInputs inputs) {
     inputs.armSetpoint = armSetPoint;
@@ -18,6 +20,8 @@ public void updateInputs(ArmIOInputs inputs) {
     inputs.armCurrentAmps = new double[] {m_armMotorLeft.getSupplyCurrent().getValueAsDouble()};
 }
 public ArmIOReal () {
+    encoder = new DutyCycleEncoder(0);
+    encoder.setDistancePerRotation(360.0);
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
     var armConfig = new TalonFXConfiguration();
@@ -44,6 +48,11 @@ public ArmIOReal () {
 
 
     
+}
+
+public void seedEncoders() {
+    m_armMotorLeft.setPosition(encoder.getDistance());
+    m_armMotorRight.setPosition(encoder.getDistance());
 }
 
 public void setArmSetpoint(double angle){
