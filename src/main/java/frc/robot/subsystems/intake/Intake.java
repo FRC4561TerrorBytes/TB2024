@@ -7,13 +7,8 @@ package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.NoteVisualizer;
 
 public class Intake extends SubsystemBase {
 
@@ -21,8 +16,6 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   
   public double m_velocitySetpoint;
-
-  private double m_barAngle;
 
   private double launchSpeedFeeder = 0.75;
   private double intakeSpeedFeeder = 1.0;
@@ -54,7 +47,7 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput(key = "Intake/Bar Angle")
     public double getPivotAngle(){
-      return Units.radiansToDegrees(m_barAngle);
+      return inputs.barAngle;
     }
 
     public void setIntakeSpeed(double velocity){

@@ -185,12 +185,12 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(shooter.indexCommand());
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
-    controller.povLeft().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
-    controller.povRight().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
+    controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
+    controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
 
-    controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
-    controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
+    // controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
+    // controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
     controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
 
@@ -215,6 +215,10 @@ public class RobotContainer {
 
   public double getElevatorPositionMeters() {
     return elevator.getElevatorPositionMeters();
+  }
+
+  public double getIntakeAngleDegrees() {
+    return intake.getPivotAngle();
   }
 
   /**

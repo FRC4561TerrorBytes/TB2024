@@ -11,7 +11,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
-import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 
 /** Add your docs here. */
 public class IntakeIOSim implements IntakeIO{
@@ -21,20 +20,29 @@ public class IntakeIOSim implements IntakeIO{
 
     private double intakeAppliedVolts = 0.0;
 
-    private DCMotorSim intakeMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.INTAKE_MOTOR_GEAR_RATIO, 8.0);
-    private DCMotorSim barMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.BAR_MOTOR_GEAR_RATIO, 8.0);
+    private DCMotorSim intakeMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.INTAKE_MOTOR_GEAR_RATIO, 0.025);
+    private DCMotorSim barMotorSim = new DCMotorSim(DCMotor.getNeo550(1), Constants.BAR_MOTOR_GEAR_RATIO, 0.025);
 
-    private SimpleMotorFeedforward intakeFeedforward = new SimpleMotorFeedforward(1.0, 0.1);
-    private PIDController intakeFeedback = new PIDController(250.0, 0.0, 0.0);
+    private SimpleMotorFeedforward intakeFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+    private PIDController intakeFeedback = new PIDController(0.0, 0.0, 0.0);
+
+    private SimpleMotorFeedforward barFeedforward = new SimpleMotorFeedforward(0.001, 0.001);
+    private PIDController barFeedback = new PIDController(0.0005, 0.0, 0.1);
+
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         intakeMotorSim.update(LOOP_PERIOD_SECS);
+        barMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.intakeAppliedVolts = intakeAppliedVolts;
         inputs.barAngle = Units.radiansToDegrees(barMotorSim.getAngularPositionRad());
         inputs.intakeCurrentAmps = new double[] {Math.abs(intakeMotorSim.getCurrentDrawAmps())};
         inputs.barSetPoint = barSetPoint;
+
+        barMotorSim.setInputVoltage(
+            barFeedforward.calculate(barMotorSim.getAngularVelocityRadPerSec())
+            + barFeedback.calculate(Units.radiansToDegrees(barMotorSim.getAngularPositionRad()), barSetPoint));
     }
 
     public void setIntakeSpeed(double volts){
