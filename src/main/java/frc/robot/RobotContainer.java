@@ -223,6 +223,16 @@ public class RobotContainer {
     return intake.getPivotAngle();
   }
 
+  public void autonomousInit() {
+    arm.seedEncoders();
+    arm.setArmSetpoint(arm.getArmAngleDegrees());
+  }
+
+  public void teleopInit() {
+    arm.seedEncoders();
+    arm.setArmSetpoint(arm.getArmAngleDegrees());
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

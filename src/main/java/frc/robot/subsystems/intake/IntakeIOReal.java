@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -71,6 +72,12 @@ public class IntakeIOReal implements IntakeIO{
 
         //Controller stuffs
         m_intakeController = m_intakeRotater.getPIDController();
+
+        //Encoder setup and position conversion
+        m_intakeThroughboreEncoder = m_intakeRotater.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
+        m_intakeThroughboreEncoder.setPositionConversionFactor(360.0);
+
+        m_intakeController.setFeedbackDevice(m_intakeEncoder);
         m_intakeController.setP(0);
         m_intakeController.setD(0);
         m_intakeController.setI(0);
@@ -79,9 +86,7 @@ public class IntakeIOReal implements IntakeIO{
         m_intakeController.setFF(0.0);
         m_intakeController.setOutputRange(0.0,1.0);
 
-        //More encoders
-        m_intakeThroughboreEncoder = m_intakeRotater.getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle);
-        m_intakeThroughboreEncoder.setPositionConversionFactor(360.0);
+        
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
@@ -97,7 +102,7 @@ public class IntakeIOReal implements IntakeIO{
 
     public void setBarAngle(double barAngle) {
         m_intakeController.setIAccum(0.0);
-        m_intakeController.setReference(barAngle, CANSparkMax.ControlType.kPosition);
+        m_intakeController.setReference(barAngle, CANSparkBase.ControlType.kPosition);
     }
 
     public void stopIntake() {
