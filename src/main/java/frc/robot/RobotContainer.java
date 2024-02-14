@@ -30,7 +30,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.ShootCommandIO;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.SnapTo45;
+import frc.robot.commands.SnapTo90;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOSim;
@@ -72,6 +75,9 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private final CommandXboxController driverController = new CommandXboxController(9); //Change when done
+  private final CommandXboxController operatorController = new CommandXboxController(9); //Change when done
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -181,32 +187,28 @@ public class RobotContainer {
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
+    controller.b().whileTrue(new ShootCommand(shooter, drive, visualizer));
 
     controller.leftBumper().whileTrue(shooter.indexCommand());
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
     controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
-    // controller.a().whileTrue(new InstantCommand(() -> mechanism.runArmWithVoltage(12)));
 
-    // controller.a().onTrue(new InstantCommand(() -> arm.incrementArmAngle(10)));
-    // controller.y().onTrue(new InstantCommand(() -> arm.decrementArmAngle(10)));
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
     controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
-
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
-    // controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
-    // controller
-    //     .b()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //                 () ->
-    //                     drive.setPose(
-    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-    //                 drive)
-    //             .ignoringDisable(true));
    
+    //PANAV CONTROLS
+    driverController.leftBumper().whileTrue(new IntakeCommand(intake, shooter))
+      .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
+      .alongWith(new InstantCommand(() -> intake.stopIntake())));
+
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, visualizer))
+      .onFalse(new InstantCommand(() -> shooter.stopFlywheel())
+      .alongWith(new InstantCommand(() -> shooter.stopIndexer())));
+
+      driverController.b().whileTrue(new SnapTo90(drive));
+
+      driverController.x().whileTrue(new SnapTo45(drive));
   }
 
   public double getArmAngleDegrees() {

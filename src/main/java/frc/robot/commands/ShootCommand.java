@@ -10,14 +10,14 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.NoteVisualizer;
 
-public class ShootCommandIO extends Command {
+public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
   Drive m_driveSubsystem;
   NoteVisualizer visualizer;
   double targetMPS = 0;
 
-  public ShootCommandIO(Shooter shooter, Drive driveSubsystem, NoteVisualizer visualizer) {
+  public ShootCommand(Shooter shooter, Drive driveSubsystem, NoteVisualizer visualizer) {
     this.shooter = shooter;
     m_driveSubsystem = driveSubsystem;
     this.visualizer = visualizer;
@@ -36,7 +36,6 @@ public class ShootCommandIO extends Command {
   @Override
   public void execute() {
     if(shooter.flywheelUpToSpeed(targetMPS)){
-      System.out.println("\n\n\n\ndiuwabdwa\n\n\n\n");
       shooter.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
       shooter.launchCommand().schedule();
     }
@@ -52,6 +51,6 @@ public class ShootCommandIO extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.flywheelUpToSpeed(targetMPS);
+    return shooter.flywheelUpToSpeed(targetMPS); //Should be beam breaks when we get them
   }
 }
