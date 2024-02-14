@@ -59,6 +59,10 @@ public class Arm extends SubsystemBase {
         io.decrementArmAngle(inc);
     }
 
+    public void seedEncoders() {
+        io.seedEncoders();
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

@@ -185,7 +185,8 @@ public final class Constants {
   public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(12);
   public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
 
-  public static final int ARM_MOTOR = 65;
+  public static final int ARM_MOTOR_LEFT = 65;
+  public static final int ARM_MOTOR_RIGHT = 67;
 
   //relative to ground
   public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
