@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NoteVisualizer;
@@ -27,10 +26,8 @@ public class Shooter extends SubsystemBase {
   
     private double m_pivotAngle;
 
-    private double launchSpeedFeeder = 0.75;
     private double indexerSpeedLauncher = 0.0;
     private double indexerSpeedFeeder = 1.0;
-    private double launchDelay = 1.0;
 
     public Shooter(ShooterIO io) {
         this.io = io;
@@ -136,7 +133,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.2;
+    return inputs.shooterVelocityMPS >= mps - 0.1;
   }
 
   public void setIndexerSpeed(double speed){
@@ -171,21 +168,11 @@ public class Shooter extends SubsystemBase {
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-            runOnce(
-                () -> {
-                  io.setFlywheelSpeed(m_velocitySetpoint);
-                }),
-            Commands.waitSeconds(launchDelay),
-            runOnce(
-                () -> {
-                  io.setIndexerSpeed(launchSpeedFeeder);
-                }),
-                new PrintCommand("udwaibdwa \n\n\n"),
-                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
+              NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
             Commands.idle())
         .finallyDo(
             () -> {
-              io.setFlywheelSpeed(0.0);
+              io.setFlywheelSpeed(4.0);
               io.setIndexerSpeed(0.0);
             });
   }

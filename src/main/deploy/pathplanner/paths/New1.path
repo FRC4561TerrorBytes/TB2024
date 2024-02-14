@@ -38,15 +38,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.001,
     "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New Gen Path",
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "folder": "New paths",
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

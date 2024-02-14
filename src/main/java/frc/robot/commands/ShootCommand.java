@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.util.NoteVisualizer;
@@ -15,12 +16,14 @@ public class ShootCommand extends Command {
   Shooter shooter;
   Drive m_driveSubsystem;
   NoteVisualizer visualizer;
+  Arm arm;
   double targetMPS = 0;
 
-  public ShootCommand(Shooter shooter, Drive driveSubsystem, NoteVisualizer visualizer) {
+  public ShootCommand(Shooter shooter, Drive driveSubsystem, NoteVisualizer visualizer, Arm arm) {
     this.shooter = shooter;
     m_driveSubsystem = driveSubsystem;
     this.visualizer = visualizer;
+    this.arm = arm;
     addRequirements(shooter);
   }
 
@@ -36,8 +39,9 @@ public class ShootCommand extends Command {
   @Override
   public void execute() {
     if(shooter.flywheelUpToSpeed(targetMPS)){
+      arm.setArmSetpoint(shooter.getPivotAngle());
       shooter.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-      shooter.launchCommand().schedule();
+      shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
 

@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "New1"
@@ -24,21 +30,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorDown"
           }
         },
         {
@@ -54,12 +48,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New6"
@@ -69,12 +57,6 @@
           "type": "path",
           "data": {
             "pathName": "New7"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorDown"
           }
         },
         {
@@ -90,12 +72,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New10"
@@ -105,12 +81,6 @@
           "type": "path",
           "data": {
             "pathName": "New11"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorDown"
           }
         },
         {
@@ -128,12 +98,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ElevatorUp"
+            "name": "Shoot"
           }
         }
       ]
     }
   },
-  "folder": "prob not use",
+  "folder": "No use",
   "choreoAuto": false
 }

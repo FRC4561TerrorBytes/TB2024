@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "New1"
@@ -24,21 +30,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorDown"
           }
         },
         {
@@ -54,12 +48,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New6"
@@ -72,12 +60,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ElevatorDown"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New8"
@@ -87,12 +69,6 @@
           "type": "path",
           "data": {
             "pathName": "New9"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorUp"
           }
         },
         {
@@ -110,12 +86,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ElevatorDown"
+            "name": "Shoot"
           }
         }
       ]
     }
   },
-  "folder": "prob not use",
+  "folder": "No use",
   "choreoAuto": false
 }

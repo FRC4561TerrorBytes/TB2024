@@ -76,8 +76,8 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
-  private final CommandXboxController driverController = new CommandXboxController(9); //Change when done
-  private final CommandXboxController operatorController = new CommandXboxController(9); //Change when done
+  private final CommandXboxController driverController = new CommandXboxController(1); //Change when done
+  private final CommandXboxController operatorController = new CommandXboxController(2); //Change when done
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -153,6 +153,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, visualizer, arm));
+    NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -182,12 +186,12 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(0.0), shooter));
+    // shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(4.0), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommand(shooter, drive, visualizer));
+    controller.b().whileTrue(new ShootCommand(shooter, drive, visualizer, arm));
 
     controller.leftBumper().whileTrue(shooter.indexCommand());
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
@@ -202,7 +206,7 @@ public class RobotContainer {
       .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
       .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, visualizer))
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, visualizer, arm))
       .onFalse(new InstantCommand(() -> shooter.stopFlywheel())
       .alongWith(new InstantCommand(() -> shooter.stopIndexer())));
 

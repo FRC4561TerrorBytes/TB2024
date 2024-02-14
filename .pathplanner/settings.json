@@ -3,13 +3,13 @@
   "robotLength": 0.76,
   "holonomicMode": true,
   "pathFolders": [
-    "New Gen Path",
-    "Square",
-    "grab",
-    "shoot"
+    "Other",
+    "New paths",
+    "Square"
   ],
   "autoFolders": [
-    "prob not use"
+    "Useful",
+    "No use"
   ],
   "defaultMaxVel": 4.8,
   "defaultMaxAccel": 4.5,

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.938764761139975,
+        "x": 7.94,
         "y": 2.5934356856837244
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.924789906586939,
-        "y": 4.231395066115549
+        "x": 6.92413559379055,
+        "y": 4.234447418791297
       },
       "isLocked": false,
       "linkedName": "out4"
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin Flywheels"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.8,
     "maxAcceleration": 4.5,
@@ -38,12 +56,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New Gen Path",
+  "folder": "New paths",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
