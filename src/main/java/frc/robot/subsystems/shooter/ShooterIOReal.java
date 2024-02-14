@@ -5,6 +5,7 @@
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -30,7 +31,7 @@ public class ShooterIOReal implements ShooterIO {
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         var leftSlot0Config = leftConfig.Slot0;
-        leftSlot0Config.kS = 0.25; // Add 0.25 V output to overcome static friction
+        leftSlot0Config.kS = 0.5; // Add 0.5 V output to overcome static friction
         leftSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
         leftSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
         leftSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
@@ -63,6 +64,8 @@ public class ShooterIOReal implements ShooterIO {
 
         m_rightFlywheel.getConfigurator().apply(rightConfig);
 
+        m_rightFlywheel.setControl(new Follower(1, true));
+
         m_indexer.restoreFactoryDefaults();
         //set inverted here
         m_indexer.setSmartCurrentLimit(20);
@@ -78,13 +81,11 @@ public class ShooterIOReal implements ShooterIO {
 
     public void setFlywheelSpeed(double velocity){
         final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-        m_rightFlywheel.setControl(m_request.withVelocity(velocity));
-        m_leftFlywheel.setControl(m_request.withVelocity(velocity));
+        m_leftFlywheel.set(velocity);
+        //m_leftFlywheel.setControl(m_request.withVelocity(velocity));
     }
     public void stopFlywheel(){
-        final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-        m_rightFlywheel.setControl(m_request.withVelocity(0));
-        m_leftFlywheel.setControl(m_request.withVelocity(0));
+        setFlywheelSpeed(0);
     }
 
     public void setIndexerSpeed(double speed){
@@ -92,6 +93,6 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     public void stopIndexer(){
-        m_indexer.set(0);
+        setIndexerSpeed(0);
     }
 }

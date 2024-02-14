@@ -174,9 +174,9 @@ public final class Constants {
   public static final double INTAKE_LOW_POSITION = 135;
   public static final double INTAKE_HIGH_POSITION = 0;
 
-  public static final int LEFT_FLYWHEEL = 99;
-  public static final int RIGHT_FLYWHEEL = 99;
-  public static final int INDEXER = 99;
+  public static final int LEFT_FLYWHEEL = 1;
+  public static final int RIGHT_FLYWHEEL = 2;
+  public static final int INDEXER = 3;
 
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
   public static final double TARGET_X = 0.196;
@@ -212,7 +212,7 @@ public final class Constants {
   public static final int INTAKE_ROTATOR = 17;
   public static final int ROTATOR_ROLLER = 22;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */

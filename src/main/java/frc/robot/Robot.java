@@ -121,18 +121,18 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
 
-    Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
-    Pose3d armPose = new Pose3d(-0.025, 0, 0.605 + robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
-    // Pose3d intakePose = new Pose3d(0.4175, 0, 0.02, new Rotation3d(0, 0, 0));
-    Pose3d intakePose = new Pose3d(0.407, 0, 0.277, new Rotation3d(0, Units.degreesToRadians(robotContainer.getIntakeAngleDegrees()), 0));
+    // Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
+    // Pose3d armPose = new Pose3d(-0.025, 0, 0.605 + robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    // // Pose3d intakePose = new Pose3d(0.4175, 0, 0.02, new Rotation3d(0, 0, 0));
+    // Pose3d intakePose = new Pose3d(0.407, 0, 0.277, new Rotation3d(0, Units.degreesToRadians(robotContainer.getIntakeAngleDegrees()), 0));
 
 
-    Logger.recordOutput("random 2d thing", new Pose3d());
+    // Logger.recordOutput("random 2d thing", new Pose3d());
 
-    Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
+    // Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
-    m_elevator.setLength(robotContainer.getElevatorPositionMeters());
-    m_arm.setAngle(robotContainer.getArmAngleDegrees());
+    // m_elevator.setLength(robotContainer.getElevatorPositionMeters());
+    // m_arm.setAngle(robotContainer.getArmAngleDegrees());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.
