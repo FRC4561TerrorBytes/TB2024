@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3534383647714665,
-        "y": 2.9314415865673844
+        "x": 1.4057878828008366,
+        "y": 1.4734634597474332
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8907329919923002,
-        "y": 2.856628410625241
+        "x": 2.0255780682501534,
+        "y": 1.5319342319596334
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.8837078726789036,
-        "y": 3.3191098619039345
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
       },
       "prevControl": {
-        "x": 2.3600156410839137,
-        "y": 3.0810679384516653
+        "x": 2.9402668330752757,
+        "y": 2.4866960616362372
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "New Event Marker",
@@ -56,12 +68,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": -42.56335175318997,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Alex Path 2",
+  "folder": "AlexPath2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

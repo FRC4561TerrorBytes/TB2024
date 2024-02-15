@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3534383647714665,
-      "y": 2.9314415865673844
+      "x": 1.4057878828008366,
+      "y": 1.4734634597474332
     },
     "rotation": 0
   },
@@ -20,13 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Alex2"
+            "pathName": "Alex6"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Alex3"
+            "pathName": "Alex7"
           }
         },
         {
@@ -39,18 +39,6 @@
           "type": "path",
           "data": {
             "pathName": "Alex5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Alex6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Alex7"
           }
         }
       ]

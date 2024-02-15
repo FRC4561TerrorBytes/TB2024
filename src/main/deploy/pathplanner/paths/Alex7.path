@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.549777415344305,
-        "y": 4.645343435423713
+        "x": 5.6156834820792145,
+        "y": 4.7595208580730555
       },
       "isLocked": false,
       "linkedName": "Alexout3"
     },
     {
       "anchor": {
-        "x": 2.8837078726789036,
-        "y": 3.3191098619039345
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
       },
       "prevControl": {
-        "x": 5.134904348756067,
-        "y": 2.95184518000615
+        "x": 4.66845697224158,
+        "y": 3.753823576023221
       },
       "nextControl": null,
       "isLocked": false,
@@ -73,12 +73,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -43.298645394673976,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Alex Path 2",
+  "folder": "AlexPath2",
   "previewStartingState": {
     "rotation": -16.336042889718257,
     "velocity": 0

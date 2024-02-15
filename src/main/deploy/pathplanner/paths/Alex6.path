@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8837078726789036,
-        "y": 3.3191098619039345
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.93766961218133,
-        "y": 2.720604454366803
+        "x": 5.124528995496736,
+        "y": 3.9760125104295803
       },
       "isLocked": false,
       "linkedName": "AlexShoot2-1"
@@ -20,8 +20,8 @@
         "y": 4.203265577583786
       },
       "prevControl": {
-        "x": 5.216518722511129,
-        "y": 5.05341530419903
+        "x": 5.288247157690896,
+        "y": 4.513943614781817
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.2,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.8,
@@ -43,7 +55,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Alex Path 2",
+  "folder": "AlexPath2",
   "previewStartingState": {
     "rotation": -41.98721249581664,
     "velocity": 0

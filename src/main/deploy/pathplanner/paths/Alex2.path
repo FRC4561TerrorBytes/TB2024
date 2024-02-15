@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8837078726789036,
-        "y": 3.3191098619039345
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.577430049596942,
-        "y": 2.530170915604988
+        "x": 4.157681241588304,
+        "y": 1.9357990387895598
       },
       "isLocked": false,
       "linkedName": "AlexShoot2-1"
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Alex Path 2",
+  "folder": "AlexPath2",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

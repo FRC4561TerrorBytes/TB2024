@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.8837078726789036,
-        "y": 3.3191098619039345
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
       },
       "prevControl": {
-        "x": 4.073917489940244,
-        "y": 2.448556541849925
+        "x": 4.654168681931606,
+        "y": 1.8541846650344969
       },
       "nextControl": null,
       "isLocked": false,
@@ -78,7 +78,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Alex Path 2",
+  "folder": "AlexPath2",
   "previewStartingState": {
     "rotation": -18.060471936199107,
     "velocity": 0
