@@ -45,8 +45,8 @@ public final class Constants {
   public static final int NEO_TICKS_PER_ROTATION = 4096;
 
   public static final double MAX_VOLTAGE = 12.0;
-  public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.53;
-  public static final double DRIVETRAIN_WHEELBASE_METERS = 0.53;
+  public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(26.0);
+  public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(26.0);
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = FALCON_500_MAX_RPM / 60.0 *
         (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) *

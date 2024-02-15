@@ -133,7 +133,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.1;
+    return inputs.shooterVelocityMPS >= mps - 0.2;
   }
 
   public void setIndexerSpeed(double speed){
@@ -172,7 +172,7 @@ public class Shooter extends SubsystemBase {
             Commands.idle())
         .finallyDo(
             () -> {
-              io.setFlywheelSpeed(4.0);
+              io.setFlywheelSpeed(7.0);
               io.setIndexerSpeed(0.0);
             });
   }

@@ -3,37 +3,60 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.066220606125423,
-        "y": 2.2037134205847346
+        "x": 7.964202638931594,
+        "y": 4.203265577583786
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0503561999159725,
-        "y": 3.8447251536923077
+        "x": 6.828402604173631,
+        "y": 5.577107535794018
       },
       "isLocked": false,
-      "linkedName": "out4"
+      "linkedName": "AlexOut3"
     },
     {
       "anchor": {
-        "x": 3.892615101144693,
-        "y": 5.547612425391122
+        "x": 4.5568025346577015,
+        "y": 6.3184380974025105
       },
       "prevControl": {
-        "x": 3.726869211458139,
-        "y": 4.172896516814411
+        "x": 6.678775112951268,
+        "y": 6.263984098855025
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootPose"
+      "linkedName": "AlexShootPoint"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.4,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,14 +79,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0,
+    "velocity": 0,
+    "rotation": 11.725112015164965,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New paths",
+  "folder": "Alex Path 1",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -46.36392753160282,
     "velocity": 0
   },
   "useDefaultConstraints": true

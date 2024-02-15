@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.066220606125423,
-        "y": 2.2037134205847346
+        "x": 7.971003836744517,
+        "y": 0.8842810448778786
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0503561999159725,
-        "y": 3.8447251536923077
+        "x": 6.597161878534284,
+        "y": 1.2719493202144294
       },
       "isLocked": false,
-      "linkedName": "out4"
+      "linkedName": "Alexout5"
     },
     {
       "anchor": {
-        "x": 3.892615101144693,
-        "y": 5.547612425391122
+        "x": 2.8837078726789036,
+        "y": 3.3191098619039345
       },
       "prevControl": {
-        "x": 3.726869211458139,
-        "y": 4.172896516814411
+        "x": 4.073917489940244,
+        "y": 2.448556541849925
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootPose"
+      "linkedName": "AlexShoot2-1"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,24 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -56,14 +73,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0,
+    "velocity": 0,
+    "rotation": -41.90594194108303,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New paths",
+  "folder": "Alex Path 2",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -18.060471936199107,
     "velocity": 0
   },
   "useDefaultConstraints": true

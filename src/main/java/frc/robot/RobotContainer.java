@@ -186,7 +186,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    // shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(4.0), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(6.5), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
@@ -243,6 +243,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return autoChooser.get()
+      .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
   }
 }

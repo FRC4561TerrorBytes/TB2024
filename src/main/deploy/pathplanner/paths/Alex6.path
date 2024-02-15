@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.892615101144693,
-        "y": 5.547612425391122
+        "x": 2.8837078726789036,
+        "y": 3.3191098619039345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.370353253770642,
-        "y": 4.845629833777482
+        "x": 4.93766961218133,
+        "y": 2.720604454366803
       },
       "isLocked": false,
-      "linkedName": "shootPose"
+      "linkedName": "AlexShoot2-1"
     },
     {
       "anchor": {
-        "x": 8.066220606125423,
-        "y": 2.2037134205847346
+        "x": 7.964202638931594,
+        "y": 4.203265577583786
       },
       "prevControl": {
-        "x": 6.935248652970115,
-        "y": 2.8276979464635237
+        "x": 5.216518722511129,
+        "y": 5.05341530419903
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "out4"
+      "linkedName": "Alexout3"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -23.83874018317157,
+    "rotation": -17.783888442692504,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New paths",
+  "folder": "Alex Path 2",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -41.98721249581664,
     "velocity": 0
   },
   "useDefaultConstraints": true

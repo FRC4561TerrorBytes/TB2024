@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.066220606125423,
-        "y": 2.2037134205847346
+        "x": 1.394245551648998,
+        "y": 7.277406989024505
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0503561999159725,
-        "y": 3.8447251536923077
+        "x": 1.7615102335509352,
+        "y": 7.780695627181175
       },
       "isLocked": false,
-      "linkedName": "out4"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.892615101144693,
-        "y": 5.547612425391122
+        "x": 4.182736654951147,
+        "y": 7.277406989024505
       },
       "prevControl": {
-        "x": 3.726869211458139,
-        "y": 4.172896516814411
+        "x": 3.815471973053362,
+        "y": 7.828304011871629
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootPose"
+      "linkedName": "AlexShoot1"
     }
   ],
   "rotationTargets": [],
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Spin Flywheels"
+                "name": "Shoot"
               }
             }
           ]
@@ -56,12 +56,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0,
+    "velocity": 0,
+    "rotation": 26.952178931279622,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New paths",
+  "folder": "Alex Path 1",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

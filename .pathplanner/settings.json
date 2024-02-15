@@ -1,15 +1,18 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.76,
+  "robotWidth": 0.6604,
+  "robotLength": 0.6604,
   "holonomicMode": true,
   "pathFolders": [
-    "Other",
+    "Alex Path 1",
+    "Alex Path 2",
     "New paths",
+    "Other",
     "Square"
   ],
   "autoFolders": [
-    "Useful",
-    "No use"
+    "Alex Autos",
+    "No use",
+    "Useful"
   ],
   "defaultMaxVel": 4.8,
   "defaultMaxAccel": 4.5,
