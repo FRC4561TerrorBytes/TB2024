@@ -161,6 +161,14 @@ public final class Constants {
   public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
   public static final double ELEVATOR_RATIO = 11.0/720.0;
 
+  // Needs Calculation
+  // To calculate kS find smallest volatage to move
+  // To calculate kG, and kV use Recalc.
+  public static final double ELEVATOR_STATIC_GAIN = 0.1;
+  public static final double ELEVATOR_GRAVITY_GAIN = 0.14;
+  public static final double ELEVATOR_VELOCITY_GAIN = 1.41;
+  public static final double ELEVATOR_ACCELERATION_GAIN = 0.01;
+
   public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
     
   public static final double INDEXER_MOTOR_GEAR_RATIO = 1.0;

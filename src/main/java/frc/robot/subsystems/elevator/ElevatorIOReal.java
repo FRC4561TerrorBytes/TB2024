@@ -6,60 +6,59 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkBase;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import frc.robot.Constants;
 
 /** Add your docs here. */
 public class ElevatorIOReal implements ElevatorIO{
-    private final TalonFX m_leftRaiseMotor = new TalonFX(Constants.LEFT_RAISE_MOTOR);
-    private final TalonFX m_rightRaiseMotor = new TalonFX(Constants.RIGHT_RAISE_MOTOR);
+    private final CANSparkMax m_leftRaiseMotor = new CANSparkMax(Constants.LEFT_RAISE_MOTOR, MotorType.kBrushless);
+    private final CANSparkMax m_rightRaiseMotor = new CANSparkMax(Constants.RIGHT_RAISE_MOTOR, MotorType.kBrushless);
+    private final RelativeEncoder m_leftRaiseEncoder;
 
     private double elevatorSetPoint;
 
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(Constants.ELEVATOR_STATIC_GAIN, Constants.ELEVATOR_GRAVITY_GAIN, Constants.ELEVATOR_VELOCITY_GAIN, Constants.ELEVATOR_ACCELERATION_GAIN);
+
     private PIDController raiseMotorController = new PIDController(0.11, 0, 0);
 
-    private final AnalogInput m_analogInput;
+    private final AnalogPotentiometer m_analogPotentiometer;
 
     public ElevatorIOReal(){
 
-        var leftConfig = new TalonFXConfiguration();
-        
-        //set inverted here
-        //Should below line remain?
-        //leftConfig.Feedback.SensorToMechanismRatio = Constants.FLYWHEEL_CIRCUMFERENCE/60;
-        leftConfig.CurrentLimits.SupplyCurrentLimit = 40;
-        leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        m_leftRaiseMotor.setSmartCurrentLimit(40);
+        m_leftRaiseMotor.setIdleMode(IdleMode.kBrake);
 
-        m_leftRaiseMotor.getConfigurator().apply(leftConfig);
+        m_rightRaiseMotor.setSmartCurrentLimit(40);
+        m_rightRaiseMotor.setIdleMode(IdleMode.kBrake);
 
-        var rightConfig = new TalonFXConfiguration();
-        //set inverted here
-        //Should below line remain?
-        //rightConfig.Feedback.SensorToMechanismRatio = Constants.FLYWHEEL_CIRCUMFERENCE/60;
-        rightConfig.CurrentLimits.SupplyCurrentLimit = 40;
-        rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        m_leftRaiseEncoder = m_leftRaiseMotor.getEncoder();
+        m_leftRaiseEncoder.setVelocityConversionFactor(16.5);
 
-        m_rightRaiseMotor.getConfigurator().apply(rightConfig);
+        m_rightRaiseMotor.follow(m_rightRaiseMotor, true);
 
-        m_rightRaiseMotor.setControl(new Follower(Constants.LEFT_RAISE_MOTOR, true));
+        this.m_analogPotentiometer = new AnalogPotentiometer(0, 0, 0);
 
-        this.m_analogInput = new AnalogInput(0);
-        m_analogInput.setAverageBits(2);
-
-        elevatorSetPoint = m_leftRaiseMotor.getPosition().getValueAsDouble();
+        elevatorSetPoint = m_leftRaiseEncoder.getPosition();
+        //elevatorSetPoint = m_analogPotentiometer.get();
     }
 
     public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.elevatorPositionMeters = m_leftRaiseMotor.getPosition().getValueAsDouble();
-        inputs.elevatorVelocityRadPerSec = m_analogInput.getValue();
-        inputs.elevatorAppliedVolts = m_leftRaiseMotor.getMotorVoltage().getValueAsDouble();
-        inputs.elevatorCurrentAmps = new double[] {m_leftRaiseMotor.getSupplyCurrent().getValueAsDouble()};
+        inputs.elevatorPositionMeters = m_leftRaiseEncoder.getPosition();
+        //inputs.elevatorPositionMeters = m_analogPotentiometer.get();
+        inputs.elevatorVelocityRadPerSec = m_leftRaiseEncoder.getVelocity();
+        inputs.elevatorAppliedVolts = m_leftRaiseMotor.getBusVoltage();
+        inputs.elevatorCurrentAmps = new double[] {m_leftRaiseMotor.getOutputCurrent()};
         inputs.elevatorSetpoint = elevatorSetPoint;
     }
 
@@ -72,6 +71,9 @@ public class ElevatorIOReal implements ElevatorIO{
     }
 
     public void goToSetPoint(){
-        m_leftRaiseMotor.set(raiseMotorController.calculate(m_leftRaiseMotor.getPosition().getValueAsDouble(), elevatorSetPoint));
+        m_leftRaiseMotor.set(raiseMotorController.calculate(m_leftRaiseEncoder.getPosition(), elevatorSetPoint) 
+            + feedforward.calculate(m_leftRaiseEncoder.getVelocity()));
+        //m_leftRaiseMotor.set(raiseMotorController.calculate(m_analogPotentiometer.get(), elevatorSetPoint) 
+           // + feedforward.calculate(m_leftRaiseEncoder.getVelocity()));
     }
 }
