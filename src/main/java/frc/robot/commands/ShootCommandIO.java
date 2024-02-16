@@ -17,18 +17,17 @@ public class ShootCommandIO extends Command {
   NoteVisualizer visualizer;
   double targetMPS = 0;
 
-  public ShootCommandIO(Shooter shooter, Drive driveSubsystem, NoteVisualizer visualizer) {
+  public ShootCommandIO(Shooter shooter) {
     this.shooter = shooter;
-    m_driveSubsystem = driveSubsystem;
-    this.visualizer = visualizer;
     addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
-    targetMPS = shooter.getVelocity();
+    shooter.calculateShooter(2);
+    //targetMPS = shooter.getVelocity();
+    targetMPS = 0.1;
     shooter.setFlywheelSpeed(targetMPS);
   }
 
@@ -36,9 +35,7 @@ public class ShootCommandIO extends Command {
   @Override
   public void execute() {
     if(shooter.flywheelUpToSpeed(targetMPS)){
-      System.out.println("\n\n\n\ndiuwabdwa\n\n\n\n");
-      shooter.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-      shooter.launchCommand().schedule();
+      //shooter.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
     }
   }
 
@@ -52,6 +49,6 @@ public class ShootCommandIO extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooter.flywheelUpToSpeed(targetMPS);
+    return false;//shooter.flywheelUpToSpeed(targetMPS);
   }
 }

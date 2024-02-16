@@ -31,15 +31,15 @@ public class ShooterIOReal implements ShooterIO {
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         var leftSlot0Config = leftConfig.Slot0;
-        leftSlot0Config.kS = 0.5; // Add 0.5 V output to overcome static friction
-        leftSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        leftSlot0Config.kS = 0.3; // Add 0.5 V output to overcome static friction
+        leftSlot0Config.kV = 0.05; // A velocity target of 1 rps results in 0.12 V output
         leftSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
         leftSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
         leftSlot0Config.kI = 0; // no output for integrated error
         leftSlot0Config.kD = 0; // no output for error derivative
 
         var leftMotionMagicConfig = leftConfig.MotionMagic;
-        leftMotionMagicConfig.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+        leftMotionMagicConfig.MotionMagicAcceleration = 10; // Target acceleration of 400 rps/s (0.25 seconds to max)
         leftMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
         m_leftFlywheel.getConfigurator().apply(leftConfig);
@@ -50,17 +50,17 @@ public class ShooterIOReal implements ShooterIO {
         rightConfig.CurrentLimits.SupplyCurrentLimit = 40;
         rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-        var rightSlot0Config = leftConfig.Slot0;
-        rightSlot0Config.kS = 0.25; // Add 0.25 V output to overcome static friction
-        rightSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        rightSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        rightSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
-        rightSlot0Config.kI = 0; // no output for integrated error
-        rightSlot0Config.kD = 0; // no output for error derivative
+        // var rightSlot0Config = leftConfig.Slot0;
+        // rightSlot0Config.kS = 0.25; // Add 0.25 V output to overcome static friction
+        // rightSlot0Config.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        // rightSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+        // rightSlot0Config.kP = 0.11; // An error of 1 rps results in 0.11 V output
+        // rightSlot0Config.kI = 0; // no output for integrated error
+        // rightSlot0Config.kD = 0; // no output for error derivative
 
-        var rightMotionMagicConfig = leftConfig.MotionMagic;
-        rightMotionMagicConfig.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
-        rightMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
+        // var rightMotionMagicConfig = leftConfig.MotionMagic;
+        // rightMotionMagicConfig.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+        // rightMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
         m_rightFlywheel.getConfigurator().apply(rightConfig);
 
@@ -81,8 +81,8 @@ public class ShooterIOReal implements ShooterIO {
 
     public void setFlywheelSpeed(double velocity){
         final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
-        m_leftFlywheel.set(velocity);
-        //m_leftFlywheel.setControl(m_request.withVelocity(velocity));
+        //m_leftFlywheel.set(velocity);
+        m_leftFlywheel.setControl(m_request.withVelocity(velocity));
     }
     public void stopFlywheel(){
         setFlywheelSpeed(0);

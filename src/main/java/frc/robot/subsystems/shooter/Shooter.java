@@ -146,6 +146,11 @@ public class Shooter extends SubsystemBase {
     io.stopIndexer();
   }
 
+  public void stopShooter(){
+    stopFlywheel();
+    stopIndexer();
+  }
+
   public boolean noteInIndexer(){
     //return the beam breaks in the indexer here
     return false;
