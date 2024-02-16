@@ -40,6 +40,18 @@
           "data": {
             "pathName": "Alex5"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alex2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Alex3"
+          }
         }
       ]
     }
