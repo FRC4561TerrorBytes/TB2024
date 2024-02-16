@@ -178,6 +178,9 @@ public final class Constants {
   public static final int RIGHT_FLYWHEEL = 99;
   public static final int INDEXER = 99;
 
+  public static final int LEFT_RAISE_MOTOR = 99;
+  public static final int RIGHT_RAISE_MOTOR = 99;
+
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
   public static final double TARGET_X = 0.196;
 

@@ -25,4 +25,6 @@ public interface ElevatorIO {
     public default void setElevatorVoltage(double volts) {}
 
     public default void setElevatorSetpoint(double setpoint) {}
+
+    public default void goToSetPoint() {}
 }
