@@ -21,8 +21,4 @@ public interface ShooterIO {
     public default void setFlywheelSpeed(double velocity) {};
 
     public default void stopFlywheel() {};
-
-    public default void setIndexerSpeed(double speed) {};
-
-    public default void stopIndexer() {};
 }

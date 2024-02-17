@@ -25,6 +25,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ShootCommandIO;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
@@ -43,6 +47,7 @@ public class RobotContainer {
   //private final Elevator elevator;
   //private final Arm arm;
   private final Shooter shooter;
+  private final Indexer indexer;
   //private final Intake intake;
   //private final NoteVisualizer visualizer = new NoteVisualizer();
 
@@ -81,6 +86,7 @@ public class RobotContainer {
         // elevator = new Elevator(null);
         // arm = new Arm(null);
         shooter = new Shooter(new ShooterIOReal());
+        indexer = new Indexer(new IndexerIOReal());
         // intake = new Intake(new IntakeIOReal());
 
         break;
@@ -97,6 +103,7 @@ public class RobotContainer {
         // elevator = new Elevator(new ElevatorIOSim());
         // arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        indexer = new Indexer(new IndexerIOSim());
         // intake = new Intake(new IntakeIOSim());
         break;
 
@@ -112,6 +119,7 @@ public class RobotContainer {
         // elevator = new Elevator(new ElevatorIO() {});
         // arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        indexer = new Indexer(new IndexerIO() {});
         // intake = new Intake(new IntakeIO() {});
 
         break;
@@ -132,7 +140,8 @@ public class RobotContainer {
     /*autoChooser.addOption(
         "Drive FF Characterization",
         new FeedForwardCharacterization(
-            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));*/
+            drive, drive::runCharacterizationVolts
+          , drive::getCharacterizationVelocity));*/
 
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
 
@@ -156,16 +165,17 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));*/
 
-    //shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopShooter(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
+    indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     // controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     // controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     //controller.b().whileTrue(new ShootCommandIO(shooter, drive, visualizer));
-    controller.b().whileTrue(new ShootCommandIO(shooter));
+    controller.b().whileTrue(new ShootCommandIO(shooter, indexer));
     //controller.b().whileTrue(new InstantCommand(() -> shooter.setFlywheelSpeed(0.1)));
 
-    controller.leftBumper().whileTrue(shooter.indexCommand());
+    controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));
     // controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
     // controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     // controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
