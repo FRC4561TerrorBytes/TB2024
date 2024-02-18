@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3473171105886368,
+      "y": 5.589805823486292
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7-8 part1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7-8 part2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7-8 part3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7-8 part4"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "No Use",
+  "choreoAuto": false
+}
