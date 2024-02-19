@@ -15,7 +15,9 @@ public interface IndexerIO {
         public boolean indexerState = false;
     }
 
-    public boolean getIndexerState();
+    public default boolean getIndexerState(){
+        return false;
+    };
     
     public default void updateInputs(IndexerIOInputs inputs) {};
     
