@@ -76,6 +76,7 @@ public final class Constants {
   public static final InvertedValue FRONT_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive; //counter clockwise for fulcrum
   public static final boolean FRONT_LEFT_TURN_MOTOR_INVERTED = true;
   public static final double FRONT_LEFT_STEER_OFFSET = Units.degreesToRadians(102.4711046);//0.2393010029 Fulcrum drivebase
+  
 
   //MODULE 1
   public static final int FRONT_RIGHT_DRIVE_MOTOR = 7; //3 for fulcrum
@@ -177,6 +178,7 @@ public final class Constants {
   public static final int LEFT_FLYWHEEL = 1;
   public static final int RIGHT_FLYWHEEL = 2;
   public static final int INDEXER = 3;
+  public static final int INDEX_BEAMBREAKER = 0;
 
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
   public static final double TARGET_X = 0.196;

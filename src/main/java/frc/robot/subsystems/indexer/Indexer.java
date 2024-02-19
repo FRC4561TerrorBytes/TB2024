@@ -43,6 +43,6 @@ public class Indexer extends SubsystemBase {
   
   public boolean noteInIndexer(){
     //return the beam breaks in the indexer here
-    return false;
+    return io.getIndexerState();
   }
 }
