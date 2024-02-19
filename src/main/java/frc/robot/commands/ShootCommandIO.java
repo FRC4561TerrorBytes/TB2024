@@ -6,46 +6,49 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.NoteVisualizer;
 
-public class IntakeCommand extends Command {
+public class ShootCommandIO extends Command {
+  /** Creates a new ShootCommand. */
+  Shooter shooter;
+  Indexer indexer;
+  Drive m_driveSubsystem;
+  NoteVisualizer visualizer;
+  double targetMPS = 0;
 
-  private Intake intake;
-  private Shooter shooter;
-
-  public IntakeCommand(Intake intake, Shooter shooter) {
-    this.intake = intake;
+  public ShootCommandIO(Shooter shooter, Indexer indexer) {
     this.shooter = shooter;
-
-    addRequirements(intake, shooter);
+    this.indexer = indexer;
+    addRequirements(shooter, indexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    shooter.setFlywheelSpeed(shooter.calculateShooter(2));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
-
-    intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+    if(shooter.flywheelUpToSpeed(targetMPS)){
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      intake.stopIntake();
-      intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
-      //ADD LED STUFF
+    shooter.stopFlywheel();
+    indexer.stopIndexer();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;//shooter.flywheelUpToSpeed(targetMPS);
   }
 }
