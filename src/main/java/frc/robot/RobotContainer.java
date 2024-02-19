@@ -45,6 +45,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -106,7 +107,7 @@ public class RobotContainer {
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        elevator = new Elevator(null);
+        elevator = new Elevator(new ElevatorIOReal());
         arm = new Arm(null);
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());

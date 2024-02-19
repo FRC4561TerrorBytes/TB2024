@@ -44,4 +44,8 @@ public class ElevatorIOSim implements ElevatorIO {
     public void setElevatorSetpoint(double setpoint) {
         elevatorSetpoint = setpoint;
     }
+
+    public void goToSetPoint(){
+        
+    }
 }
