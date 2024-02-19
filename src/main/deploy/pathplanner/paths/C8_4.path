@@ -3,54 +3,59 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.957401441118672,
-        "y": 5.774342272368756
+        "x": 4.82794929226222,
+        "y": 5.475973861038631
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.046040934187132,
-        "y": 6.087197371763165
+        "x": 5.620976137707682,
+        "y": 7.0913989165756846
       },
       "isLocked": false,
-      "linkedName": "out2"
+      "linkedName": "C8_02_E"
     },
     {
       "anchor": {
-        "x": 4.5568025346577015,
-        "y": 6.3184380974025105
+        "x": 7.917800164759543,
+        "y": 5.85958724690258
       },
       "prevControl": {
-        "x": 5.6721989759769,
-        "y": 6.434058460222184
+        "x": 8.031236604215765,
+        "y": 6.300728955899001
+      },
+      "nextControl": {
+        "x": 7.785629023851966,
+        "y": 5.345588365595336
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.82794929226222,
+        "y": 5.475973861038631
+      },
+      "prevControl": {
+        "x": 5.620976137707682,
+        "y": 7.0913989165756846
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AlexShootPoint"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -21.801409486351794,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.95,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Shoot"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.55,
+      "waypointRelativePos": 1.35,
       "command": {
         "type": "parallel",
         "data": {
@@ -59,6 +64,23 @@
               "type": "named",
               "data": {
                 "name": "Spin Flywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
               }
             }
           ]
@@ -74,11 +96,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 10.561010691196293,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "New New New New Folder",
+  "folder": "Cool 8 Note",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
