@@ -3,15 +3,14 @@
   "robotLength": 0.6604,
   "holonomicMode": true,
   "pathFolders": [
-    "AlexPath1",
-    "AlexPath2",
-    "7-8",
+    "Alex Flip",
+    "Cool 8 Note",
+    "78 Note",
+    "New New New New Folder",
     "Other"
   ],
   "autoFolders": [
-    "Alex Autos",
-    "First Gen",
-    "No Use"
+    "New Folder"
   ],
   "defaultMaxVel": 4.8,
   "defaultMaxAccel": 4.5,

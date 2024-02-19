@@ -245,8 +245,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     if (autoChooser.get() != null) {
-      return autoChooser.get();
-      // .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
+      return autoChooser.get()
+        .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     }
     return null;
   }
