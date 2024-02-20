@@ -234,9 +234,9 @@ public class RobotContainer {
    
   }
 
-  // public double getArmAngleDegrees() {
-  //   return arm.getArmAngleDegrees();
-  // }
+  public double getArmAngleDegrees() {
+    return arm.getArmAngleDegrees();
+  }
 
   public double getElevatorPositionMeters() {
     return elevator.getElevatorPositionMeters();
