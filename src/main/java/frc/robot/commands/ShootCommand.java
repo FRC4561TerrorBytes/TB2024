@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.Arm;
+//import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.shooter.Shooter;
 
@@ -13,13 +13,13 @@ public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
   Drive m_driveSubsystem;
-  Arm arm;
+  //Arm arm;
   double targetMPS = 0;
 
-  public ShootCommand(Shooter shooter, Drive driveSubsystem, Arm arm) {
+  public ShootCommand(Shooter shooter, Drive driveSubsystem) {
     this.shooter = shooter;
     m_driveSubsystem = driveSubsystem;
-    this.arm = arm;
+    //this.arm = arm;
     addRequirements(shooter);
   }
 
@@ -29,7 +29,7 @@ public class ShootCommand extends Command {
     shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
     targetMPS = shooter.getVelocity();
     shooter.setFlywheelSpeed(targetMPS);
-    arm.setArmSetpoint(shooter.getPivotAngle());
+    //arm.setArmSetpoint(shooter.getPivotAngle());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -36,19 +36,19 @@ import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootCommandIO;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmIOSim;
+//import frc.robot.subsystems.arm.Arm;
+//import frc.robot.subsystems.arm.ArmIO;
+//import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
+//import frc.robot.subsystems.elevator.Elevator;
+//import frc.robot.subsystems.elevator.ElevatorIO;
+//import frc.robot.subsystems.elevator.ElevatorIOReal;
+//import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -72,8 +72,8 @@ import frc.robot.util.NoteVisualizer;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Elevator elevator;
-  private final Arm arm;
+  //private final Elevator elevator;
+  //private final Arm arm;
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
@@ -114,8 +114,8 @@ public class RobotContainer {
         // new ModuleIOTalonFX(2),
         // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        elevator = new Elevator(new ElevatorIOReal());
-        arm = new Arm(null);
+        //elevator = new Elevator(new ElevatorIOReal());
+        //arm = new Arm(null);
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
         indexer = new Indexer(new IndexerIOReal());
@@ -131,8 +131,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        elevator = new Elevator(new ElevatorIOSim());
-        arm = new Arm(new ArmIOSim());
+        //elevator = new Elevator(new ElevatorIOSim());
+        //arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
         indexer = new Indexer(new IndexerIOSim());
         intake = new Intake(new IntakeIOSim());
@@ -147,8 +147,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
-        arm = new Arm(new ArmIO() {});
+        //elevator = new Elevator(new ElevatorIO() {});
+        //arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
         indexer = new Indexer(new IndexerIO() {});
         intake = new Intake(new IntakeIO() {});
@@ -156,16 +156,16 @@ public class RobotContainer {
         break;
     }
 
-    NoteVisualizer.setElevatorSystem(elevator);
+    //NoteVisualizer.setElevatorSystem(elevator);
     NoteVisualizer.setRobotPoseSupplier(drive::getPose);
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
-    NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    //NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    //NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, arm));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -200,10 +200,10 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(6.5), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
-    controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    //controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    //controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
+    //controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 
     controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));    
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
@@ -211,7 +211,7 @@ public class RobotContainer {
     controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
+    //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
    
     //PANAV CONTROLS
     driverController.leftBumper().whileTrue(new IntakeCommand(intake, shooter))
@@ -226,26 +226,26 @@ public class RobotContainer {
       driverController.x().whileTrue(new SnapTo45(drive));
   }
 
-  public double getArmAngleDegrees() {
-    return arm.getArmAngleDegrees();
-  }
+  //public double getArmAngleDegrees() {
+  //  return arm.getArmAngleDegrees();
+  //}
 
-  public double getElevatorPositionMeters() {
-    return elevator.getElevatorPositionMeters();
-  }
+  //public double getElevatorPositionMeters() {
+  //  return elevator.getElevatorPositionMeters();
+  //}
 
   public double getIntakeAngleDegrees() {
     return intake.getPivotAngle();
   }
 
   public void autonomousInit() {
-    arm.seedEncoders();
-    arm.setArmSetpoint(arm.getArmAngleDegrees());
+  //  arm.seedEncoders();
+  //  arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   public void teleopInit() {
-    arm.seedEncoders();
-    arm.setArmSetpoint(arm.getArmAngleDegrees());
+  //  arm.seedEncoders();
+  //  arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   /**
