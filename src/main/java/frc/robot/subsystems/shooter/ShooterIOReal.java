@@ -27,6 +27,8 @@ public class ShooterIOReal implements ShooterIO {
         leftConfig.CurrentLimits.SupplyCurrentLimit = 20;
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+        // we don't need this anymore: leftConfig.MotorOutput.PeakReverseDutyCycle = 0;
+
         var leftSlot0Config = leftConfig.Slot0;
         leftSlot0Config.kS = 0.3; // Add 0.25 V output to overcome static friction
         leftSlot0Config.kV = 0.05; // A velocity target of 1 rps results in 0.12 V output

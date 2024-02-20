@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
@@ -211,24 +212,31 @@ public class RobotContainer {
     controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
+    // controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
+    controller.a().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward)));
+    controller.y().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)));
+    controller.b().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kForward)));
+    controller.x().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse)));
+
+
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.a().whileTrue(new RunCommand(() -> m_orchestra.play()));
+    // controller.y().whileTrue(new RunCommand(() -> m_orchestra.stop()));
+    // controller
+    //     .b()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //                 () ->
+    //                     drive.setPose(
+    //                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+    //                 drive)
+    //             .ignoringDisable(true));
    
-    //PANAV CONTROLS
-    driverController.leftBumper().whileTrue(new IntakeCommand(intake, shooter))
-      .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
-      .alongWith(new InstantCommand(() -> intake.stopIntake())));
-
-    driverController.rightBumper().whileTrue(new ShootCommandIO(shooter, indexer))
-      .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
-
-      driverController.b().whileTrue(new SnapTo90(drive));
-
-      driverController.x().whileTrue(new SnapTo45(drive));
   }
 
-  public double getArmAngleDegrees() {
-    return arm.getArmAngleDegrees();
-  }
+  // public double getArmAngleDegrees() {
+  //   return arm.getArmAngleDegrees();
+  // }
 
   public double getElevatorPositionMeters() {
     return elevator.getElevatorPositionMeters();

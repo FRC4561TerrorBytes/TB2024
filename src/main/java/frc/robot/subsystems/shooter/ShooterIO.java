@@ -16,6 +16,9 @@ public interface ShooterIO {
         public double[] shooterCurrentAmps = new double[] {};
         public boolean indexerState;
     }
+    
+    /** Run open loop at the specified voltage. */
+    public default void setVoltage(double volts) {}
 
     public default void updateInputs(ShooterIOInputs inputs) {};
 
