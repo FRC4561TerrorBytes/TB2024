@@ -46,8 +46,8 @@ public class NoteVisualizer {
     robotPoseSupplier = supplier;
   }
 
-  public static Command shoot(double shotSpeedMPS, double angle) {
-    Transform3d launcherTransformNew = new Transform3d(-0.09, -0.02, 0.22 + elevator.getElevatorPositionMeters(), new Rotation3d(0.0, Units.degreesToRadians(-angle), Units.degreesToRadians(180.0)));
+  public static Command shoot(double shotSpeedMPS, double angle, double height, double xOffset) {
+    Transform3d launcherTransformNew = new Transform3d(-xOffset, 0, height + elevator.getElevatorPositionMeters(), new Rotation3d(0.0, Units.degreesToRadians(-angle), Units.degreesToRadians(180.0)));
     return new ScheduleCommand( // Branch off and exit immediately
         Commands.defer(
                 () -> {

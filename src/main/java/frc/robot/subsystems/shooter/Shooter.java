@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NoteVisualizer;
@@ -26,6 +25,8 @@ public class Shooter extends SubsystemBase {
     private double m_height;
 
     private double m_pivotAngle;
+
+    private double xOffset;
 
     private double launchSpeedFeeder = 0.75;
     private double launchDelay = 1.0;
@@ -112,6 +113,8 @@ public class Shooter extends SubsystemBase {
     distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
     m_velocitySetpoint = findVelocity(distance);
 
+    this.xOffset = xOffset;
+
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
     m_pivotAngle = m_angle - Constants.FLYWHEEL_OFFSET;
 
@@ -136,7 +139,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.2;
+    return inputs.shooterVelocityMPS >= mps - 0.05;
   }
 
   public boolean noteShot(){
@@ -147,12 +150,7 @@ public class Shooter extends SubsystemBase {
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-            runOnce(
-                () -> {
-                  io.setFlywheelSpeed(m_velocitySetpoint);
-                }),
-            Commands.waitSeconds(launchDelay),
-                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
+                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
             Commands.idle())
         .finallyDo(
             () -> {

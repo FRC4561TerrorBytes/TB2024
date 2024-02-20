@@ -7,8 +7,6 @@ package frc.robot.subsystems.indexer;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
-import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
-import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 
 /** Add your docs here. */
 public class IndexerIOSim implements IndexerIO {

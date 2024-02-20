@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootCommandIO;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
@@ -202,7 +203,7 @@ public class RobotContainer {
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommandIO(shooter, indexer));
+    controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 
     controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));    
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
