@@ -27,11 +27,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootCommand;
+import frc.robot.commands.ShootCommandIO;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
 import frc.robot.subsystems.arm.Arm;
@@ -47,6 +48,10 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOReal;
 import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
@@ -70,6 +75,7 @@ public class RobotContainer {
   private final Arm arm;
   private final Shooter shooter;
   private final Intake intake;
+  private final Indexer indexer;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   private final TalonFX m_musicTalon = new TalonFX(5);
@@ -111,6 +117,7 @@ public class RobotContainer {
         arm = new Arm(null);
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
+        indexer = new Indexer(new IndexerIOReal());
 
         break;
 
@@ -126,6 +133,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIOSim());
         arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        indexer = new Indexer(new IndexerIOSim());
         intake = new Intake(new IntakeIOSim());
         break;
 
@@ -141,6 +149,7 @@ public class RobotContainer {
         elevator = new Elevator(new ElevatorIO() {});
         arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        indexer = new Indexer(new IndexerIO() {});
         intake = new Intake(new IntakeIO() {});
 
         break;
@@ -155,7 +164,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, visualizer, arm));
+    NamedCommands.registerCommand("Shoot", new ShootCommandIO(shooter, indexer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -189,12 +198,13 @@ public class RobotContainer {
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(6.5), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
+    indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommand(shooter, drive, visualizer, arm));
+    controller.b().whileTrue(new ShootCommandIO(shooter, indexer));
 
-    controller.leftBumper().whileTrue(shooter.indexCommand());
+    controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));    
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
     controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
@@ -207,9 +217,8 @@ public class RobotContainer {
       .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
       .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, visualizer, arm))
-      .onFalse(new InstantCommand(() -> shooter.stopFlywheel())
-      .alongWith(new InstantCommand(() -> shooter.stopIndexer())));
+    driverController.rightBumper().whileTrue(new ShootCommandIO(shooter, indexer))
+      .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
 
       driverController.b().whileTrue(new SnapTo90(drive));
 

@@ -40,7 +40,6 @@ public class ShootCommand extends Command {
   public void execute() {
     if(shooter.flywheelUpToSpeed(targetMPS)){
       arm.setArmSetpoint(shooter.getPivotAngle());
-      shooter.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
       shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
@@ -49,7 +48,6 @@ public class ShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheel();
-    shooter.stopIndexer();
   }
 
   // Returns true when the command should end.

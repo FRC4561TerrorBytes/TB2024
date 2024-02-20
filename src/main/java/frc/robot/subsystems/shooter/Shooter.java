@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.NoteVisualizer;
@@ -23,11 +24,11 @@ public class Shooter extends SubsystemBase {
     public double m_velocitySetpoint;
     private double m_angle;
     private double m_height;
-  
+
     private double m_pivotAngle;
 
-    private double indexerSpeedLauncher = 0.0;
-    private double indexerSpeedFeeder = 1.0;
+    private double launchSpeedFeeder = 0.75;
+    private double launchDelay = 1.0;
 
     public Shooter(ShooterIO io) {
         this.io = io;
@@ -35,13 +36,13 @@ public class Shooter extends SubsystemBase {
         switch (Constants.currentMode) {
             case REAL:
             case REPLAY:
-                
+
                 break;
             case SIM:
 
                 break;
             default:
-                
+
                 break;
         }
     }
@@ -103,7 +104,7 @@ public class Shooter extends SubsystemBase {
     return angles[angleIndex];
   }
 
-  public void calculateShooter(double distance){
+  public double calculateShooter(double distance){
     m_angle = Units.degreesToRadians(findBestAngle(distance));
 
     double originalDistance = distance;
@@ -113,6 +114,8 @@ public class Shooter extends SubsystemBase {
 
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
     m_pivotAngle = m_angle - Constants.FLYWHEEL_OFFSET;
+
+    return m_velocitySetpoint;
   }
 
   @AutoLogOutput(key = "Shooter/VelocitySetpoint")
@@ -136,44 +139,24 @@ public class Shooter extends SubsystemBase {
     return inputs.shooterVelocityMPS >= mps - 0.2;
   }
 
-  public void setIndexerSpeed(double speed){
-    io.setIndexerSpeed(speed);
-  }
-  public void stopIndexer(){
-    io.stopIndexer();
-  }
-
-  public boolean noteInIndexer(){
-    //return the beam breaks in the indexer here
-    return false;
-  }
   public boolean noteShot(){
     //return the beam break after the flywheels here
     return false;
   }
 
-    /** Returns a command that intakes a note. */
-  public Command indexCommand() {
-    return startEnd(
-        () -> {
-          io.setFlywheelSpeed(indexerSpeedLauncher);
-          io.setIndexerSpeed(indexerSpeedFeeder);
-        },
-        () -> {
-          io.setFlywheelSpeed(0.0);
-          io.setIndexerSpeed(0.0);
-        });
-  }
-
   /** Returns a command that launches a note. */
   public Command launchCommand() {
     return Commands.sequence(
-              NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
+            runOnce(
+                () -> {
+                  io.setFlywheelSpeed(m_velocitySetpoint);
+                }),
+            Commands.waitSeconds(launchDelay),
+                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle)),
             Commands.idle())
         .finallyDo(
             () -> {
-              io.setFlywheelSpeed(7.0);
-              io.setIndexerSpeed(0.0);
+              io.setFlywheelSpeed(0.0);
             });
   }
 }

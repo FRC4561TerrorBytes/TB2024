@@ -14,19 +14,15 @@ import frc.robot.Constants;
 public class ShooterIOSim implements ShooterIO{
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private double indexerAppliedVolts = 0.0;
-
     private DCMotorSim shooterMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), Constants.SHOOTER_MOTOR_GEAR_RATIO, 8.0);
-    private DCMotorSim indexerMotorSim = new DCMotorSim(DCMotor.getNeo550(1), Constants.INDEXER_MOTOR_GEAR_RATIO, 0.025);
 
     private SimpleMotorFeedforward shooterFeedforward = new SimpleMotorFeedforward(1.0, 0.1);
-    private PIDController shooterFeedback = new PIDController(2500.0, 0.0, 350.0);
+    private PIDController shooterFeedback = new PIDController(2000.0, 0.0, 300.0);
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         shooterMotorSim.update(LOOP_PERIOD_SECS);
 
-        inputs.indexerAppliedVolts = indexerAppliedVolts;
         inputs.shooterVelocityMPS = shooterMotorSim.getAngularVelocityRPM() * Constants.FLYWHEEL_CIRCUMFERENCE / 60;
         inputs.shooterCurrentAmps = new double[] {Math.abs(shooterMotorSim.getCurrentDrawAmps())};
 
@@ -41,15 +37,6 @@ public class ShooterIOSim implements ShooterIO{
     }
     public void stopFlywheel(){
         shooterMotorSim.setInputVoltage(0);
-    }
-
-    public void setIndexerSpeed(double speed){
-        indexerAppliedVolts = speed / 12;
-        indexerMotorSim.setInputVoltage(speed / 12);
-    }
-
-    public void stopIndexer(){
-        indexerMotorSim.setInputVoltage(0);
     }
 
 }

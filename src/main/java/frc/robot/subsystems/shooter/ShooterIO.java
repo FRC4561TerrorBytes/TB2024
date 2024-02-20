@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+/// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -14,15 +14,12 @@ public interface ShooterIO {
         public double indexerAppliedVolts = 0.0;
         public double shooterVelocityMPS = 0.0;
         public double[] shooterCurrentAmps = new double[] {};
+        public boolean indexerState;
     }
-    
+
     public default void updateInputs(ShooterIOInputs inputs) {};
 
     public default void setFlywheelSpeed(double velocity) {};
 
     public default void stopFlywheel() {};
-
-    public default void setIndexerSpeed(double speed) {};
-
-    public default void stopIndexer() {};
 }
