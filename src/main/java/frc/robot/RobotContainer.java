@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootCommand;
 import frc.robot.commands.ShootCommandIO;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
@@ -165,7 +164,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, visualizer, arm));
+    NamedCommands.registerCommand("Shoot", new ShootCommandIO(shooter, indexer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -203,7 +202,7 @@ public class RobotContainer {
     controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    controller.b().whileTrue(new ShootCommand(shooter, drive, visualizer, arm));
+    controller.b().whileTrue(new ShootCommandIO(shooter, indexer));
 
     controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));    
     controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
@@ -218,7 +217,7 @@ public class RobotContainer {
       .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
       .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, visualizer, arm))
+    driverController.rightBumper().whileTrue(new ShootCommandIO(shooter, indexer))
       .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
 
       driverController.b().whileTrue(new SnapTo90(drive));
