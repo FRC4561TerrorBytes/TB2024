@@ -139,7 +139,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.05;
+    return inputs.shooterVelocityMPS >= mps - 0.15;
   }
 
   public boolean noteShot(){
@@ -154,7 +154,7 @@ public class Shooter extends SubsystemBase {
             Commands.idle())
         .finallyDo(
             () -> {
-              io.setFlywheelSpeed(0.0);
+              io.setFlywheelSpeed(7);
             });
   }
 }

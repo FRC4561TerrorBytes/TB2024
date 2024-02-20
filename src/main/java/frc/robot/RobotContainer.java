@@ -165,7 +165,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCommandIO(shooter, indexer));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -255,8 +255,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     if (autoChooser.get() != null) {
-      return autoChooser.get()
-        .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
+      return autoChooser.get();
+        // .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     }
     return null;
   }
