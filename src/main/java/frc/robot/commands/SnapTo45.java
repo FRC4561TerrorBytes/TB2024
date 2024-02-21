@@ -5,18 +5,19 @@
 package frc.robot.commands;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 
 public class SnapTo45 extends Command {
 
-  private PIDController pidController = new PIDController(0, 0, 0);
+  private PIDController pidController = new PIDController(1, 0, 0.1);
 
   private Drive drive;
 
-  @AutoLogOutput(key = "Snap45/Angle Setpoint") 
   private int degreesClosestTo = 0;
 
   @AutoLogOutput(key = "Snap45/Rotate From")
@@ -41,20 +42,20 @@ public class SnapTo45 extends Command {
     double closest = 999.0;
 
     if(Math.abs(angle - 315) < closest){
-      closest = Math.abs(angle - 270);
-      degreesClosestTo = 270;
+      closest = Math.abs(angle - 315);
+      degreesClosestTo = 315;
     }
     if(Math.abs(angle - 225) < closest){
-      closest = Math.abs(angle - 180);
-      degreesClosestTo = 180;
+      closest = Math.abs(angle - 225);
+      degreesClosestTo = 225;
     }
     if(Math.abs(angle - 135) < closest){
-      closest = Math.abs(angle - 90);
-      degreesClosestTo = 90;
+      closest = Math.abs(angle - 135);
+      degreesClosestTo = 135;
     }
     if(Math.abs(angle + 45) < closest){
-      closest = Math.abs(angle + 0);
-      degreesClosestTo = 0;
+      closest = Math.abs(angle + 45);
+      degreesClosestTo = 45;
     }
 
     pidController.setSetpoint(degreesClosestTo);
@@ -63,10 +64,13 @@ public class SnapTo45 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    Logger.recordOutput("Snap45/Angle Setpoint Rad", Units.degreesToRadians(degreesClosestTo));
+
     double rawAngle = drive.getRotation().getDegrees();
 
     DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.0,
-      () -> pidController.calculate(rawAngle) + (1.2 * Math.signum(pidController.calculate(rawAngle))));
+      () -> pidController.calculate(rawAngle));
   }
 
   // Called once the command ends or is interrupted.

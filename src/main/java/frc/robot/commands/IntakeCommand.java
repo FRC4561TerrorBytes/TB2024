@@ -6,19 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class IntakeCommand extends Command {
 
   private Intake intake;
-  private Shooter shooter;
+  private Indexer indexer;
 
-  public IntakeCommand(Intake intake, Shooter shooter) {
+  public IntakeCommand(Intake intake, Indexer indexer) {
     this.intake = intake;
-    this.shooter = shooter;
+    this.indexer = indexer;
 
-    addRequirements(intake, shooter);
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -46,6 +47,6 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return indexer.noteInIndexer();
   }
 }

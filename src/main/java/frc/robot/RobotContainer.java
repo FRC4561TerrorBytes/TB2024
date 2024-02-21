@@ -164,8 +164,8 @@ public class RobotContainer {
     //NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     //NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, shooter));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -214,16 +214,23 @@ public class RobotContainer {
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
    
     //PANAV CONTROLS
-    driverController.leftBumper().whileTrue(new IntakeCommand(intake, shooter))
+    driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer))
       .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
       .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
     driverController.rightBumper().whileTrue(new ShootCommandIO(shooter, indexer))
       .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
 
-      driverController.b().whileTrue(new SnapTo90(drive));
+    driverController.b().whileTrue(new SnapTo90(drive));
 
-      driverController.x().whileTrue(new SnapTo45(drive));
+    driverController.x().whileTrue(new SnapTo45(drive));
+
+    driverController.rightTrigger().whileTrue(
+      DriveCommands.joystickDrive(
+        drive,
+        () -> -driverController.getLeftY(),
+        () -> -driverController.getLeftX(),
+        () -> 0));
   }
 
   //public double getArmAngleDegrees() {

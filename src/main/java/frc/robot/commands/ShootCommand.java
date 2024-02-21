@@ -7,18 +7,21 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 //import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
   Drive m_driveSubsystem;
+  private Indexer indexer;
   //Arm arm;
   double targetMPS = 0;
 
-  public ShootCommand(Shooter shooter, Drive driveSubsystem) {
+  public ShootCommand(Shooter shooter, Drive driveSubsystem, Indexer indexer) {
     this.shooter = shooter;
     m_driveSubsystem = driveSubsystem;
+    this.indexer = indexer;
     //this.arm = arm;
     addRequirements(shooter);
   }
@@ -36,6 +39,7 @@ public class ShootCommand extends Command {
   @Override
   public void execute() {
     if(shooter.flywheelUpToSpeed(targetMPS)){
+      indexer.setIndexerSpeed(1);
       shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
@@ -44,6 +48,7 @@ public class ShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stopFlywheel();
+    indexer.stopIndexer();
   }
 
   // Returns true when the command should end.

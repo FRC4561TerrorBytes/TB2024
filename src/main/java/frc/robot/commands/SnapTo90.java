@@ -5,18 +5,19 @@
 package frc.robot.commands;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 
 public class SnapTo90 extends Command {
 
-  private PIDController pidController = new PIDController(0, 0, 0);
+  private PIDController pidController = new PIDController(0.1, 0, 0);
 
   private Drive drive;
 
-  @AutoLogOutput(key = "Snap90/Angle Setpoint") 
   private int degreesClosestTo = 0;
 
   @AutoLogOutput(key = "Snap90/Rotate From")
@@ -67,6 +68,9 @@ public class SnapTo90 extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    Logger.recordOutput("Snap90/Angle Setpoint", Units.degreesToRadians(degreesClosestTo));
+
     double rawAngle = drive.getRotation().getDegrees();
 
     DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.0,
