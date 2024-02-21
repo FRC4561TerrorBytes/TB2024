@@ -59,8 +59,8 @@ public class IntakeIOReal implements IntakeIO{
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kForward,true);
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kReverse,true);
 
-        m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 0.0);
-        m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 0.0);
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 105.0);
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 245.0);
 
         m_frontIntake.burnFlash();
         m_backIntake.burnFlash();
