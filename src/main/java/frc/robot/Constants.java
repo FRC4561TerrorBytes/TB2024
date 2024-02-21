@@ -222,7 +222,6 @@ public final class Constants {
   public static final double AUTO_THETA_KD = 0.0;
 
   public static final int FRONT_INTAKE = 15;
-  public static final int BACK_INTAKE = 16;
   public static final int INTAKE_ROTATOR = 17;
   public static final int ROTATOR_ROLLER = 22;
 

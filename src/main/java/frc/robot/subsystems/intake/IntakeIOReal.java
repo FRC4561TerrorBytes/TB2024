@@ -19,7 +19,6 @@ import frc.robot.Constants;
 public class IntakeIOReal implements IntakeIO{
 
     private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE, MotorType.kBrushless);
-    private final CANSparkMax m_backIntake = new CANSparkMax(Constants.BACK_INTAKE, MotorType.kBrushless);
     private final CANSparkMax m_intakeRotater = new CANSparkMax(Constants.INTAKE_ROTATOR, MotorType.kBrushless);
     private final CANSparkMax m_rotatorRoller = new CANSparkMax(Constants.ROTATOR_ROLLER, MotorType.kBrushless);
     private RelativeEncoder m_intakeEncoder;
@@ -30,7 +29,6 @@ public class IntakeIOReal implements IntakeIO{
 
         // Restore front/back factory defaults
         m_frontIntake.restoreFactoryDefaults();
-        m_backIntake.restoreFactoryDefaults();
         m_intakeRotater.restoreFactoryDefaults();
         m_rotatorRoller.restoreFactoryDefaults();
 
@@ -54,8 +52,6 @@ public class IntakeIOReal implements IntakeIO{
         m_intakeRotater.setInverted(false);
         m_rotatorRoller.setInverted(false);
 
-        m_backIntake.follow(m_frontIntake, false);
-
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kForward,true);
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kReverse,true);
 
@@ -63,7 +59,6 @@ public class IntakeIOReal implements IntakeIO{
         m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 245.0);
 
         m_frontIntake.burnFlash();
-        m_backIntake.burnFlash();
         m_intakeRotater.burnFlash();
         m_rotatorRoller.burnFlash();
 
