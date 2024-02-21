@@ -96,8 +96,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
         var driveConfig = new TalonFXConfiguration();
-        driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
-        driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveTalon.getConfigurator().apply(driveConfig);
         setDriveBrakeMode(true, isDriveMotorInverted);
         
@@ -112,7 +112,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
-        driveCurrent = driveTalon.getStatorCurrent();
+        driveCurrent = driveTalon.getSupplyCurrent();
         turnAbsolutePosition = cancoder.getAbsolutePosition();
 
         turnRelativeEncoder.setPosition(0.0);
