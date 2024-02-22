@@ -214,9 +214,9 @@ public class RobotContainer {
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
    
     //PANAV CONTROLS
-    driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer))
-      .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
-      .alongWith(new InstantCommand(() -> intake.stopIntake())));
+    // driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer))
+    //   .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
+    //   .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
     driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer))
       .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
