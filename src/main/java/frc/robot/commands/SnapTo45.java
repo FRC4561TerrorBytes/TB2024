@@ -4,24 +4,25 @@
 
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 
 public class SnapTo45 extends Command {
 
-  private PIDController pidController = new PIDController(1, 0, 0.1);
+  private PIDController pidController = new PIDController(0.0175, 0, 0.002);
 
   private Drive drive;
 
   private int degreesClosestTo = 0;
 
-  @AutoLogOutput(key = "Snap45/Rotate From")
   private double angle;
+
+  double rotationRate;
 
   public SnapTo45(Drive drive) {
     this.drive = drive;
@@ -37,7 +38,7 @@ public class SnapTo45 extends Command {
   public void initialize() {
     pidController.reset();
 
-    angle = drive.getRotation().getDegrees();
+    angle = drive.getRotation().getDegrees() + 180;
 
     double closest = 999.0;
 
@@ -65,12 +66,19 @@ public class SnapTo45 extends Command {
   @Override
   public void execute() {
 
-    Logger.recordOutput("Snap45/Angle Setpoint Rad", Units.degreesToRadians(degreesClosestTo));
-
     double rawAngle = drive.getRotation().getDegrees();
 
-    DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.0,
-      () -> pidController.calculate(rawAngle));
+    rotationRate = pidController.calculate(rawAngle + 180);    
+    rotationRate += 1.2 * Math.signum(rotationRate);
+    rotationRate = MathUtil.applyDeadband(rotationRate, 0.1);
+
+    rotationRate = Math.copySign(rotationRate * rotationRate, rotationRate);
+
+    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, rotationRate * drive.getMaxAngularSpeedRadPerSec(), drive.getRotation()));
+
+    Logger.recordOutput("Snap45/Raw Angle", rawAngle + 180);
+    Logger.recordOutput("Snap45/Rotation Rate", rotationRate);
+    Logger.recordOutput("Snap45/Angle Setpoint", degreesClosestTo);
   }
 
   // Called once the command ends or is interrupted.

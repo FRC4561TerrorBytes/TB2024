@@ -218,7 +218,7 @@ public class RobotContainer {
       .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
       .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    driverController.rightBumper().whileTrue(new ShootCommandIO(shooter, indexer))
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer))
       .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
 
     driverController.b().whileTrue(new SnapTo90(drive));

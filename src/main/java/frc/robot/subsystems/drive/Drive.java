@@ -27,6 +27,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,6 +50,9 @@ import frc.robot.util.LocalADStarAK;
 import frc.robot.util.PoseEstimator;
 
 public class Drive extends SubsystemBase {
+
+  private PIDController pidController = new PIDController(0.0000000001, 0.0, 0.1);
+
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
@@ -107,6 +111,9 @@ public class Drive extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    pidController.enableContinuousInput(-180, 180);
+    pidController.setTolerance(1);
   }
 
   public void periodic() {
@@ -241,7 +248,6 @@ public class Drive extends SubsystemBase {
     return new Pose3d(m_poseEstimator.getLatestPose());
   }
 
-  /** Returns the current odometry rotation. */
   public Rotation2d getRotation() {
     //return pose.getRotation();
     return m_poseEstimator.getLatestPose().getRotation();
