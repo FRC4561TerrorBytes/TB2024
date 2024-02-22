@@ -18,9 +18,9 @@ import frc.robot.Constants;
 /** Add your docs here. */
 public class IntakeIOReal implements IntakeIO{
 
-    private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE, MotorType.kBrushless);
-    private final CANSparkMax m_intakeRotater = new CANSparkMax(Constants.INTAKE_ROTATOR, MotorType.kBrushless);
-    private final CANSparkMax m_rotatorRoller = new CANSparkMax(Constants.ROTATOR_ROLLER, MotorType.kBrushless);
+    private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE_MOTOR, MotorType.kBrushless);
+    private final CANSparkMax m_intakeRotater = new CANSparkMax(Constants.INTAKE_BAR_MOTOR, MotorType.kBrushless);
+    private final CANSparkMax m_rotatorRoller = new CANSparkMax(Constants.INTAKE_ROLLER_MOTOR, MotorType.kBrushless);
     private RelativeEncoder m_intakeEncoder;
     private SparkPIDController m_intakeController;
     private SparkAbsoluteEncoder m_intakeThroughboreEncoder;

@@ -184,10 +184,10 @@ public final class Constants {
 
   public static final int LEFT_FLYWHEEL = 99;
   public static final int RIGHT_FLYWHEEL = 99;
-  public static final int INDEXER = 99;
+  public static final int INDEXER = 16;
 
   public static final int LEFT_RAISE_MOTOR = 99;
-  public static final int RIGHT_RAISE_MOTOR = 99;
+  public static final int RIGHT_RAISE_MOTOR = 13;
 
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
   public static final double TARGET_X = 0.196;
@@ -221,9 +221,9 @@ public final class Constants {
   public static final double AUTO_THETA_KI = 0.0;
   public static final double AUTO_THETA_KD = 0.0;
 
-  public static final int FRONT_INTAKE = 15;
-  public static final int INTAKE_ROTATOR = 17;
-  public static final int ROTATOR_ROLLER = 22;
+  public static final int FRONT_INTAKE_MOTOR = 15;
+  public static final int INTAKE_BAR_MOTOR = 17;
+  public static final int INTAKE_ROLLER_MOTOR = 22;
 
   public static final Mode currentMode = Mode.SIM;
 
