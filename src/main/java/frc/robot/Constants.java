@@ -176,14 +176,12 @@ public final class Constants {
   public static final double INTAKE_MOTOR_GEAR_RATIO = 1.0;
   public static final double BAR_MOTOR_GEAR_RATIO = 1.0;
 
-  public static final int ROLLER_MOTOR = 12;
-
   public static final double INTAKE_SPEED = 0.7;
   public static final double INTAKE_LOW_POSITION = 110;
   public static final double INTAKE_HIGH_POSITION = 240;
 
-  public static final int LEFT_FLYWHEEL = 99;
-  public static final int RIGHT_FLYWHEEL = 99;
+  public static final int LEFT_FLYWHEEL = 51;
+  public static final int RIGHT_FLYWHEEL = 52;
   public static final int INDEXER = 16;
 
   public static final int LEFT_RAISE_MOTOR = 99;
@@ -223,9 +221,9 @@ public final class Constants {
 
   public static final int FRONT_INTAKE_MOTOR = 15;
   public static final int INTAKE_BAR_MOTOR = 17;
-  public static final int INTAKE_ROLLER_MOTOR = 22;
+  public static final int INTAKE_ROLLER_MOTOR = 18;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */

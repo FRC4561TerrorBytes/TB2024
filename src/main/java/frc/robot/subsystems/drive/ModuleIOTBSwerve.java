@@ -122,8 +122,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         //initialize and Log Self Check
         driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
         driveTrainSelfCheck.checkForFaults();
-        driveTrainSelfCheck.faultsInArray();
-        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
+        // driveTrainSelfCheck.faultsInArray();
+        // Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
 
         turnSparkMax.setCANTimeout(0);
 
