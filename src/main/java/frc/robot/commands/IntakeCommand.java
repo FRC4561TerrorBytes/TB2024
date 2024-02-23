@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -19,7 +20,7 @@ public class IntakeCommand extends Command {
     this.intake = intake;
     this.indexer = indexer;
 
-    addRequirements(intake);
+    addRequirements(intake, indexer);
   }
 
   // Called when the command is initially scheduled.
@@ -31,16 +32,19 @@ public class IntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
+    // intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
 
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+    indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+      new WaitCommand(0.5);
       intake.stopIntake();
-      intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
+      indexer.stopIndexer();
+      // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
   }
 

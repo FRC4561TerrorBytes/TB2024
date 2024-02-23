@@ -176,7 +176,7 @@ public final class Constants {
   public static final double INTAKE_MOTOR_GEAR_RATIO = 1.0;
   public static final double BAR_MOTOR_GEAR_RATIO = 1.0;
 
-  public static final double INTAKE_SPEED = 0.7;
+  public static final double INTAKE_SPEED = 1.0;
   public static final double INTAKE_LOW_POSITION = 110;
   public static final double INTAKE_HIGH_POSITION = 240;
 
@@ -205,7 +205,7 @@ public final class Constants {
 
   public static final int INDEX_BEAMBREAKER = 0;
 
-  public static final double INDEXER_FEED_SPEED = 0.05;
+  public static final double INDEXER_FEED_SPEED = 0.4;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;

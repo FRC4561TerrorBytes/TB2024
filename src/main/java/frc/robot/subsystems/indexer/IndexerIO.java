@@ -13,6 +13,7 @@ public interface IndexerIO {
     public static class IndexerIOInputs {
         public double indexerAppliedVolts = 0.0;
         public boolean indexerState = false;
+        public double[] indexerCurrentAmps = new double[] {};
     }
 
     public default boolean getIndexerState(){

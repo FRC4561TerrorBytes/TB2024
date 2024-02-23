@@ -130,6 +130,8 @@ public class Robot extends LoggedRobot {
 
     Logger.recordOutput("random 2d thing", new Pose3d());
 
+    // robotContainer.periodic();
+
     //Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
     //m_elevator.setLength(robotContainer.getElevatorPositionMeters());

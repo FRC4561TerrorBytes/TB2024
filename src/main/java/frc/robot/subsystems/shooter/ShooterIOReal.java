@@ -31,7 +31,7 @@ public class ShooterIOReal implements ShooterIO {
         leftSlot0Config.kS = 0.3; // Add 0.25 V output to overcome static friction
         leftSlot0Config.kV = 0.05; // A velocity target of 1 rps results in 0.12 V output
         leftSlot0Config.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        leftSlot0Config.kP = 0.22; // An error of 1 rps results in 0.11 V output
+        leftSlot0Config.kP = 0.43; // An error of 1 rps results in 0.11 V output
         leftSlot0Config.kI = 0; // no output for integrated error
         leftSlot0Config.kD = 0; // no output for error derivative
 
@@ -41,7 +41,7 @@ public class ShooterIOReal implements ShooterIO {
 
         m_leftFlywheel.getConfigurator().apply(leftConfig);
 
-        m_rightFlywheel.setControl(new Follower(1, true));
+        m_rightFlywheel.setControl(new Follower(Constants.LEFT_FLYWHEEL, true));
     }
 
     public void updateInputs(ShooterIOInputs inputs) {
@@ -52,6 +52,7 @@ public class ShooterIOReal implements ShooterIO {
     public void setFlywheelSpeed(double velocity){
         //m_leftFlywheel.set(velocity);
 
+        // VELOCITY IN MPS
         velocity = velocity/Constants.FLYWHEEL_CIRCUMFERENCE;
         m_leftFlywheel.setControl(m_request.withVelocity(velocity));
     }

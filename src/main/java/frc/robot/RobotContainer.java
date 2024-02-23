@@ -205,8 +205,10 @@ public class RobotContainer {
 
     //controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 
-    controller.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED)));    
-    controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
+    controller.leftBumper().whileTrue(new IntakeCommand(intake, indexer));  
+    controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer));
+    controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+    controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
     controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
@@ -253,6 +255,10 @@ public class RobotContainer {
   public void teleopInit() {
   //  arm.seedEncoders();
   //  arm.setArmSetpoint(arm.getArmAngleDegrees());
+  }
+
+  public void periodic() {
+    System.out.println("\n\n\n\n" + indexer.noteInIndexer() + "\n\n\n");
   }
 
   /**

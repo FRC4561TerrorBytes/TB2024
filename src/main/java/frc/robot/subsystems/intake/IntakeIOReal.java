@@ -33,12 +33,12 @@ public class IntakeIOReal implements IntakeIO{
         m_rotatorRoller.restoreFactoryDefaults();
 
         // Idle phase for front and back
-        m_frontIntake.setIdleMode(IdleMode.kBrake);
+        m_frontIntake.setIdleMode(IdleMode.kCoast);
         m_intakeRotater.setIdleMode(IdleMode.kBrake);
-        m_rotatorRoller.setIdleMode(IdleMode.kBrake);
+        m_rotatorRoller.setIdleMode(IdleMode.kCoast);
 
         // Limit of currents front/back
-        m_frontIntake.setSmartCurrentLimit(20);
+        m_frontIntake.setSmartCurrentLimit(30);
         m_intakeRotater.setSmartCurrentLimit(20);
         m_rotatorRoller.setSmartCurrentLimit(20);
 
@@ -92,7 +92,7 @@ public class IntakeIOReal implements IntakeIO{
 
     public void setIntakeSpeed(double velocity) {
         m_frontIntake.set(velocity);
-        m_rotatorRoller.set(velocity);
+        m_rotatorRoller.setVoltage(velocity * 12);
     };
 
     public void setBarAngle(double barAngle) {
