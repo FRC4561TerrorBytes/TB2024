@@ -29,11 +29,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.ShootCommandIO;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
 //import frc.robot.subsystems.arm.Arm;
@@ -62,7 +62,6 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.NoteVisualizer;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 
 /**
@@ -173,6 +172,14 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    autoChooser.addOption("Flywheel Quasi Forward", shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+
+    autoChooser.addOption("Flywheel Quasi Backwards", shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+    autoChooser.addOption("Flywheel Dynamic Forward", shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+
+    autoChooser.addOption("Flywheel Dynamic Backwards", shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
     // Set up FF characterization routines
     autoChooser.addOption(
         "Drive FF Characterization",
@@ -213,10 +220,6 @@ public class RobotContainer {
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
     //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     //controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
-    controller.a().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward)));
-    controller.y().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)));
-    controller.b().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kForward)));
-    controller.x().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse)));
 
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
