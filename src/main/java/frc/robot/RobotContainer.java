@@ -62,6 +62,8 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.NoteVisualizer;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
