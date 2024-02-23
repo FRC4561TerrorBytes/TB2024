@@ -205,7 +205,7 @@ public final class Constants {
 
   public static final int INDEX_BEAMBREAKER = 0;
 
-  public static final double INDEXER_FEED_SPEED = 0.4;
+  public static final double INDEXER_FEED_SPEED = 0.9;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;

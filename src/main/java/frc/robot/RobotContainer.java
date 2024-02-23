@@ -206,7 +206,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
 
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(0), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     //controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));

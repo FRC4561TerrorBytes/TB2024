@@ -165,8 +165,12 @@ public class Shooter extends SubsystemBase {
     io.stopFlywheel();
   }
 
+  public void setVoltage(double voltage) {
+    io.setVoltage(voltage);
+  }
+
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.15;
+    return inputs.shooterVelocityMPS >= mps;
   }
 
   public boolean noteShot(){
@@ -188,10 +192,6 @@ public class Shooter extends SubsystemBase {
   public Command launchCommand() {
     return Commands.sequence(
                 NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
-            Commands.idle())
-        .finallyDo(
-            () -> {
-              io.setFlywheelSpeed(7);
-            });
+            Commands.idle());
   }
 }
