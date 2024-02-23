@@ -7,8 +7,12 @@ package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -52,6 +56,7 @@ public class Shooter extends SubsystemBase {
 
                 break;
         }
+        SignalLogger.setPath("/media/sda1/");
 
         // Configure SysId
         sysId =
@@ -60,8 +65,9 @@ public class Shooter extends SubsystemBase {
               null,
               null,
               null,
-              (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
+              (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+            SignalLogger.start();
     }
 
     @Override

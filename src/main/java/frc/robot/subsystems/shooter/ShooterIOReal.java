@@ -47,6 +47,12 @@ public class ShooterIOReal implements ShooterIO {
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.shooterVelocityMPS = (m_leftFlywheel.getVelocity().getValueAsDouble())*Constants.FLYWHEEL_CIRCUMFERENCE;
         inputs.shooterCurrentAmps = new double[] {m_leftFlywheel.getSupplyCurrent().getValueAsDouble()};
+        inputs.shooterVoltage = m_leftFlywheel.getMotorVoltage().getValueAsDouble();
+        inputs.motorPosition = m_leftFlywheel.getPosition().getValueAsDouble();
+    }
+
+    public void setVoltage(double volts){
+        m_leftFlywheel.setVoltage(volts);
     }
 
     public void setFlywheelSpeed(double velocity){

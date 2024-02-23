@@ -11,10 +11,10 @@ public interface ShooterIO {
 
     @AutoLog
     public static class ShooterIOInputs {
-        public double indexerAppliedVolts = 0.0;
+        public double shooterVoltage = 0.0;
         public double shooterVelocityMPS = 0.0;
         public double[] shooterCurrentAmps = new double[] {};
-        public boolean indexerState;
+        public double motorPosition = 0.0;
     }
     
     /** Run open loop at the specified voltage. */
