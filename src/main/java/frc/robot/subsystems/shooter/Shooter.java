@@ -8,9 +8,13 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import frc.robot.Constants;
 import frc.robot.util.NoteVisualizer;
 
@@ -19,6 +23,8 @@ public class Shooter extends SubsystemBase {
 
     private ShooterIO io;
     private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+    private final SysIdRoutine sysId;
+
 
     public double m_velocitySetpoint;
     private double m_angle;
@@ -46,6 +52,16 @@ public class Shooter extends SubsystemBase {
 
                 break;
         }
+
+        // Configure SysId
+        sysId =
+          new SysIdRoutine(
+            new SysIdRoutine.Config(
+              null,
+              null,
+              null,
+              (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
     }
 
     @Override
@@ -56,6 +72,11 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/Angle", Units.radiansToDegrees(m_angle));
         Logger.recordOutput("Shooter/Height", m_height);
     }
+
+    /** Run open loop at the specified voltage. */
+    public void runVolts(double volts) {
+      io.setVoltage(volts);
+      }  
 
   public double findVelocity(double x){
     return Math.sqrt((((
@@ -145,6 +166,16 @@ public class Shooter extends SubsystemBase {
   public boolean noteShot(){
     //return the beam break after the flywheels here
     return false;
+  }
+
+  /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 
   /** Returns a command that launches a note. */

@@ -209,8 +209,12 @@ public class RobotContainer {
     controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer));
     controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
-    controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
-    controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
+    //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
+    //controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
+    controller.a().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward)));
+    controller.y().onTrue(new InstantCommand(() -> shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)));
+    controller.b().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kForward)));
+    controller.x().onTrue(new InstantCommand(() -> shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse)));
 
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
