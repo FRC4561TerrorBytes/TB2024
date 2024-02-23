@@ -53,7 +53,7 @@ public class ShootCommand extends Command {
   public void end(boolean interrupted) {
     new WaitCommand(1.0)
       .andThen(new InstantCommand(() -> shooter.stopFlywheel())
-      .andThen(new InstantCommand(() -> indexer.stopIndexer())));
+      .andThen(new InstantCommand(() -> indexer.stopIndexer()))).schedule();
   }
 
   // Returns true when the command should end.
