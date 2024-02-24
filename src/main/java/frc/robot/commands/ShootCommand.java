@@ -45,7 +45,7 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.flywheelUpToSpeed(17)){
+    if(shooter.flywheelUpToSpeed(17.5)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
         //shooter.launchCommand().withTimeout(0.5).schedule();

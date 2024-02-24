@@ -233,6 +233,8 @@ public class RobotContainer {
     //controller.rightBumper().whileTrue(new RunCommand(() -> shooter.setFlywheelSpeed(20), shooter));
     controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
 
+    controller.leftStick().and(controller.rightStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+
     driverController.b().whileTrue(new SnapTo90(drive));
 
     driverController.x().whileTrue(new SnapTo45(drive));

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -57,6 +58,9 @@ public class IntakeIOReal implements IntakeIO{
 
         m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 105.0);
         m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 245.0);
+
+        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 50);
+        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 50);
 
         m_frontIntake.burnFlash();
         m_intakeRotater.burnFlash();
