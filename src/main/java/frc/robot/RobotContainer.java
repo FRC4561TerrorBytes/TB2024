@@ -216,8 +216,9 @@ public class RobotContainer {
 
     controller.leftBumper().whileTrue(new IntakeCommand(intake, indexer));  
     controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake));
-    //controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+    controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
+    controller.povUp().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-Constants.INDEXER_FEED_SPEED), indexer));
     //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     //controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
