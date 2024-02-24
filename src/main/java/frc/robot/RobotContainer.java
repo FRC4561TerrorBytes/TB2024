@@ -215,7 +215,7 @@ public class RobotContainer {
     //controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 
     controller.leftBumper().whileTrue(new IntakeCommand(intake, indexer));  
-    controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer));
+    // controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer));
     controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
     //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
@@ -229,8 +229,8 @@ public class RobotContainer {
     //   .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
     //   .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer))
-      .onFalse(new InstantCommand(() -> shooter.stopFlywheel()));
+    controller.rightBumper().whileTrue(new RunCommand(() -> shooter.setFlywheelSpeed(20), shooter));
+    controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
 
     driverController.b().whileTrue(new SnapTo90(drive));
 
