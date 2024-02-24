@@ -13,6 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -48,6 +49,7 @@ import frc.robot.LimelightHelpers.LimelightTarget_Detector;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.PoseEstimator;
+import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
 
@@ -156,15 +158,15 @@ public class Drive extends SubsystemBase {
 
       m_poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
 
-    // LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
+    LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
 
-    // var closestTag = getClosestTag("limelight-test");
-    // if (results.targetingResults.valid && closestTag != null) {
-    //   m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
-    //   Logger.recordOutput("updating with tags", true);
-    // } else {
-    //   Logger.recordOutput("updating with tags", false);
-    // }
+    var closestTag = getClosestTag("limelight-test");
+    if (results.targetingResults.valid && closestTag != null) {
+      m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
+      Logger.recordOutput("updating with tags", true);
+    } else {
+      Logger.recordOutput("updating with tags", false);
+    }
 
     pose = getPose();
   }
