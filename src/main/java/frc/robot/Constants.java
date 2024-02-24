@@ -100,8 +100,8 @@ public final class Constants {
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
   public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
-  public static final double DRIVE_CURRENT_LIMIT = 80.0;
-  public static final int TURN_CURRENT_LIMIT = 40;
+  public static final double DRIVE_CURRENT_LIMIT = 40.0;
+  public static final int TURN_CURRENT_LIMIT = 20;
   public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
   public static final double DRIVE_CURRENT_TIME_THRESHOLD = 0.1; // seconds
   // current limits for drivetrain turn and steer motors
