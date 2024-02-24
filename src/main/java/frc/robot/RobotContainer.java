@@ -166,7 +166,7 @@ public class RobotContainer {
     //NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer, intake));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
     // Set up auto routines
@@ -215,7 +215,7 @@ public class RobotContainer {
     //controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 
     controller.leftBumper().whileTrue(new IntakeCommand(intake, indexer));  
-    // controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer));
+    controller.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake));
     //controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
     //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
@@ -229,7 +229,7 @@ public class RobotContainer {
     //   .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
     //   .alongWith(new InstantCommand(() -> intake.stopIntake())));
 
-    controller.rightBumper().whileTrue(new RunCommand(() -> shooter.setFlywheelSpeed(20), shooter));
+    //controller.rightBumper().whileTrue(new RunCommand(() -> shooter.setFlywheelSpeed(20), shooter));
     controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
 
     driverController.b().whileTrue(new SnapTo90(drive));

@@ -37,7 +37,7 @@ public class ShooterIOReal implements ShooterIO {
         leftSlot0Config.kD = 0.0; // no output for error derivative
 
         var leftMotionMagicConfig = leftConfig.MotionMagic;
-        leftMotionMagicConfig.MotionMagicAcceleration = 50; // Target acceleration of 400 rps/s (0.25 seconds to max)
+        leftMotionMagicConfig.MotionMagicAcceleration = 75; // Target acceleration of 400 rps/s (0.25 seconds to max)
         leftMotionMagicConfig.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
         m_leftFlywheel.getConfigurator().apply(leftConfig);
