@@ -7,11 +7,13 @@ package frc.robot.subsystems.elevator;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -28,13 +30,32 @@ public class ElevatorIOReal implements ElevatorIO{
 
     private final AnalogPotentiometer m_analogPotentiometer;
 
+    private boolean leftMotorNoLongerGood;
+    private boolean rightMotorNoLongerGood;
+
     public ElevatorIOReal(){
 
-        m_leftRaiseMotor.setSmartCurrentLimit(40);
+        REVLibError leftCurrent = m_leftRaiseMotor.setSmartCurrentLimit(40);
         m_leftRaiseMotor.setIdleMode(IdleMode.kBrake);
+        if (leftCurrent != REVLibError.kOk)
+        {
+            leftMotorNoLongerGood = true;
+        } else
+        {
+            leftMotorNoLongerGood = false;
+        }
+        SmartDashboard.putBoolean("elevatorStatus", !leftMotorNoLongerGood);
 
-        m_rightRaiseMotor.setSmartCurrentLimit(40);
+        REVLibError rightCurrent = m_rightRaiseMotor.setSmartCurrentLimit(40);
         m_rightRaiseMotor.setIdleMode(IdleMode.kBrake);
+        if (rightCurrent != REVLibError.kOk)
+        {
+            rightMotorNoLongerGood = true;
+        } else
+        {
+            rightMotorNoLongerGood = false;
+        }
+        SmartDashboard.putBoolean("elevatorStatus", !rightMotorNoLongerGood);
 
         m_leftRaiseEncoder = m_leftRaiseMotor.getEncoder();
         m_leftRaiseEncoder.setVelocityConversionFactor(16.5);
