@@ -53,7 +53,7 @@ import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
 
 public class Drive extends SubsystemBase {
 
-  private PIDController pidController = new PIDController(0.0000000001, 0.0, 0.1);
+  private PIDController pidController = new PIDController(0.0000000001, 0.0, 0.0);
 
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);

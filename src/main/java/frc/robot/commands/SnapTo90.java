@@ -27,7 +27,7 @@ public class SnapTo90 extends Command {
   public SnapTo90(Drive drive) {
     this.drive = drive;
 
-    pidController.enableContinuousInput(-180, 180);
+    pidController.enableContinuousInput(0, 360);
     pidController.setTolerance(1);
 
     addRequirements(drive);
@@ -40,27 +40,17 @@ public class SnapTo90 extends Command {
 
     angle = drive.getRotation().getDegrees() + 180;
 
-    double closest = 999.0;
-
-    if(Math.abs(angle - 360) < closest){
-      closest = Math.abs(angle - 360);
-      degreesClosestTo = 360;
+    if(angle >= 270 || angle <= 45){
+      degreesClosestTo = 0;
     }
-    if(Math.abs(angle - 270) < closest){
-      closest = Math.abs(angle - 270);
-      degreesClosestTo = 270;
-    }
-    if(Math.abs(angle - 180) < closest){
-      closest = Math.abs(angle - 180);
-      degreesClosestTo = 180;
-    }
-    if(Math.abs(angle - 90) < closest){
-      closest = Math.abs(angle - 90);
+    else if(angle > 45 && angle <= 135){
       degreesClosestTo = 90;
     }
-    if(Math.abs(angle + 0) < closest){
-      closest = Math.abs(angle + 0);
-      degreesClosestTo = 0;
+    else if(angle > 135 && angle <= 225){
+      degreesClosestTo = 180;
+    }
+    else{
+      degreesClosestTo = 270;
     }
 
     pidController.setSetpoint(degreesClosestTo);

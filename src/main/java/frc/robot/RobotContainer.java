@@ -202,9 +202,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
-            () -> controller.getRightX()));
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> driverController.getRightX()));
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
@@ -219,6 +219,10 @@ public class RobotContainer {
     controller.povDown().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
     controller.rightTrigger().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED), intake));
     controller.povUp().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-Constants.INDEXER_FEED_SPEED), indexer));
+    controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
+
+    driverController.leftStick().and(driverController.rightStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+
     //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
     //controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
@@ -226,14 +230,9 @@ public class RobotContainer {
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
    
     //PANAV CONTROLS
-    // driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer))
-    //   .onFalse(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION))
-    //   .alongWith(new InstantCommand(() -> intake.stopIntake())));
+    driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer));
 
-    //controller.rightBumper().whileTrue(new RunCommand(() -> shooter.setFlywheelSpeed(20), shooter));
-    controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
-
-    controller.leftStick().and(controller.rightStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake));
 
     driverController.b().whileTrue(new SnapTo90(drive));
 
