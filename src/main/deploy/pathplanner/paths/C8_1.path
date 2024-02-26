@@ -1,0 +1,214 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.191757660796181,
+        "y": 4.4057046969192335
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6176424481650402,
+        "y": 4.3029049206577845
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.2905303992426167,
+        "y": 4.067333225575543
+      },
+      "prevControl": {
+        "x": 1.475251877431754,
+        "y": 3.986811890088051
+      },
+      "nextControl": {
+        "x": 3.0461588195903664,
+        "y": 4.141963193017295
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.528154752195015,
+        "y": 5.345371418015564
+      },
+      "prevControl": {
+        "x": 1.743522363323215,
+        "y": 4.728629114039155
+      },
+      "nextControl": {
+        "x": 2.943542614357956,
+        "y": 5.671877525573233
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.654351490521163,
+        "y": 6.744683307548434
+      },
+      "prevControl": {
+        "x": 2.383817858544808,
+        "y": 5.895767427898492
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "C8_01_E"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -62.63789309802923,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 17.774395982119785,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 1.7999999999999998,
+      "rotationDegrees": -11.616404221328022,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.8,
+      "rotationDegrees": 43.218375041398254,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Shoot Preload",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.95,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "Shoot note 3",
+      "minWaypointRelativePos": 1.75,
+      "maxWaypointRelativePos": 2.15,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin Flywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.2000000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 2.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 42.089162173832115,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Cool 8 Note",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

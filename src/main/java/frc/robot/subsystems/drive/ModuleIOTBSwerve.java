@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.List;
-import java.util.Queue;
-
-
 import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -19,18 +16,14 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.robot.subsystems.SelfCheck.SelfChecking;
 import frc.robot.subsystems.SelfCheck.SelfCheckingPhoenixMotor;
 
 /** Add your docs here. */
@@ -103,8 +96,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
         var driveConfig = new TalonFXConfiguration();
-        driveConfig.CurrentLimits.StatorCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
-        driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveTalon.getConfigurator().apply(driveConfig);
         setDriveBrakeMode(true, isDriveMotorInverted);
         
@@ -119,7 +112,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
-        driveCurrent = driveTalon.getStatorCurrent();
+        driveCurrent = driveTalon.getSupplyCurrent();
         turnAbsolutePosition = cancoder.getAbsolutePosition();
 
         turnRelativeEncoder.setPosition(0.0);
@@ -129,8 +122,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         //initialize and Log Self Check
         driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
         driveTrainSelfCheck.checkForFaults();
-        driveTrainSelfCheck.faultsInArray();
-        Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
+        // driveTrainSelfCheck.faultsInArray();
+        // Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
 
         turnSparkMax.setCANTimeout(0);
 
@@ -161,7 +154,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         inputs.driveVelocityRadPerSec =
             Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DRIVE_GEAR_RATIO;
         inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
-        inputs.driveCurrentAmps = new double[] {driveCurrent.getValueAsDouble()};
+        inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
         inputs.turnAbsolutePosition =
             Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
@@ -172,7 +165,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
             Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
                 / TURN_GEAR_RATIO;
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
-        inputs.turnCurrentAmps = new double[] {turnSparkMax.getOutputCurrent()};
+        inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
     }
 
     public void setDriveVoltage(double volts) {

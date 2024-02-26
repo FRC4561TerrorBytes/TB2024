@@ -1,0 +1,103 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.82794929226222,
+        "y": 5.475973861038631
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.098482924238575,
+        "y": 3.7874708476689682
+      },
+      "isLocked": false,
+      "linkedName": "C8_02_E"
+    },
+    {
+      "anchor": {
+        "x": 7.917800164759543,
+        "y": 2.4525089479517073
+      },
+      "prevControl": {
+        "x": 7.783907827005882,
+        "y": 2.011479393153608
+      },
+      "nextControl": {
+        "x": 8.037037892257603,
+        "y": 2.8452675087168364
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.023852956796823,
+        "y": 4.841619137783731
+      },
+      "prevControl": {
+        "x": 5.042510448657261,
+        "y": 4.841619137783731
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin Flywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 1.0,
+    "rotation": -16.990823291986242,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Cool 8 Note",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

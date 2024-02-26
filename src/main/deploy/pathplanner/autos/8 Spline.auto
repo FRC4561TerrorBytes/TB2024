@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.191757660796181,
+      "y": 4.4057046969192335
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C8_1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C8_2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C8_3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C8_4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C8_5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "New Folder",
+  "choreoAuto": false
+}

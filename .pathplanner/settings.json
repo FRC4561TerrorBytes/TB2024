@@ -1,15 +1,19 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.76,
+  "robotWidth": 0.6604,
+  "robotLength": 0.6604,
   "holonomicMode": true,
   "pathFolders": [
-    "Square",
-    "grab",
-    "shoot"
+    "Alex Flip",
+    "Cool 8 Note",
+    "78 Note",
+    "New New New New Folder",
+    "Other"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
+  "autoFolders": [
+    "New Folder"
+  ],
+  "defaultMaxVel": 4.8,
+  "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

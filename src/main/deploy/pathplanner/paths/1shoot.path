@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7226441151219607,
-        "y": 6.756582444281278
+        "x": 2.4399011268331336,
+        "y": 6.834580510016127
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3813209577268615,
-        "y": 5.992555502937401
+        "x": 2.0985779694380344,
+        "y": 6.07055356867225
       },
       "isLocked": false,
       "linkedName": "pickup1"
     },
     {
       "anchor": {
-        "x": 1.411886043653233,
-        "y": 5.547810209612856
+        "x": 1.386927239412675,
+        "y": 5.547612425391122
       },
       "prevControl": {
-        "x": 1.8810253936013006,
-        "y": 5.847165794817814
+        "x": 1.856066589360742,
+        "y": 5.84696801059608
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "shoot",
+  "folder": "Other",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

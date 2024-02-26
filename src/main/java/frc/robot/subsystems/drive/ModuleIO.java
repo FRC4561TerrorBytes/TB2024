@@ -16,21 +16,19 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
-import com.ctre.phoenix6.StatusSignal;
-
 public interface ModuleIO {
   @AutoLog
   public static class ModuleIOInputs {
     public double drivePositionRad = 0.0;
     public double driveVelocityRadPerSec = 0.0;
     public double driveAppliedVolts = 0.0;
-    public double[] driveCurrentAmps = new double[] {};
+    public double driveCurrentAmps = 0.0;
 
     public Rotation2d turnAbsolutePosition = new Rotation2d();
     public Rotation2d turnPosition = new Rotation2d();
     public double turnVelocityRadPerSec = 0.0;
     public double turnAppliedVolts = 0.0;
-    public double[] turnCurrentAmps = new double[] {};
+    public double turnCurrentAmps = 0.0;
   }
 
   /** Updates the set of loggable inputs. */

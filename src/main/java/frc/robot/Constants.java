@@ -45,8 +45,8 @@ public final class Constants {
   public static final int NEO_TICKS_PER_ROTATION = 4096;
 
   public static final double MAX_VOLTAGE = 12.0;
-  public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.53;
-  public static final double DRIVETRAIN_WHEELBASE_METERS = 0.53;
+  public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(26.0);
+  public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(26.0);
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND = FALCON_500_MAX_RPM / 60.0 *
         (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) *
@@ -100,8 +100,8 @@ public final class Constants {
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
   public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
-  public static final double DRIVE_CURRENT_LIMIT = 80.0;
-  public static final int TURN_CURRENT_LIMIT = 40;
+  public static final double DRIVE_CURRENT_LIMIT = 40.0;
+  public static final int TURN_CURRENT_LIMIT = 20;
   public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
   public static final double DRIVE_CURRENT_TIME_THRESHOLD = 0.1; // seconds
   // current limits for drivetrain turn and steer motors
@@ -158,54 +158,54 @@ public final class Constants {
 //       NEO_MAX_RPM,
 //       TURN_MOTOR_CONVERSION_FACTOR);
 
-  public static final int ELBOW_MOTOR = 11;
-  public static final int SHOULDER_MOTOR = 10;
-  public static final int WRIST_MOTOR = 13;
+  public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
+  public static final double ELEVATOR_RATIO = 11.0/720.0;
 
-  public static final double ELBOW_ROTATIONS_PER_DEGREE = 225.0 / 360.0;
-  public static final double ELBOW_MAX_VOLTAGE_FF = 2.0;
-  public static final double ELBOW_PROPORTIONAL_GAIN_SLOT_0 = 1.5; //UP
-  public static final double ELBOW_PROPORTIONAL_GAIN_SLOT_1 = 0.025; //DOWN
-  public static final double ELBOW_DERIVATIVE_GAIN_SLOT_0 = 0.0009;
-  public static final double ELBOW_DERIVATIVE_GAIN_SLOT_1 = 0.0001;
-  public static final double ELBOW_INTEGRAL_GAIN = 0.000015;
-  public static final double ELBOW_IZONE = 5.0;
-  public static final double ELBOW_TOLERANCE = ELBOW_ROTATIONS_PER_DEGREE / 2.0;
-  public static final double ELBOW_NUDGE_DEGREES = 3.0;
-  public static final int ELBOW_ENCODER_COUNT_PER_REV = 8192;
-  public static final double ELBOW_POSITION_OFFSET = 9;
+  // Needs Calculation
+  // To calculate kS find smallest volatage to move
+  // To calculate kG, and kV use Recalc.
+  public static final double ELEVATOR_STATIC_GAIN = 0.1;
+  public static final double ELEVATOR_GRAVITY_GAIN = 0.14;
+  public static final double ELEVATOR_VELOCITY_GAIN = 1.41;
+  public static final double ELEVATOR_ACCELERATION_GAIN = 0.01;
 
-  public static final double SHOULDER_ROTATIONS_PER_DEGREE = 500.0 / 360.0;
-  // needs fixing; moves to fast and with to much force.
-  public static final double SHOULDER_MAX_VOLTAGE_FF = 0.1;
-  public static final double SHOULDER_PROPORTIONAL_GAIN_SLOT_0 = 0.001; // Scoring (May change to 0.022)
-  public static final double SHOULDER_PROPORTIONAL_GAIN_SLOT_1 = 0.025; // Returning from score (May change to 0.033)
-  public static final double SHOULDER_INTEGRAL_GAIN_SLOT_0 = 0.00005;
-  public static final double SHOULDER_DERIVATIVE_GAIN = 0.06;
-  public static final double SHOULDER_TOLERANCE = SHOULDER_ROTATIONS_PER_DEGREE / 2.0;
-  public static final double SHOULDER_NUDGE_DEGREES = 3.0; //Placeholder value, this will 
-  public static final int SHOULDER_ENCODER_COUNT_PER_REV = 8192;
-  public static final double SHOULDER_ENCODER_ROTATIONS_PER_DEGREE = 1.89;
-  public static final double SHOULDER_POSITION_OFFSET = 3.5;
-  
-  public static final double WRIST_ROTATIONS_PER_DEGREE = 60.0 / 360.0;
-  //TODO maybe tune this?
-  public static final double WRIST_MAX_VOLTAGE_FF = 0.0;
-  //TODO this is really snappy, but it might be too high.
-  public static final double WRIST_PROPORTIONAL_GAIN = 0.01;
-  public static final double WRIST_TOLERANCE = WRIST_ROTATIONS_PER_DEGREE / 2.0;
-  public static final double WRIST_NUDGE_DEGREES = 4.0;
-  public static final int WRIST_ENCODER_COUNTS_PER_REV = 8192;
-  public static final double WRIST_ENCODER_OFFSET = -7.5;
-  public static final double WRIST_ENCODER_ZERO_THRESHOLD = 3.0; // random test value
+  public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
+    
+  public static final double INDEXER_MOTOR_GEAR_RATIO = 1.0;
 
-  public static final int ROLLER_MOTOR = 12;
+  public static final double INTAKE_MOTOR_GEAR_RATIO = 1.0;
+  public static final double BAR_MOTOR_GEAR_RATIO = 1.0;
 
-  public static final double INTAKE_SPEED = 0.4;
-  public static final double INTAKE_HOLD_SPEED = 0.05;
+  public static final double INTAKE_SPEED = 1.0;
+  public static final double INTAKE_LOW_POSITION = 110;
+  public static final double INTAKE_HIGH_POSITION = 240;
 
-  public static final double SCORE_SPEED_CONE = -0.35;
-  public static final double SCORE_SPEED_CUBE = -0.25;
+  public static final int LEFT_FLYWHEEL = 51;
+  public static final int RIGHT_FLYWHEEL = 52;
+  public static final int INDEXER = 16;
+
+  public static final int LEFT_RAISE_MOTOR = 99;
+  public static final int RIGHT_RAISE_MOTOR = 13;
+
+  public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
+  public static final double TARGET_X = 0.196;
+
+  public static final double ELEVATOR_PIVOT_HEIGHT = Units.inchesToMeters(23.75);
+  public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(12);
+  public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
+
+  public static final int ARM_MOTOR_LEFT = 65;
+  public static final int ARM_MOTOR_RIGHT = 67;
+
+  //relative to ground
+  public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
+  public static final double ELEVATOR_X_OFFSET = Units.inchesToMeters(-1); //positive further back negative further forward
+
+  public static final double FLYWHEEL_CIRCUMFERENCE = Math.PI*Units.inchesToMeters(4);
+
+  public static final int INDEX_BEAMBREAKER = 0;
+
+  public static final double INDEXER_FEED_SPEED = 0.9;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;
@@ -218,6 +218,10 @@ public final class Constants {
   public static final double AUTO_THETA_KP = 1.0;
   public static final double AUTO_THETA_KI = 0.0;
   public static final double AUTO_THETA_KD = 0.0;
+
+  public static final int FRONT_INTAKE_MOTOR = 15;
+  public static final int INTAKE_BAR_MOTOR = 17;
+  public static final int INTAKE_ROLLER_MOTOR = 18;
 
   public static final Mode currentMode = Mode.REAL;
 

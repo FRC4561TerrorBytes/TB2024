@@ -1,0 +1,99 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.957401441118672,
+        "y": 5.774342272368756
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.588210194422641,
+        "y": 6.651820511885806
+      },
+      "isLocked": false,
+      "linkedName": "out2"
+    },
+    {
+      "anchor": {
+        "x": 3.892615101144693,
+        "y": 5.547612425391122
+      },
+      "prevControl": {
+        "x": 4.409352286638066,
+        "y": 6.27884429165533
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "shootPose"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin Flywheels"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 2.0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "78 Note",
+  "previewStartingState": {
+    "rotation": -17.020525611519652,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

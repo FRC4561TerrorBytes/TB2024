@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.4639590646702656,
+        "y": 2.7247379850885065
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.157681241588304,
+        "y": 1.9357990387895598
+      },
+      "isLocked": false,
+      "linkedName": "AlexShoot2-1"
+    },
+    {
+      "anchor": {
+        "x": 7.971003836744517,
+        "y": 0.8842810448778786
+      },
+      "prevControl": {
+        "x": 7.277281659826478,
+        "y": 1.1971361442722868
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Alexout5"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -17.175903615746638,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Alex Flip",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
