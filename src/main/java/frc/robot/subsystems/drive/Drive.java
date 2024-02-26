@@ -13,10 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.Collections;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,10 +23,9 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -38,18 +33,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.LimelightTarget_Detector;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LocalADStarAK;
-import frc.robot.util.PoseEstimator;
-import frc.robot.util.PoseEstimator.TimestampedVisionUpdate;
+
 
 public class Drive extends SubsystemBase {
 
@@ -62,18 +52,27 @@ public class Drive extends SubsystemBase {
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
-  public static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Pose2d pose = new Pose2d();
-  private Rotation2d lastGyroRotation = new Rotation2d();
+  private Rotation2d rawGyroRotation = new Rotation2d();
+  private SwerveModulePosition[] lastModulePositions = // For delta tracking
+      new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+      };
+
+  private SwerveDrivePoseEstimator m_poseEstimator =
+    new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+
 
   //CHANGE THE NUMBERS IN THE VECTOR BUILDER
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
-  private PoseEstimator m_poseEstimator = new PoseEstimator(visionMeasurementStdDevs);
+  // private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
   public Drive(
       GyroIO gyroIO,
@@ -137,38 +136,39 @@ public class Drive extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-    // Update odometry
-    SwerveModulePosition[] wheelDeltas = new SwerveModulePosition[4];
-    for (int i = 0; i < 4; i++) {
-      wheelDeltas[i] = modules[i].getPositionDelta();
+    // Read wheel positions and deltas from each module
+    SwerveModulePosition[] modulePositions = getModulePositions();
+    SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+    for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+      moduleDeltas[moduleIndex] =
+          new SwerveModulePosition(
+              modulePositions[moduleIndex].distanceMeters
+                  - lastModulePositions[moduleIndex].distanceMeters,
+              modulePositions[moduleIndex].angle);
+      lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
     }
-    // The twist represents the motion of the robot since the last
-    // loop cycle in x, y, and theta based only on the modules,
-    // without the gyro. The gyro is always disconnected in simulation.
-    var twist = kinematics.toTwist2d(wheelDeltas);
+
+    // Update gyro angle
     if (gyroInputs.connected) {
-      // If the gyro is connected, replace the theta component of the twist
-      // with the change in angle since the last loop cycle.
-      twist =
-          new Twist2d(
-              twist.dx, twist.dy, gyroInputs.yawPosition.minus(lastGyroRotation).getRadians());
-      lastGyroRotation = gyroInputs.yawPosition;
-    }
-    // Apply the twist (change since last loop cycle) to the current pose
-
-      m_poseEstimator.addDriveData(Timer.getFPGATimestamp(), twist);
-
-    LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
-
-    var closestTag = getClosestTag("limelight-test");
-    if (results.targetingResults.valid && closestTag != null) {
-      m_poseEstimator.addVisionData(Collections.singletonList(new TimestampedVisionUpdate(Timer.getFPGATimestamp(), results.targetingResults.getBotPose2d_wpiBlue(), visionMeasurementStdDevs)));
-      Logger.recordOutput("updating with tags", true);
+      // Use the real gyro angle
+      rawGyroRotation = gyroInputs.yawPosition;
     } else {
-      Logger.recordOutput("updating with tags", false);
+      // Use the angle delta from the kinematics and module deltas
+      Twist2d twist = kinematics.toTwist2d(moduleDeltas);
+      rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 
-    pose = getPose();
+    // Apply odometry update
+    m_poseEstimator.update(rawGyroRotation, modulePositions);
+
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
+    if(limelightMeasurement.tagCount >= 2)
+    {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      m_poseEstimator.addVisionMeasurement(
+          limelightMeasurement.pose,
+          limelightMeasurement.timestampSeconds);
+    }
   }
 
   /**
@@ -242,22 +242,37 @@ public class Drive extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     //return pose;
-    return m_poseEstimator.getLatestPose();
+    return m_poseEstimator.getEstimatedPosition();
   }
 
-  @AutoLogOutput(key = "Odometry/3dRobot")
-  public Pose3d get3dPose() {
-    return new Pose3d(m_poseEstimator.getLatestPose());
+  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
+  private SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] states = new SwerveModulePosition[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getPosition();
+    }
+    return states;
   }
+
 
   public Rotation2d getRotation() {
     //return pose.getRotation();
-    return m_poseEstimator.getLatestPose().getRotation();
+    return getPose().getRotation();
   }
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    this.pose = pose;
+    m_poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+  }
+
+    /**
+   * Adds a vision measurement to the pose estimator.
+   *
+   * @param visionPose The pose of the robot as measured by the vision camera.
+   * @param timestamp The timestamp of the vision measurement in seconds.
+   */
+  public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
+    m_poseEstimator.addVisionMeasurement(visionPose, timestamp);
   }
 
   public void resetGyro() {
@@ -272,14 +287,6 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
-  }
-
-  private int getGPCount(LimelightResults results) {
-    int count = 0;
-    for ( LimelightTarget_Detector targets : results.targetingResults.targets_Detector) {
-      count++;
-    }
-    return count;
   }
 
   private LimelightTarget_Fiducial getClosestTag(String cameraName) {
