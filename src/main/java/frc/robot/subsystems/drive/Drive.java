@@ -35,6 +35,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
@@ -93,13 +94,9 @@ public class Drive extends SubsystemBase {
         this::runVelocity,
         new HolonomicPathFollowerConfig(
             MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
+        () -> 
+        DriverStation.getAlliance().isPresent()
+          && DriverStation.getAlliance().get() == Alliance.Red,
         this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(

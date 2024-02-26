@@ -108,12 +108,6 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(1),
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
-        // drive = new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFX(0),
-        // new ModuleIOTalonFX(1),
-        // new ModuleIOTalonFX(2),
-        // new ModuleIOTalonFX(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
         //elevator = new Elevator(new ElevatorIOReal());
         //arm = new Arm(null);
@@ -222,9 +216,6 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED), indexer));
 
     driverController.leftStick().and(driverController.rightStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
-
-    //controller.a().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_HIGH_POSITION)));
-    //controller.y().whileTrue(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
 
     // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
     //controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
