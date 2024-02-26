@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -18,10 +19,9 @@ import frc.robot.Constants;
 /** Add your docs here. */
 public class IntakeIOReal implements IntakeIO{
 
-    private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE, MotorType.kBrushless);
-    private final CANSparkMax m_backIntake = new CANSparkMax(Constants.BACK_INTAKE, MotorType.kBrushless);
-    private final CANSparkMax m_intakeRotater = new CANSparkMax(Constants.INTAKE_ROTATOR, MotorType.kBrushless);
-    private final CANSparkMax m_rotatorRoller = new CANSparkMax(Constants.ROTATOR_ROLLER, MotorType.kBrushless);
+    private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE_MOTOR, MotorType.kBrushless);
+    private final CANSparkMax m_intakeRotater = new CANSparkMax(Constants.INTAKE_BAR_MOTOR, MotorType.kBrushless);
+    //private final CANSparkMax m_rotatorRoller = new CANSparkMax(Constants.INTAKE_ROLLER_MOTOR, MotorType.kBrushless);
     private RelativeEncoder m_intakeEncoder;
     private SparkPIDController m_intakeController;
     private SparkAbsoluteEncoder m_intakeThroughboreEncoder;
@@ -30,42 +30,41 @@ public class IntakeIOReal implements IntakeIO{
 
         // Restore front/back factory defaults
         m_frontIntake.restoreFactoryDefaults();
-        m_backIntake.restoreFactoryDefaults();
         m_intakeRotater.restoreFactoryDefaults();
-        m_rotatorRoller.restoreFactoryDefaults();
+        //m_rotatorRoller.restoreFactoryDefaults();
 
         // Idle phase for front and back
-        m_frontIntake.setIdleMode(IdleMode.kBrake);
+        m_frontIntake.setIdleMode(IdleMode.kCoast);
         m_intakeRotater.setIdleMode(IdleMode.kBrake);
-        m_rotatorRoller.setIdleMode(IdleMode.kBrake);
+        //m_rotatorRoller.setIdleMode(IdleMode.kCoast);
 
         // Limit of currents front/back
-        m_frontIntake.setSmartCurrentLimit(20);
+        m_frontIntake.setSmartCurrentLimit(30);
         m_intakeRotater.setSmartCurrentLimit(20);
-        m_rotatorRoller.setSmartCurrentLimit(20);
+        //m_rotatorRoller.setSmartCurrentLimit(20);
 
         //Voltage compensation
         m_frontIntake.enableVoltageCompensation(12.0);
         m_intakeRotater.enableVoltageCompensation(12.0);
-        m_rotatorRoller.enableVoltageCompensation(12.0);
+        //m_rotatorRoller.enableVoltageCompensation(12.0);
 
         //Set inverted
         m_frontIntake.setInverted(false);
         m_intakeRotater.setInverted(false);
-        m_rotatorRoller.setInverted(false);
-
-        m_backIntake.follow(m_frontIntake, false);
+        //m_rotatorRoller.setInverted(false);
 
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kForward,true);
         m_intakeRotater.enableSoftLimit(SoftLimitDirection.kReverse,true);
 
-        m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 0.0);
-        m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 0.0);
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kForward,(float) 105.0);
+        m_intakeRotater.setSoftLimit(SoftLimitDirection.kReverse,(float) 245.0);
+
+        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 50);
+        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 50);
 
         m_frontIntake.burnFlash();
-        m_backIntake.burnFlash();
         m_intakeRotater.burnFlash();
-        m_rotatorRoller.burnFlash();
+        //m_rotatorRoller.burnFlash();
 
         //Get encoder
         m_intakeEncoder = m_intakeRotater.getEncoder();
@@ -97,7 +96,7 @@ public class IntakeIOReal implements IntakeIO{
 
     public void setIntakeSpeed(double velocity) {
         m_frontIntake.set(velocity);
-        m_rotatorRoller.set(velocity);
+        //m_rotatorRoller.setVoltage(velocity * 12);
     };
 
     public void setBarAngle(double barAngle) {

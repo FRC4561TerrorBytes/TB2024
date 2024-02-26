@@ -7,8 +7,12 @@ package frc.robot.subsystems.shooter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,8 +26,8 @@ public class Shooter extends SubsystemBase {
 
     private ShooterIO io;
     private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-    private final SysIdRoutine sysId;
 
+    private final SysIdRoutine sysId;
     public double m_velocitySetpoint;
     private double m_angle;
     private double m_height;
@@ -50,6 +54,7 @@ public class Shooter extends SubsystemBase {
 
                 break;
         }
+        SignalLogger.setPath("/media/sda1/");
 
         // Configure SysId
         sysId =
@@ -58,11 +63,10 @@ public class Shooter extends SubsystemBase {
               null,
               null,
               null,
-              (state) -> Logger.recordOutput("Shooter/SysIdState", state.toString())),
+              (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
+            SignalLogger.start();
     }
-    
-
 
     @Override
     public void periodic() {
@@ -73,7 +77,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/Height", m_height);
     }
 
-    /** Run open loop at the specified voltage. */
+        /** Run open loop at the specified voltage. */
     public void runVolts(double volts) {
     io.setVoltage(volts);
     }
@@ -159,8 +163,12 @@ public class Shooter extends SubsystemBase {
     io.stopFlywheel();
   }
 
+  public void setVoltage(double voltage) {
+    io.setVoltage(voltage);
+  }
+
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps - 0.15;
+    return inputs.shooterVelocityMPS >= mps;
   }
 
   public boolean noteShot(){
@@ -182,10 +190,6 @@ public class Shooter extends SubsystemBase {
   public Command launchCommand() {
     return Commands.sequence(
                 NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
-            Commands.idle())
-        .finallyDo(
-            () -> {
-              io.setFlywheelSpeed(7);
-            });
+            Commands.idle());
   }
 }

@@ -100,8 +100,8 @@ public final class Constants {
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
   public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
-  public static final double DRIVE_CURRENT_LIMIT = 80.0;
-  public static final int TURN_CURRENT_LIMIT = 40;
+  public static final double DRIVE_CURRENT_LIMIT = 40.0;
+  public static final int TURN_CURRENT_LIMIT = 20;
   public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
   public static final double DRIVE_CURRENT_TIME_THRESHOLD = 0.1; // seconds
   // current limits for drivetrain turn and steer motors
@@ -176,18 +176,16 @@ public final class Constants {
   public static final double INTAKE_MOTOR_GEAR_RATIO = 1.0;
   public static final double BAR_MOTOR_GEAR_RATIO = 1.0;
 
-  public static final int ROLLER_MOTOR = 12;
+  public static final double INTAKE_SPEED = 1.0;
+  public static final double INTAKE_LOW_POSITION = 110;
+  public static final double INTAKE_HIGH_POSITION = 240;
 
-  public static final double INTAKE_SPEED = 0.7;
-  public static final double INTAKE_LOW_POSITION = 135;
-  public static final double INTAKE_HIGH_POSITION = 0;
-
-  public static final int LEFT_FLYWHEEL = 99;
-  public static final int RIGHT_FLYWHEEL = 99;
-  public static final int INDEXER = 99;
+  public static final int LEFT_FLYWHEEL = 51;
+  public static final int RIGHT_FLYWHEEL = 52;
+  public static final int INDEXER = 16;
 
   public static final int LEFT_RAISE_MOTOR = 99;
-  public static final int RIGHT_RAISE_MOTOR = 99;
+  public static final int RIGHT_RAISE_MOTOR = 13;
 
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
   public static final double TARGET_X = 0.196;
@@ -207,7 +205,7 @@ public final class Constants {
 
   public static final int INDEX_BEAMBREAKER = 0;
 
-  public static final double INDEXER_FEED_SPEED = 0.05;
+  public static final double INDEXER_FEED_SPEED = 0.9;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;
@@ -221,12 +219,11 @@ public final class Constants {
   public static final double AUTO_THETA_KI = 0.0;
   public static final double AUTO_THETA_KD = 0.0;
 
-  public static final int FRONT_INTAKE = 15;
-  public static final int BACK_INTAKE = 16;
-  public static final int INTAKE_ROTATOR = 17;
-  public static final int ROTATOR_ROLLER = 22;
+  public static final int FRONT_INTAKE_MOTOR = 15;
+  public static final int INTAKE_BAR_MOTOR = 17;
+  public static final int INTAKE_ROLLER_MOTOR = 18;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */

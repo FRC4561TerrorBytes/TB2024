@@ -4,28 +4,30 @@
 
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 
 public class SnapTo90 extends Command {
 
-  private PIDController pidController = new PIDController(0, 0, 0);
+  private PIDController pidController = new PIDController(0.0175, 0, 0.002);
 
   private Drive drive;
 
-  @AutoLogOutput(key = "Snap90/Angle Setpoint") 
   private int degreesClosestTo = 0;
 
-  @AutoLogOutput(key = "Snap90/Rotate From")
   private double angle;
+
+  double rotationRate;
 
   public SnapTo90(Drive drive) {
     this.drive = drive;
 
-    pidController.enableContinuousInput(-180, 180);
+    pidController.enableContinuousInput(0, 360);
     pidController.setTolerance(1);
 
     addRequirements(drive);
@@ -36,29 +38,19 @@ public class SnapTo90 extends Command {
   public void initialize() {
     pidController.reset();
 
-    angle = drive.getRotation().getDegrees();
+    angle = drive.getRotation().getDegrees() + 180;
 
-    double closest = 999.0;
-
-    if(Math.abs(angle - 360) < closest){
-      closest = Math.abs(angle - 360);
-      degreesClosestTo = 360;
+    if(angle >= 270 || angle <= 45){
+      degreesClosestTo = 0;
     }
-    if(Math.abs(angle - 270) < closest){
-      closest = Math.abs(angle - 270);
-      degreesClosestTo = 270;
-    }
-    if(Math.abs(angle - 180) < closest){
-      closest = Math.abs(angle - 180);
-      degreesClosestTo = 180;
-    }
-    if(Math.abs(angle - 90) < closest){
-      closest = Math.abs(angle - 90);
+    else if(angle > 45 && angle <= 135){
       degreesClosestTo = 90;
     }
-    if(Math.abs(angle + 0) < closest){
-      closest = Math.abs(angle + 0);
-      degreesClosestTo = 0;
+    else if(angle > 135 && angle <= 225){
+      degreesClosestTo = 180;
+    }
+    else{
+      degreesClosestTo = 270;
     }
 
     pidController.setSetpoint(degreesClosestTo);
@@ -69,8 +61,17 @@ public class SnapTo90 extends Command {
   public void execute() {
     double rawAngle = drive.getRotation().getDegrees();
 
-    DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.0,
-      () -> pidController.calculate(rawAngle) + (1.2 * Math.signum(pidController.calculate(rawAngle))));
+    rotationRate = pidController.calculate(rawAngle + 180);    
+    rotationRate += 1.2 * Math.signum(rotationRate);
+    rotationRate = MathUtil.applyDeadband(rotationRate, 0.1);
+
+    rotationRate = Math.copySign(rotationRate * rotationRate, rotationRate);
+
+    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, rotationRate * drive.getMaxAngularSpeedRadPerSec(), drive.getRotation()));
+
+    Logger.recordOutput("Snap90/Raw Angle", rawAngle + 180);
+    Logger.recordOutput("Snap90/Rotation Rate", rotationRate);
+    Logger.recordOutput("Snap90/Angle Setpoint", degreesClosestTo);
   }
 
   // Called once the command ends or is interrupted.

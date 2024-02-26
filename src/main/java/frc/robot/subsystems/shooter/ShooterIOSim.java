@@ -24,7 +24,7 @@ public class ShooterIOSim implements ShooterIO{
         shooterMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.shooterVelocityMPS = shooterMotorSim.getAngularVelocityRPM() * Constants.FLYWHEEL_CIRCUMFERENCE / 60;
-        inputs.shooterCurrentAmps = new double[] {Math.abs(shooterMotorSim.getCurrentDrawAmps())};
+        inputs.shooterCurrentAmps = shooterMotorSim.getCurrentDrawAmps();
 
         shooterMotorSim.setInputVoltage(
             shooterFeedforward.calculate(
