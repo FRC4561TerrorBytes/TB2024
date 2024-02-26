@@ -57,7 +57,6 @@ public class Drive extends SubsystemBase {
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
-  private Pose2d pose = new Pose2d();
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
@@ -325,13 +324,13 @@ public class Drive extends SubsystemBase {
   }
 
   public double getDistanceFromSpeaker(){
-    return getSpeakerPose().getTranslation().getDistance(pose.getTranslation());
+    return getSpeakerPose().getTranslation().getDistance(getPose().getTranslation());
   }
 
   public double getRotationFromSpeaker(){
     
     //using the convention of 0 facing forward on blue origin(facing red) and 0 facing forward on red is facing blue wall
-    Pose2d relative = getSpeakerPose().relativeTo(pose);
+    Pose2d relative = getSpeakerPose().relativeTo(getPose());
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
   }
