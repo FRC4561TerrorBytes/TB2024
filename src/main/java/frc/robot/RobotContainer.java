@@ -36,6 +36,10 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOReal;
+import frc.robot.subsystems.arm.ArmIOSim;
 //import frc.robot.subsystems.arm.Arm;
 //import frc.robot.subsystems.arm.ArmIO;
 //import frc.robot.subsystems.arm.ArmIOSim;
@@ -45,6 +49,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOReal;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
 //import frc.robot.subsystems.elevator.Elevator;
 //import frc.robot.subsystems.elevator.ElevatorIO;
 //import frc.robot.subsystems.elevator.ElevatorIOReal;
@@ -73,8 +81,8 @@ import frc.robot.util.NoteVisualizer;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  //private final Elevator elevator;
-  //private final Arm arm;
+  private final Elevator elevator;
+  private final Arm arm;
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
@@ -91,7 +99,7 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final Orchestra m_orchestra = new Orchestra("src/main/deploy/verySecretMusicFile.chrp");
+  private final Orchestra m_orchestra = new Orchestra("/home/lvuser/deploy/verySecretMusicFile.chrp");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -109,8 +117,8 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
         // flywheel = new Flywheel(new FlywheelIOTalonFX());
-        //elevator = new Elevator(new ElevatorIOReal());
-        //arm = new Arm(null);
+        elevator = new Elevator(new ElevatorIOReal());
+        arm = new Arm(new ArmIOReal());
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
         indexer = new Indexer(new IndexerIOReal());
@@ -126,8 +134,8 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        //elevator = new Elevator(new ElevatorIOSim());
-        //arm = new Arm(new ArmIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
+        arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
         indexer = new Indexer(new IndexerIOSim());
         intake = new Intake(new IntakeIOSim());
@@ -142,8 +150,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        //elevator = new Elevator(new ElevatorIO() {});
-        //arm = new Arm(new ArmIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
+        arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
         indexer = new Indexer(new IndexerIO() {});
         intake = new Intake(new IntakeIO() {});
@@ -151,7 +159,7 @@ public class RobotContainer {
         break;
     }
 
-    //NoteVisualizer.setElevatorSystem(elevator);
+    NoteVisualizer.setElevatorSystem(elevator);
     NoteVisualizer.setRobotPoseSupplier(drive::getPose);
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
@@ -237,16 +245,12 @@ public class RobotContainer {
         () -> 0));
   }
 
-  //public double getArmAngleDegrees() {
-  //  return arm.getArmAngleDegrees();
-  //}
+  public double getArmAngleDegrees() {
+   return arm.getArmAngleDegrees();
+  }
 
-  //public double getElevatorPositionMeters() {
-  //  return elevator.getElevatorPositionMeters();
-  //}
-
-  public double getIntakeAngleDegrees() {
-    return intake.getPivotAngle();
+  public double getElevatorPositionMeters() {
+   return elevator.getElevatorPositionMeters();
   }
 
   public void autonomousInit() {
@@ -258,11 +262,7 @@ public class RobotContainer {
   //  arm.seedEncoders();
   //  arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
-
-  public void periodic() {
-    System.out.println("\n\n\n\n" + indexer.noteInIndexer() + "\n\n\n");
-  }
-
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

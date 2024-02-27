@@ -4,16 +4,14 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.*;
-
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,9 +33,6 @@ public class Shooter extends SubsystemBase {
     private double m_pivotAngle;
 
     private double xOffset;
-
-    private double launchSpeedFeeder = 0.75;
-    private double launchDelay = 1.0;
 
     public Shooter(ShooterIO io) {
         this.io = io;

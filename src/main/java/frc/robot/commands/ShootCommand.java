@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 //import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
@@ -38,8 +36,7 @@ public class ShootCommand extends Command {
     shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
     targetMPS = shooter.getVelocity();
     shooter.setFlywheelSpeed(20);
-    // shooter.setVoltage(12);
-    //arm.setArmSetpoint(shooter.getPivotAngle());
+    // arm.setArmSetpoint(shooter.getPivotAngle());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,14 +45,14 @@ public class ShootCommand extends Command {
     if(shooter.flywheelUpToSpeed(17.5)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
-        //shooter.launchCommand().withTimeout(0.5).schedule();
+        shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    new WaitCommand(1.0).schedule();
+    // new WaitCommand(1.0).schedule();
   }
 
   // Returns true when the command should end.

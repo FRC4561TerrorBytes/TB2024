@@ -26,6 +26,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -239,6 +240,11 @@ public class Drive extends SubsystemBase {
   public Pose2d getPose() {
     //return pose;
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  @AutoLogOutput(key = "Odometry/Robot 3d")
+  public Pose3d get3dPose() {
+    return new Pose3d(m_poseEstimator.getEstimatedPosition());
   }
 
   /** Returns the module positions (turn angles and drive positions) for all of the modules. */
