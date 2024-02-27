@@ -19,6 +19,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -108,6 +109,17 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
         turnSparkMax.enableVoltageCompensation(12.0);
         turnSparkMax.setIdleMode(IdleMode.kBrake);
+
+        REVLibError turnCurrent = turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
+        boolean turnSparkMaxNoLongerGood;
+        if ( turnCurrent!= REVLibError.kOk)
+        {
+            turnSparkMaxNoLongerGood = true;
+        } else
+        {
+            turnSparkMaxNoLongerGood = false;
+        }
+        Logger.recordOutput("selfCheck/turnSparkMax{errorLabel}", !turnSparkMaxNoLongerGood);
 
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();

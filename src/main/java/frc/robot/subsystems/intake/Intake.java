@@ -45,17 +45,8 @@ public class Intake extends SubsystemBase {
         Logger.processInputs("Intake/IO", inputs);
     }
 
-    @AutoLogOutput(key = "Intake/Bar Angle")
-    public double getPivotAngle(){
-      return inputs.barAngle;
-    }
-
     public void setIntakeSpeed(double velocity){
       io.setIntakeSpeed(velocity);
-    }
-
-    public void setBarAngle(double barAngle){
-      io.setBarAngle(barAngle);
     }
 
     public void stopIntake(){
