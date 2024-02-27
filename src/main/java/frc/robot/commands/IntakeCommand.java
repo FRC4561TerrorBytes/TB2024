@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.indexer.Indexer;
@@ -41,9 +43,9 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      new WaitCommand(0.5);
-      intake.stopIntake();
-      indexer.stopIndexer();
+      Commands.waitSeconds(0.75)
+        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
       // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
   }
