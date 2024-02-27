@@ -121,28 +121,6 @@ public final class Constants {
       * 0.10033 * Math.PI
       / CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION;
 
-  // fyi: offset right means lateral offset from center
-  public static final double LEFT_CAMERA_OFFSET_RIGHT = Units.inchesToMeters(11.75);
-  public static final double RIGHT_CAMERA_OFFSET_RIGHT = Units.inchesToMeters(-11.75);
-  public static final double LEFT_CAMERA_OFFSET_BACK = Units.inchesToMeters(20);
-  public static final double RIGHT_CAMERA_OFFSET_BACK = Units.inchesToMeters(20);
-  public static final double VISION_ROTATION_SCALING = 0.1;
-  public static final double VISION_LATERAL_SCALING = 2;
-
-  public static final double VISION_ROTATION_FLOOR_CLAMP = 2;
-  public static final double VISION_ROTATION_CEILING_CLAMP = 50;
-  public static final double VISION_ROTATION_DEADBAND = 6;
-  public static final double VISION_ROTATION_TOLERANCE = 2;
-
-  public static final double VISION_LATERAL_FLOOR_CLAMP = 0.2;
-  public static final double VISION_LATERAL_CEILING_CLAMP = 0.5;
-  public static final double VISION_LATERAL_DEADBAND = 0.1;
-  public static final double VISION_LATERAL_TOLERANCE = 0.05;
-
-  public static final double VISION_END_DISTANCE = Units.inchesToMeters(9);
-  public static final double VISION_FORWARD_FLOOR_CLAMP = 0.2;
-  public static final double VISION_FORWARD_CEILING_CLAMP = 1;
-
 //   public static final SparkPIDConfig TURN_MOTOR_CONFIG = new SparkPIDConfig(
 //       false,
 //       NEO_MAX_RPM,
@@ -191,7 +169,7 @@ public final class Constants {
   public static final double TARGET_X = 0.196;
 
   public static final double ELEVATOR_PIVOT_HEIGHT = Units.inchesToMeters(23.75);
-  public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(12);
+  public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(11);
   public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
 
   public static final int ARM_MOTOR_LEFT = 65;
