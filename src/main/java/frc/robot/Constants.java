@@ -223,7 +223,7 @@ public final class Constants {
   public static final int INTAKE_BAR_MOTOR = 17;
   public static final int INTAKE_ROLLER_MOTOR = 18;
 
-  public static final Mode currentMode = Mode.REAL;
+  public static final Mode currentMode = Mode.SIM;
 
   public static enum Mode {
     /** Running on a real robot. */
