@@ -40,7 +40,11 @@ public class SnapTo90 extends Command {
 
     angle = drive.getRotation().getDegrees() + 180;
 
-    if(angle >= 270 || angle <= 45){
+    if(angle >= 225 && angle <= 315){
+      degreesClosestTo = 270;
+    }
+    else if ((angle >= 315 && angle <= 360) || (angle <= 45 && angle >= 0))
+    {
       degreesClosestTo = 0;
     }
     else if(angle > 45 && angle <= 135){

@@ -196,9 +196,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
-            () -> driverController.getRightX()));
+            () -> -controller.getLeftY(),
+            () -> -controller.getLeftX(),
+            () -> controller.getRightX()));
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
@@ -225,9 +225,9 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake));
 
-    driverController.b().whileTrue(new SnapTo90(drive));
+    controller.b().whileTrue(new SnapTo90(drive));
 
-    driverController.x().whileTrue(new SnapTo45(drive));
+    controller.x().whileTrue(new SnapTo45(drive));
 
     driverController.rightTrigger().whileTrue(
       DriveCommands.joystickDrive(
