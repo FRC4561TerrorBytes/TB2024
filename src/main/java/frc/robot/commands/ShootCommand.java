@@ -6,28 +6,32 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-//import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.NoteVisualizer;
 
 public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
   Drive m_driveSubsystem;
   Intake intake;
-  private Indexer indexer;
-  //Arm arm;
+  Indexer indexer;
+  Arm arm;
+  NoteVisualizer visualizer;
   double targetMPS = 0;
 
-  public ShootCommand(Shooter shooter, Drive driveSubsystem, Indexer indexer, Intake intake) {
+  public ShootCommand(Shooter shooter, Drive driveSubsystem, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
     this.shooter = shooter;
     m_driveSubsystem = driveSubsystem;
     this.indexer = indexer;
     this.intake = intake;
-    //this.arm = arm;
-    addRequirements(shooter, indexer, intake);
+    this.arm = arm;
+    this.visualizer = visualizer;
+
+    addRequirements(shooter, shooter, indexer, intake);
   }
 
   // Called when the command is initially scheduled.
