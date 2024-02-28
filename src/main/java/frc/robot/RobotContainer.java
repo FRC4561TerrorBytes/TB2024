@@ -245,9 +245,7 @@ public class RobotContainer {
   //  return elevator.getElevatorPositionMeters();
   //}
 
-  public double getIntakeAngleDegrees() {
-    return intake.getPivotAngle();
-  }
+
 
   public void autonomousInit() {
   //  arm.seedEncoders();

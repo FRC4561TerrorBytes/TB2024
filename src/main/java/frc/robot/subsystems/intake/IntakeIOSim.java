@@ -36,9 +36,7 @@ public class IntakeIOSim implements IntakeIO{
         barMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.intakeAppliedVolts = intakeAppliedVolts;
-        inputs.barAngle = Units.radiansToDegrees(barMotorSim.getAngularPositionRad());
         inputs.intakeCurrentAmps = new double[] {Math.abs(intakeMotorSim.getCurrentDrawAmps())};
-        inputs.barSetPoint = barSetPoint;
 
         barMotorSim.setInputVoltage(
             barFeedforward.calculate(barMotorSim.getAngularVelocityRadPerSec())
@@ -50,7 +48,4 @@ public class IntakeIOSim implements IntakeIO{
         intakeMotorSim.setInputVoltage(intakeAppliedVolts);
     }
 
-    public void setBarAngle(double setPoint){
-        barSetPoint = setPoint;
-    }
 }
