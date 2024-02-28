@@ -6,6 +6,9 @@ package frc.robot.subsystems.elevator;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
@@ -44,7 +47,7 @@ public class ElevatorIOReal implements ElevatorIO{
         {
             leftMotorNoLongerGood = false;
         }
-        SmartDashboard.putBoolean("elevatorStatus", !leftMotorNoLongerGood);
+        Logger.recordOutput("selfCheck/leftElevatorMotor", !leftMotorNoLongerGood);
 
         REVLibError rightCurrent = m_rightRaiseMotor.setSmartCurrentLimit(40);
         m_rightRaiseMotor.setIdleMode(IdleMode.kBrake);
@@ -55,7 +58,7 @@ public class ElevatorIOReal implements ElevatorIO{
         {
             rightMotorNoLongerGood = false;
         }
-        SmartDashboard.putBoolean("elevatorStatus", !rightMotorNoLongerGood);
+        Logger.recordOutput("selfCheck/rightElevatorMotor", !rightMotorNoLongerGood);
 
         m_leftRaiseEncoder = m_leftRaiseMotor.getEncoder();
         m_leftRaiseEncoder.setVelocityConversionFactor(16.5);
