@@ -198,4 +198,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
     public void setTurnBrakeMode(boolean enable) {
         turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
     }
+
+    public TalonFX getDriveMotor() {
+        return driveTalon;
+    }
 }

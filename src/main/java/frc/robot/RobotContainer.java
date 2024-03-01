@@ -16,7 +16,6 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -91,12 +90,9 @@ public class RobotContainer {
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final Orchestra m_orchestra = new Orchestra("src/main/deploy/verySecretMusicFile.chrp");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    m_orchestra.addInstrument(m_musicTalon);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -205,6 +201,9 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     //controller.povUp().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     //controller.povDown().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+
+    driverController.povUp().whileTrue(new RunCommand(() -> drive.playSound(), drive));
+    driverController.povDown().onTrue(new InstantCommand(() -> drive.stopSound(), drive));
 
     //controller.b().whileTrue(new ShootCommand(shooter, drive, arm));
 

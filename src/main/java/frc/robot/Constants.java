@@ -70,35 +70,35 @@ public final class Constants {
       new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
           -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
    //MODULE 0
-  public static final int FRONT_LEFT_DRIVE_MOTOR = 1; //5 for fulcrum
-  public static final int FRONT_LEFT_STEER_MOTOR = 2; //6 for fulcrum
-  public static final int FRONT_LEFT_STEER_ENCODER = 21; //23 for fulcrum
-  public static final InvertedValue FRONT_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive; //counter clockwise for fulcrum
+  public static final int FRONT_LEFT_DRIVE_MOTOR = 5; //5 for fulcrum
+  public static final int FRONT_LEFT_STEER_MOTOR = 6; //6 for fulcrum
+  public static final int FRONT_LEFT_STEER_ENCODER = 22; //23 for fulcrum
+  public static final InvertedValue FRONT_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive; //counter clockwise for fulcrum
   public static final boolean FRONT_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double FRONT_LEFT_STEER_OFFSET = Units.degreesToRadians(102.4711046);//0.2393010029 Fulcrum drivebase
+  public static final double FRONT_LEFT_STEER_OFFSET =0.2393010029;//0.2393010029 Fulcrum drivebase
 
   //MODULE 1
-  public static final int FRONT_RIGHT_DRIVE_MOTOR = 7; //3 for fulcrum
-  public static final int FRONT_RIGHT_STEER_MOTOR = 8; //4 for fulcrum
-  public static final int FRONT_RIGHT_STEER_ENCODER = 24; //22 for fulcrum
+  public static final int FRONT_RIGHT_DRIVE_MOTOR = 3; //3 for fulcrum
+  public static final int FRONT_RIGHT_STEER_MOTOR = 4; //4 for fulcrum
+  public static final int FRONT_RIGHT_STEER_ENCODER = 22; //22 for fulcrum
   public static final InvertedValue FRONT_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive;
   public static final boolean FRONT_RIGHT_TURN_MOTOR_INVERTED = true;
-  public static final double FRONT_RIGHT_STEER_OFFSET = Units.degreesToRadians(76);//1.73646625; Fulcrum drivebase
+  public static final double FRONT_RIGHT_STEER_OFFSET = 1.73646625;//1.73646625; Fulcrum drivebase
   //MODULE 2
-  public static final int BACK_LEFT_DRIVE_MOTOR = 3; //7 for fulcrum
-  public static final int BACK_LEFT_STEER_MOTOR = 4; //8 for fulcrum
-  public static final int BACK_LEFT_STEER_ENCODER = 22; //24 for fulcum
-  public static final InvertedValue BACK_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive; //counter clockwise for fulcrum
+  public static final int BACK_LEFT_DRIVE_MOTOR = 7; //7 for fulcrum
+  public static final int BACK_LEFT_STEER_MOTOR = 8; //8 for fulcrum
+  public static final int BACK_LEFT_STEER_ENCODER = 24; //24 for fulcum
+  public static final InvertedValue BACK_LEFT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive; //counter clockwise for fulcrum
   public static final boolean BACK_LEFT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_LEFT_STEER_OFFSET = Units.degreesToRadians(-140);//-2.5632818; Fulcrum drivebase
+  public static final double BACK_LEFT_STEER_OFFSET = -2.5632818;//-2.5632818; Fulcrum drivebase
 
   //MODULE 3
-  public static final int BACK_RIGHT_DRIVE_MOTOR = 5; //1 for fulcrum
-  public static final int BACK_RIGHT_STEER_MOTOR = 6; //2 for fulcrum
-  public static final int BACK_RIGHT_STEER_ENCODER = 23; //21 for fulcrum
-  public static final InvertedValue BACK_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.CounterClockwise_Positive; //clockwise for fulcrum
+  public static final int BACK_RIGHT_DRIVE_MOTOR = 1; //1 for fulcrum
+  public static final int BACK_RIGHT_STEER_MOTOR = 2; //2 for fulcrum
+  public static final int BACK_RIGHT_STEER_ENCODER = 21; //21 for fulcrum
+  public static final InvertedValue BACK_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive; //clockwise for fulcrum
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
-  public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
+  public static final double BACK_RIGHT_STEER_OFFSET = -2.1184274;//-2.1184274; Fulcrum drivebase
 
   public static final double DRIVE_CURRENT_LIMIT = 40.0;
   public static final int TURN_CURRENT_LIMIT = 20;
@@ -201,7 +201,7 @@ public final class Constants {
   public static final int INTAKE_BAR_MOTOR = 17;
   public static final int INTAKE_ROLLER_MOTOR = 18;
 
-  public static final Mode currentMode = Mode.SIM;
+  public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
     /** Running on a real robot. */

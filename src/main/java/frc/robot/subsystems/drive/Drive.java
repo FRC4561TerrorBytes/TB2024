@@ -16,6 +16,7 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -70,6 +71,8 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator m_poseEstimator =
     new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+    private final Orchestra m_orchestra = new Orchestra("/home/lvuser/deploy/verySecretMusicFile.chrp");
+
 
   //CHANGE THE NUMBERS IN THE VECTOR BUILDER
   // private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
@@ -111,6 +114,8 @@ public class Drive extends SubsystemBase {
 
     pidController.enableContinuousInput(-180, 180);
     pidController.setTolerance(1);
+
+    m_orchestra.addInstrument(modules[0].getDriveMotor());
   }
 
   public void periodic() {
@@ -330,5 +335,13 @@ public class Drive extends SubsystemBase {
     Pose2d relative = getSpeakerPose().relativeTo(getPose());
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
+  }
+
+  public void playSound(){
+    m_orchestra.play();
+  }
+
+  public void stopSound() {
+    m_orchestra.stop();
   }
 }

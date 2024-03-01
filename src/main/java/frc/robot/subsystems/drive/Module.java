@@ -15,6 +15,8 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -122,6 +124,10 @@ public class Module {
     // Open loop drive control
     io.setDriveVoltage(volts);
     speedSetpoint = null;
+  }
+
+  public TalonFX getDriveMotor() {
+    return io.getDriveMotor();
   }
 
   /** Disables all outputs to motors. */
