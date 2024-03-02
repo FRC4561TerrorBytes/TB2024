@@ -31,7 +31,7 @@ public class ShootCommand extends Command {
     this.arm = arm;
     this.visualizer = visualizer;
 
-    addRequirements(shooter, shooter, indexer, intake);
+    addRequirements(shooter, indexer, intake);
   }
 
   // Called when the command is initially scheduled.
@@ -62,15 +62,16 @@ public class ShootCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    return false;
     // return !indexer.noteInIndexer();//Should be beam breaks when we get them
-    if(!indexer.noteInIndexer()){
-      for(int i = 0; i < 25; i++){
-        continue;
-      }
-      return true;
-    }
-    else{
-      return false;
-    }
+    // if(!indexer.noteInIndexer()){
+    //   for(int i = 0; i < 25; i++){
+    //     continue;
+    //   }
+    //   return true;
+    // }
+    // else{
+    //   return false;
+    // }
   }
 }

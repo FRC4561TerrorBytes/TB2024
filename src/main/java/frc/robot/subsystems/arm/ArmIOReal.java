@@ -1,10 +1,14 @@
 package frc.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 
@@ -14,28 +18,28 @@ public class ArmIOReal implements ArmIO {
     private TalonFX m_armMotorRight;
     private DutyCycleEncoder encoder;
 
-public void updateInputs(ArmIOInputs inputs) {
-    inputs.armSetpoint = armSetPoint;
-    inputs.armAbsoluteAngleDegrees = encoder.getAbsolutePosition();
-    inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
-    inputs.armCurrentAmps = new double[] {m_armMotorLeft.getSupplyCurrent().getValueAsDouble()};
-}
-
 public ArmIOReal () {
     encoder = new DutyCycleEncoder(0);
-    encoder.setDistancePerRotation(360.0);
+    // encoder.setDistancePerRo tation(360.0);
+    encoder.setPositionOffset(0.666666);
 
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
 
     var armConfig = new TalonFXConfiguration();
 
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
     armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
+    armConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    m_armMotorLeft.setInverted(false);
-    m_armMotorRight.setInverted(false);
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 170;
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-    armConfig.Feedback.SensorToMechanismRatio = 50.0;
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = -5;
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+
+    armConfig.Feedback.SensorToMechanismRatio = 0.122;
 
     // set slot 0 gains
     var slot0Configs = armConfig.Slot0;
@@ -52,12 +56,27 @@ public ArmIOReal () {
     motionMagicConfigs.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
 
     m_armMotorLeft.getConfigurator().apply(armConfig);
+
+    m_armMotorLeft.setInverted(true);
+    m_armMotorRight.setInverted(true);
+
     m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT,true)); 
+}
+
+public void updateInputs(ArmIOInputs inputs) {
+    inputs.armSetpoint = armSetPoint;
+    inputs.armAbsoluteAngleDegrees = Units.rotationsToDegrees(encoder.getDistance());
+    inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
+    inputs.armCurrentAmps = new double[] {m_armMotorLeft.getSupplyCurrent().getValueAsDouble()};
 }
 
 public void seedEncoders() {
     m_armMotorLeft.setPosition(encoder.getDistance());
     m_armMotorRight.setPosition(encoder.getDistance());
+}
+
+public void stopArm() {
+    m_armMotorLeft.setVoltage(0);
 }
 
 public void setArmSetpoint(double angle){

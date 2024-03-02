@@ -14,6 +14,8 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.robot.Constants;
@@ -35,10 +37,12 @@ public class ElevatorIOReal implements ElevatorIO{
     private boolean leftMotorNoLongerGood;
     private boolean rightMotorNoLongerGood;
 
+    private AnalogInput analogInput;
+
     public ElevatorIOReal(){
 
         REVLibError leftCurrent = m_leftRaiseMotor.setSmartCurrentLimit(40);
-        m_leftRaiseMotor.setIdleMode(IdleMode.kBrake);
+        m_leftRaiseMotor.setIdleMode(IdleMode.kCoast);
         if (leftCurrent != REVLibError.kOk)
         {
             leftMotorNoLongerGood = true;
@@ -49,7 +53,7 @@ public class ElevatorIOReal implements ElevatorIO{
         Logger.recordOutput("selfCheck/leftElevatorMotor", !leftMotorNoLongerGood);
 
         REVLibError rightCurrent = m_rightRaiseMotor.setSmartCurrentLimit(40);
-        m_rightRaiseMotor.setIdleMode(IdleMode.kBrake);
+        m_rightRaiseMotor.setIdleMode(IdleMode.kCoast);
         if (rightCurrent != REVLibError.kOk)
         {
             rightMotorNoLongerGood = true;
@@ -64,21 +68,21 @@ public class ElevatorIOReal implements ElevatorIO{
 
         m_rightRaiseMotor.follow(m_rightRaiseMotor, true);
 
-        AnalogInput input = new AnalogInput(0);
+        analogInput = new AnalogInput(0);
 
-        this.m_analogPotentiometer = new AnalogPotentiometer(input, 0, 0);
+        this.m_analogPotentiometer = new AnalogPotentiometer(analogInput, Units.inchesToMeters(50), Units.inchesToMeters(-1.5));
 
-        elevatorSetPoint = m_analogPotentiometer.get();
+        // elevatorSetPoint = m_analogPotentiometer.get();
     }
 
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.elevatorPositionMeters = m_analogPotentiometer.get();
         inputs.elevatorVelocityRadPerSec = m_leftRaiseEncoder.getVelocity();
         inputs.elevatorAppliedVolts = m_leftRaiseMotor.getBusVoltage();
-        inputs.elevatorCurrentAmps = new double[] {m_leftRaiseMotor.getOutputCurrent()};
+        inputs.elevatorCurrentAmps = m_leftRaiseMotor.getOutputCurrent();
         inputs.elevatorSetpoint = elevatorSetPoint;
 
-        Logger.recordOutput("Elevator String Pot", m_analogPotentiometer.get());
+        Logger.recordOutput("String Pot Voltage", analogInput.getVoltage());
     }
 
     public void setElevatorVoltage(double volts) {

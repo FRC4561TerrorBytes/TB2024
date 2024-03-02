@@ -13,7 +13,7 @@ public interface ElevatorIO {
         public double elevatorPositionMeters = 0.705;
         public double elevatorVelocityRadPerSec = 0.0;
         public double elevatorAppliedVolts = 0.0;
-        public double[] elevatorCurrentAmps = new double[] {};
+        public double elevatorCurrentAmps = 0.0;
 
         public double elevatorSetpoint = 0.0;
     }

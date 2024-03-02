@@ -100,7 +100,7 @@ public final class Constants {
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
   public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
-  public static final double ARM_CURRENT_LIMIT = 40.0;
+  public static final double ARM_CURRENT_LIMIT = 20.0;
 
   public static final double DRIVE_CURRENT_LIMIT = 40.0;
   public static final int TURN_CURRENT_LIMIT = 20;

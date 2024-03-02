@@ -31,4 +31,6 @@ public interface ArmIO {
     public default void incrementArmAngle(double inc) {}
 
     public default void decrementArmAngle(double inc) {}
+
+    public default void stopArm() {}
 }

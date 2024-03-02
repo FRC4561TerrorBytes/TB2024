@@ -29,8 +29,8 @@ public class IntakeIOReal implements IntakeIO{
         m_frontIntake.setIdleMode(IdleMode.kCoast);
 
         // Limit of currents front/back
-        REVLibError frontCurrent = m_frontIntake.setSmartCurrentLimit(30);
-        m_frontIntake.setSmartCurrentLimit(30);
+        REVLibError frontCurrent = m_frontIntake.setSmartCurrentLimit(35);
+        m_frontIntake.setSmartCurrentLimit(35);
         boolean frontIntakeNoLongerGood;
         if ( frontCurrent!= REVLibError.kOk)
         {
@@ -45,7 +45,7 @@ public class IntakeIOReal implements IntakeIO{
         m_frontIntake.enableVoltageCompensation(12.0);
 
         //Set inverted
-        m_frontIntake.setInverted(false);
+        m_frontIntake.setInverted(true);
 
         m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 50);
         m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 50);

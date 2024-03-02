@@ -180,13 +180,14 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY() / driveRatio,
-            () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() / driveRatio));
+            () -> -driverController.getLeftY(), /// driveRatio,
+            () -> -driverController.getLeftX(), // / driveRatio,
+            () -> -driverController.getRightX())); // / driveRatio));
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
+    arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     driverController.povUp().whileTrue(new RunCommand(() -> drive.playSound(), drive));
     driverController.povDown().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
@@ -201,12 +202,16 @@ public class RobotContainer {
       driverController.a().whileTrue(new SnapTo45(drive));
 
     //DEEKSHI CONTROLS
-    operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    // operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    // operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
   }
 
   public double getArmAngleDegrees() {
     return arm.getArmAngleDegrees();
+  }
+
+  public void flywheelSpinup() {
+    
   }
 
   public double getElevatorPositionMeters() {
@@ -218,13 +223,13 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    arm.seedEncoders();
-    arm.setArmSetpoint(arm.getArmAngleDegrees());
+    // arm.seedEncoders();
+    // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   public void teleopInit() {
-    arm.seedEncoders();
-    arm.setArmSetpoint(arm.getArmAngleDegrees());
+    // arm.seedEncoders();
+    // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   public void adjustDriveRatio(){

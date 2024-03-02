@@ -26,7 +26,7 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.elevatorPositionMeters = getMetersPerDegree();
         inputs.elevatorVelocityRadPerSec = elevatorMotorSim.getAngularVelocityRadPerSec();
         inputs.elevatorAppliedVolts = elevatorAppliedVolts;
-        inputs.elevatorCurrentAmps = new double[] {Math.abs(elevatorMotorSim.getCurrentDrawAmps())};
+        inputs.elevatorCurrentAmps = elevatorMotorSim.getCurrentDrawAmps();
 
         inputs.elevatorSetpoint = elevatorSetpoint;
     }
