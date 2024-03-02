@@ -4,10 +4,14 @@
 
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 
 import frc.robot.Constants;
 
@@ -25,8 +29,18 @@ public class IntakeIOReal implements IntakeIO{
         m_frontIntake.setIdleMode(IdleMode.kCoast);
 
         // Limit of currents front/back
+        REVLibError frontCurrent = m_frontIntake.setSmartCurrentLimit(30);
         m_frontIntake.setSmartCurrentLimit(30);
-
+        boolean frontIntakeNoLongerGood;
+        if ( frontCurrent!= REVLibError.kOk)
+        {
+            frontIntakeNoLongerGood = true;
+        } else
+        {
+            frontIntakeNoLongerGood = false;
+        }
+        Logger.recordOutput("selfCheck/frontIntake", !frontIntakeNoLongerGood);
+        
         //Voltage compensation
         m_frontIntake.enableVoltageCompensation(12.0);
 
