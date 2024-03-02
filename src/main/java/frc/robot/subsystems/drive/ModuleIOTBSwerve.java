@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -97,6 +99,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        driveConfig.CurrentLimits.StatorCurrentLimit = 100;
+        driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         driveTalon.getConfigurator().apply(driveConfig);
         setDriveBrakeMode(true, isDriveMotorInverted);
         
@@ -195,5 +199,9 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
     public void setTurnBrakeMode(boolean enable) {
         turnSparkMax.setIdleMode(enable ? IdleMode.kBrake : IdleMode.kCoast);
+    }
+
+    public TalonFX getDriveTalon() {
+        return driveTalon;
     }
 }

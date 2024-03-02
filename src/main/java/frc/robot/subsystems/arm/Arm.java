@@ -48,7 +48,7 @@ public class Arm extends SubsystemBase {
     }
     
     public double getArmAngleDegrees() {
-        return inputs.armAngleDegrees;
+        return inputs.armAbsoluteAngleDegrees;
     }
 
     public void incrementArmAngle(double inc) {
@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
 
         runArmWithVoltage(
             armFeedforward.calculate(inputs.armVelocityRadPerSec)
-              + armFeedback.calculate(inputs.armAngleDegrees, inputs.armSetpoint));
+              + armFeedback.calculate(inputs.armAbsoluteAngleDegrees, inputs.armSetpoint));
 
         
     }

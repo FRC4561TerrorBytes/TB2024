@@ -11,7 +11,8 @@ public interface ArmIO {
 
     @AutoLog
     public static class ArmIOInputs {
-        public double armAngleDegrees = 0.0;
+        public double armAbsoluteAngleDegrees = 0.0;
+        public double armRelativeAngleDegrees = 0.0;
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
         public double[] armCurrentAmps = new double[] {};

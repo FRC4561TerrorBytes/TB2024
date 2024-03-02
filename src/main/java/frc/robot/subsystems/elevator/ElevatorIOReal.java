@@ -4,19 +4,18 @@
 
 package frc.robot.subsystems.elevator;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import org.littletonrobotics.junction.Logger;
 
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -29,7 +28,7 @@ public class ElevatorIOReal implements ElevatorIO{
 
     private ElevatorFeedforward feedforward = new ElevatorFeedforward(Constants.ELEVATOR_STATIC_GAIN, Constants.ELEVATOR_GRAVITY_GAIN, Constants.ELEVATOR_VELOCITY_GAIN, Constants.ELEVATOR_ACCELERATION_GAIN);
 
-    private PIDController raiseMotorController = new PIDController(0.11, 0, 0);
+    private PIDController raiseMotorController = new PIDController(0.01, 0, 0);
 
     private final AnalogPotentiometer m_analogPotentiometer;
 
@@ -61,23 +60,25 @@ public class ElevatorIOReal implements ElevatorIO{
         Logger.recordOutput("selfCheck/rightElevatorMotor", !rightMotorNoLongerGood);
 
         m_leftRaiseEncoder = m_leftRaiseMotor.getEncoder();
-        m_leftRaiseEncoder.setVelocityConversionFactor(16.5);
+        m_leftRaiseEncoder.setPositionConversionFactor(16.15);
 
         m_rightRaiseMotor.follow(m_rightRaiseMotor, true);
 
-        this.m_analogPotentiometer = new AnalogPotentiometer(0, 0, 0);
+        AnalogInput input = new AnalogInput(0);
 
-        elevatorSetPoint = m_leftRaiseEncoder.getPosition();
-        //elevatorSetPoint = m_analogPotentiometer.get();
+        this.m_analogPotentiometer = new AnalogPotentiometer(input, 0, 0);
+
+        elevatorSetPoint = m_analogPotentiometer.get();
     }
 
     public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.elevatorPositionMeters = m_leftRaiseEncoder.getPosition();
-        //inputs.elevatorPositionMeters = m_analogPotentiometer.get();
+        inputs.elevatorPositionMeters = m_analogPotentiometer.get();
         inputs.elevatorVelocityRadPerSec = m_leftRaiseEncoder.getVelocity();
         inputs.elevatorAppliedVolts = m_leftRaiseMotor.getBusVoltage();
         inputs.elevatorCurrentAmps = new double[] {m_leftRaiseMotor.getOutputCurrent()};
         inputs.elevatorSetpoint = elevatorSetPoint;
+
+        Logger.recordOutput("Elevator String Pot", m_analogPotentiometer.get());
     }
 
     public void setElevatorVoltage(double volts) {

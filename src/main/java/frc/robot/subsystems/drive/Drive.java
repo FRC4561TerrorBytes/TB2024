@@ -16,6 +16,7 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -57,6 +58,8 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
+  private final Orchestra m_orchestra = new Orchestra("/home/lvuser/deploy/verySecretMusicFile.chrp");
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -110,8 +113,8 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
-    pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(1);
+        m_orchestra.addInstrument(modules[0].getDriveTalon());
+
   }
 
   public void periodic() {
@@ -161,7 +164,7 @@ public class Drive extends SubsystemBase {
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
     if(limelightMeasurement.tagCount >= 2)
     {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
       m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds);
@@ -336,5 +339,13 @@ public class Drive extends SubsystemBase {
     Pose2d relative = getSpeakerPose().relativeTo(getPose());
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
+  }
+
+  public void playSound() {
+    m_orchestra.play();
+  }
+
+  public void resetTrack() {
+    m_orchestra.stop();
   }
 }

@@ -16,38 +16,43 @@ public class ArmIOReal implements ArmIO {
 
 public void updateInputs(ArmIOInputs inputs) {
     inputs.armSetpoint = armSetPoint;
-    inputs.armAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
+    inputs.armAbsoluteAngleDegrees = encoder.getAbsolutePosition();
+    inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
     inputs.armCurrentAmps = new double[] {m_armMotorLeft.getSupplyCurrent().getValueAsDouble()};
 }
+
 public ArmIOReal () {
     encoder = new DutyCycleEncoder(0);
     encoder.setDistancePerRotation(360.0);
+
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
+
     var armConfig = new TalonFXConfiguration();
-    armConfig.CurrentLimits.SupplyCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
+
+    armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
+
     m_armMotorLeft.setInverted(false);
     m_armMotorRight.setInverted(false);
+
+    armConfig.Feedback.SensorToMechanismRatio = 50.0;
 
     // set slot 0 gains
     var slot0Configs = armConfig.Slot0;
     slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs.kV = 5.64; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kA = 0.08; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kP = 0.001; // A position error of 2.5 rotations results in 12 V output
     slot0Configs.kI = 0; // no output for integrated error
-    slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    slot0Configs.kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
     var motionMagicConfigs = armConfig.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
 
     m_armMotorLeft.getConfigurator().apply(armConfig);
-    m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT,false));
-
-
-    
+    m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT,true)); 
 }
 
 public void seedEncoders() {

@@ -21,7 +21,7 @@ public class ArmIOSim implements ArmIO {
     public void updateInputs(ArmIOInputs inputs) {
         armMotorSim.update(LOOP_PERIOD_SECS);
 
-        inputs.armAngleDegrees = Units.radiansToDegrees(armMotorSim.getAngularPositionRad());
+        inputs.armAbsoluteAngleDegrees = Units.radiansToDegrees(armMotorSim.getAngularPositionRad());
         inputs.armVelocityRadPerSec = armMotorSim.getAngularVelocityRadPerSec();
         inputs.armAppliedVolts = armAppliedVolts;
         inputs.armCurrentAmps = new double[] {Math.abs(armMotorSim.getCurrentDrawAmps())};

@@ -16,7 +16,6 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -27,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -78,28 +78,19 @@ public class RobotContainer {
   private final Indexer indexer;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
-  private final TalonFX m_musicTalon = new TalonFX(5);
-
   //divides the movement by the value of drive ratio.
   private double driveRatio = 1.0;
   private boolean slowMode = false;
 
-
-  // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
-
-  private final CommandXboxController driverController = new CommandXboxController(1); //Change when done
-  private final CommandXboxController operatorController = new CommandXboxController(2); //Change when done
+  // Controllers
+  private final CommandXboxController driverController = new CommandXboxController(0); //Change when done
+  private final CommandXboxController operatorController = new CommandXboxController(1); //Change when done
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
-  private final Orchestra m_orchestra = new Orchestra("src/main/deploy/verySecretMusicFile.chrp");
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    m_orchestra.addInstrument(m_musicTalon);
 
     switch (Constants.currentMode) {
       case REAL:
@@ -111,13 +102,7 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(1),
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
-        // drive = new Drive(
-        // new GyroIOPigeon2(),
-        // new ModuleIOTalonFX(0),
-        // new ModuleIOTalonFX(1),
-        // new ModuleIOTalonFX(2),
-        // new ModuleIOTalonFX(3));
-        // flywheel = new Flywheel(new FlywheelIOTalonFX());
+
         elevator = new Elevator(new ElevatorIOReal());
         arm = new Arm(new ArmIOReal());
         shooter = new Shooter(new ShooterIOReal());
@@ -201,14 +186,11 @@ public class RobotContainer {
 
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
-    operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
-
-    controller.rightTrigger().whileTrue(new InstantCommand(() -> intake.setIntakeSpeed(Constants.INTAKE_SPEED)));
-
-    // controller.b().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(180)));
-    controller.x().whileTrue(new InstantCommand(() -> arm.setArmSetpoint(shooter.getPivotAngle())));
+    indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
    
+    driverController.povUp().whileTrue(new RunCommand(() -> drive.playSound(), drive));
+    driverController.povDown().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
+
     //PANAV CONTROLS
     driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer));
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
@@ -217,6 +199,10 @@ public class RobotContainer {
       driverController.b().whileTrue(new SnapTo90(drive));
 
       driverController.a().whileTrue(new SnapTo45(drive));
+
+    //DEEKSHI CONTROLS
+    operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
   }
 
   public double getArmAngleDegrees() {
