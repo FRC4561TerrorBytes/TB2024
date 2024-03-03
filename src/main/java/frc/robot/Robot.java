@@ -133,6 +133,8 @@ public class Robot extends LoggedRobot {
 
     m_elevator.setLength(robotContainer.getElevatorPositionMeters());
     m_arm.setAngle(robotContainer.getArmAngleDegrees());
+
+    robotContainer.flywheelSpinup();
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.

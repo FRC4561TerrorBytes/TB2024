@@ -16,10 +16,12 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,6 +62,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.NoteVisualizer;
 
 /**
@@ -88,6 +91,8 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -211,7 +216,16 @@ public class RobotContainer {
   }
 
   public void flywheelSpinup() {
-    
+    if (DriverStation.isTeleopEnabled()
+      && drive.getPose()
+          .getTranslation()
+          .getDistance(
+            AllianceFlipUtil.apply(
+              blueSpeaker.toTranslation2d()))
+          < Units.feetToMeters(25)
+      && indexer.noteInIndexer()) {
+      new RunCommand(() -> shooter.setFlywheelSpeed(10), shooter);
+    }
   }
 
   public double getElevatorPositionMeters() {
