@@ -30,9 +30,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.GameMode.Mode;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
@@ -185,30 +187,85 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(), /// driveRatio,
+            () -> -driverController.getLeftY(), // / driveRatio,
             () -> -driverController.getLeftX(), // / driveRatio,
             () -> -driverController.getRightX())); // / driveRatio));
 
+    // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
-    driverController.povUp().whileTrue(new RunCommand(() -> drive.playSound(), drive));
-    driverController.povDown().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
+    // Attempted orchestra
+    driverController.start().whileTrue(new RunCommand(() -> drive.playSound(), drive));
+    driverController.back().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
 
-    //PANAV CONTROLS
+  //PANAV CONTROLS
+    // Intake command
     driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer));
+
+    // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
+
+    // Run shoot command 
     driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
 
-      driverController.b().whileTrue(new SnapTo90(drive));
+    // Snap 90 and 45 bindings
+    driverController.b().whileTrue(new SnapTo90(drive));
+    driverController.a().whileTrue(new SnapTo45(drive));
 
-      driverController.a().whileTrue(new SnapTo45(drive));
+    // Auto align based on current mode
+    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake));
 
-    //DEEKSHI CONTROLS
-    // operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    // operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    // Lock drive to no rotation
+    driverController.rightTrigger().whileTrue(
+      DriveCommands.joystickDrive(
+        drive,
+        () -> -driverController.getLeftY(),
+        () -> -driverController.getLeftX(),
+        () -> 0));
+
+    //Drive Nudges
+    driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
+    driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
+    driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
+    driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
+
+  //DEEKSHI CONTROLS
+    // Set elevator climbing setpoints
+    operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+
+    // Nudge elevator 5 inches up
+    operatorController.povUp().onTrue(new InstantCommand(
+      () -> elevator.setElevatorSetpoint(
+        elevator.getElevatorPositionMeters() + Units.inchesToMeters(5))));
+
+    // Nudge elevator 5 inches down
+    operatorController.povDown().onTrue(new InstantCommand(
+      () -> elevator.setElevatorSetpoint(
+        elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
+
+    // Nudge arm 5 degrees up
+    operatorController.povLeft().onTrue(new InstantCommand(
+      () -> arm.setArmSetpoint(
+        arm.getArmAngleDegrees() + 5)));
+
+    // Nudge arm 5 degrees down
+    operatorController.povRight().onTrue(new InstantCommand(
+      () -> arm.setArmSetpoint(
+        arm.getArmAngleDegrees() + -5)));
+
+    // Mode bindings
+    operatorController.b().onTrue(new InstantCommand(
+      () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
+
+    operatorController.x().onTrue(new InstantCommand(
+      () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
+
+    operatorController.a().onTrue(new InstantCommand(
+      () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
   }
 
   public double getArmAngleDegrees() {

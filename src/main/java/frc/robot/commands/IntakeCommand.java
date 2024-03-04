@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.GameMode;
+import frc.robot.GameMode.Mode;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 
@@ -27,7 +29,7 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    GameMode.getInstance().setCurrentMode(Mode.INTAKING);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,6 +44,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    GameMode.getInstance().setCurrentMode(Mode.IDLE);
       Commands.waitSeconds(0.75)
         .andThen(new InstantCommand(() -> intake.stopIntake()))
         .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
