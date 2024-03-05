@@ -15,7 +15,7 @@ public interface ArmIO {
         public double armRelativeAngleDegrees = 0.0;
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
-        public double[] armCurrentAmps = new double[] {};
+        public double armCurrentAmps = 0.0;
 
         public double armSetpoint = 0.0;
     }
@@ -33,4 +33,6 @@ public interface ArmIO {
     public default void decrementArmAngle(double inc) {}
 
     public default void stopArm() {}
+
+    public default void nudge(double degrees) {}
 }

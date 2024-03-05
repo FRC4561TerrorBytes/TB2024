@@ -67,6 +67,11 @@ public class Arm extends SubsystemBase {
         io.setArmVoltage(0);
     }
 
+    public void nudge(double degrees){
+        System.out.println("\n\n\n\n\n\n\n\n\nArm nudge is running");
+        io.nudge(degrees);
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

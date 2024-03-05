@@ -189,13 +189,13 @@ public class RobotContainer {
             drive,
             () -> -driverController.getLeftY(), // / driveRatio,
             () -> -driverController.getLeftX(), // / driveRatio,
-            () -> -driverController.getRightX())); // / driveRatio));
+            () -> driverController.getRightX())); // / driveRatio));
 
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
-    arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
+    //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     // Attempted orchestra
     driverController.start().whileTrue(new RunCommand(() -> drive.playSound(), drive));
@@ -266,6 +266,9 @@ public class RobotContainer {
 
     operatorController.a().onTrue(new InstantCommand(
       () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
+
+    SmartDashboard.putData(arm);
+    operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
   }
 
   public double getArmAngleDegrees() {

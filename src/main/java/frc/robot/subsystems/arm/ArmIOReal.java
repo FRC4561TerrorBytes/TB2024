@@ -18,6 +18,9 @@ public class ArmIOReal implements ArmIO {
     private TalonFX m_armMotorRight;
     private DutyCycleEncoder encoder;
 
+    // create a Motion Magic request, voltage output
+    private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
 public ArmIOReal () {
     encoder = new DutyCycleEncoder(0);
     // encoder.setDistancePerRo tation(360.0);
@@ -25,10 +28,11 @@ public ArmIOReal () {
 
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
+    
 
     var armConfig = new TalonFXConfiguration();
 
-    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
     armConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -67,7 +71,7 @@ public void updateInputs(ArmIOInputs inputs) {
     inputs.armSetpoint = armSetPoint;
     inputs.armAbsoluteAngleDegrees = Units.rotationsToDegrees(encoder.getDistance());
     inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
-    inputs.armCurrentAmps = new double[] {m_armMotorLeft.getSupplyCurrent().getValueAsDouble()};
+    inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
 }
 
 public void seedEncoders() {
@@ -80,10 +84,12 @@ public void stopArm() {
 }
 
 public void setArmSetpoint(double angle){
-    // create a Motion Magic request, voltage output
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-
     // set target position to 100 rotations
     m_armMotorLeft.setControl(m_request.withPosition(angle));
+  }
+
+  public void nudge(double degrees){
+    System.out.println("\n\n\n\nArm nudge is running\n\n\n\n\n");
+    m_armMotorLeft.setControl(m_request.withPosition(m_armMotorLeft.getPosition().getValueAsDouble() + degrees));
   }
 }
