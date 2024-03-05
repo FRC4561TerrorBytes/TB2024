@@ -37,18 +37,20 @@ public ArmIOReal () {
     armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
     armConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 170;
+    //These soft limits are highly suspect
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Units.degreesToRotations(30);
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Units.degreesToRotations(-180);
     armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
 
-    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = -5;
-    armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
     armConfig.Feedback.SensorToMechanismRatio = 0.122;
 
     // set slot 0 gains
     var slot0Configs = armConfig.Slot0;
-    slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 5.64; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kS = 0.4;//0.25; // Add 0.25 V output to overcome static friction
+    slot0Configs.kV = 0.2;//2.82; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = 0.08; // An acceleration of 1 rps/s requires 0.01 V output
     slot0Configs.kP = 0.001; // A position error of 2.5 rotations results in 12 V output
     slot0Configs.kI = 0; // no output for integrated error
@@ -61,17 +63,18 @@ public ArmIOReal () {
 
     m_armMotorLeft.getConfigurator().apply(armConfig);
 
-    m_armMotorLeft.setInverted(true);
-    m_armMotorRight.setInverted(true);
+    m_armMotorLeft.setInverted(false);
 
     m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT,true)); 
 }
 
 public void updateInputs(ArmIOInputs inputs) {
-    inputs.armSetpoint = armSetPoint;
+    inputs.armSetpoint = m_request.Position;
     inputs.armAbsoluteAngleDegrees = Units.rotationsToDegrees(encoder.getDistance());
     inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
     inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
+    Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue());
+    Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue());
 }
 
 public void seedEncoders() {
@@ -84,12 +87,15 @@ public void stopArm() {
 }
 
 public void setArmSetpoint(double angle){
-    // set target position to 100 rotations
-    m_armMotorLeft.setControl(m_request.withPosition(angle));
+    // set target position
+    armSetPoint = angle;
+    m_armMotorLeft.setControl(m_request.withPosition(armSetPoint));
   }
 
   public void nudge(double degrees){
     System.out.println("\n\n\n\nArm nudge is running\n\n\n\n\n");
-    m_armMotorLeft.setControl(m_request.withPosition(m_armMotorLeft.getPosition().getValueAsDouble() + degrees));
+    armSetPoint = m_armMotorLeft.getPosition().getValueAsDouble() + degrees;
+    m_armMotorLeft.setControl(m_request.withPosition(armSetPoint));
+
   }
 }
