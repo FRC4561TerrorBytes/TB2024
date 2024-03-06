@@ -23,8 +23,8 @@ public class ArmIOReal implements ArmIO {
 
 public ArmIOReal () {
     encoder = new DutyCycleEncoder(0);
-    // encoder.setDistancePerRo tation(360.0);
-    encoder.setPositionOffset(0.666666);
+    encoder.setDistancePerRotation(1/12.0);
+    encoder.setPositionOffset(0.75);
 
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
@@ -32,20 +32,20 @@ public ArmIOReal () {
 
     var armConfig = new TalonFXConfiguration();
 
-    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
     armConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     //These soft limits are highly suspect
-    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Units.degreesToRotations(30);
     armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.2;
 
-    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Units.degreesToRotations(-180);
-    armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true; 
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.24;
 
 
-    armConfig.Feedback.SensorToMechanismRatio = 0.122;
+    armConfig.Feedback.SensorToMechanismRatio = 50;
 
     // set slot 0 gains
     var slot0Configs = armConfig.Slot0;
@@ -62,19 +62,20 @@ public ArmIOReal () {
     motionMagicConfigs.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
 
     m_armMotorLeft.getConfigurator().apply(armConfig);
+    m_armMotorRight.getConfigurator().apply(armConfig);
 
-    m_armMotorLeft.setInverted(false);
+    m_armMotorLeft.setInverted(true);
 
     m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT,true)); 
 }
 
 public void updateInputs(ArmIOInputs inputs) {
     inputs.armSetpoint = m_request.Position;
-    inputs.armAbsoluteAngleDegrees = Units.rotationsToDegrees(encoder.getDistance());
-    inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
+    inputs.armAbsoluteAngleDegrees = encoder.getDistance();
+    inputs.armRelativeAngleDegrees = Units.rotationsToDegrees(m_armMotorLeft.getPosition().getValueAsDouble());
     inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
-    Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue());
-    Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue());
+    Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
+    Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue().booleanValue());
 }
 
 public void seedEncoders() {
