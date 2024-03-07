@@ -4,10 +4,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
@@ -18,10 +20,12 @@ public class IntakeCommand extends Command {
 
   private Intake intake;
   private Indexer indexer;
+  private GenericHID controllerHID;
 
-  public IntakeCommand(Intake intake, Indexer indexer) {
+  public IntakeCommand(Intake intake, Indexer indexer, GenericHID HID) {
     this.intake = intake;
     this.indexer = indexer;
+    this.controllerHID = HID;
 
     addRequirements(intake, indexer);
   }
@@ -47,9 +51,11 @@ public class IntakeCommand extends Command {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
       Commands.waitSeconds(0.75)
         .andThen(new InstantCommand(() -> intake.stopIntake()))
-        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
+        .alongWith(new InstantCommand(() -> indexer.stopIndexer()))
+        .alongWith(new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1));
       // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
+    
   }
 
   // Returns true when the command should end.

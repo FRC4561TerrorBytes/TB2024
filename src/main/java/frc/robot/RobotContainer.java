@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.GameMode.Mode;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -159,7 +158,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, driverController.getHID()));
     NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
 
@@ -204,7 +203,7 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().whileTrue(new IntakeCommand(intake, indexer));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, driverController.getHID()));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
