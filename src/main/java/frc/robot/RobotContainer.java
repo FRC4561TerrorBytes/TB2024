@@ -250,7 +250,7 @@ public class RobotContainer {
     // Nudge arm 5 degrees up
     operatorController.povLeft().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-        arm.getArmAngleDegrees() + 5)));
+        90)));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(

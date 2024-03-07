@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.util.Units;
@@ -32,34 +33,35 @@ public ArmIOReal () {
 
     var armConfig = new TalonFXConfiguration();
 
-    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     armConfig.CurrentLimits.SupplyCurrentLimit = Constants.ARM_CURRENT_LIMIT;
     armConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     //These soft limits are highly suspect
     armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.2;
+    armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.484131;
 
     armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true; 
-    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.24;
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.015625;
 
 
     armConfig.Feedback.SensorToMechanismRatio = 50;
 
     // set slot 0 gains
     var slot0Configs = armConfig.Slot0;
-    slot0Configs.kS = 0.4;//0.25; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.2;//2.82; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.08; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs.kP = 0.001; // A position error of 2.5 rotations results in 12 V output
-    slot0Configs.kI = 0; // no output for integrated error
-    slot0Configs.kD = 0.0; // A velocity error of 1 rps results in 0.1 V output
+    slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
+    slot0Configs.kS = 0.275;//0.25; // Add 0.25 V output to overcome static friction
+    slot0Configs.kV = 0.02;//2.82; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs.kA = 0.0005; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kP = 0.0004; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs.kI = 0.0005; // no output for integrated error
+    slot0Configs.kD = 0.0003; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
     var motionMagicConfigs = armConfig.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicAcceleration = 35; // Target acceleration of 160 rps/s (0.5 seconds)
 
     m_armMotorLeft.getConfigurator().apply(armConfig);
     m_armMotorRight.getConfigurator().apply(armConfig);
