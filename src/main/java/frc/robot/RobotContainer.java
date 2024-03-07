@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.GameMode.Mode;
+import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
@@ -232,43 +233,51 @@ public class RobotContainer {
     driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
     driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
 
+    operatorController.povUp().onTrue(new InstantCommand(
+      () -> arm.setArmSetpoint(
+        7.7), arm));
+    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.5), indexer));
+    operatorController.rightBumper().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
+
   //DEEKSHI CONTROLS
     // Set elevator climbing setpoints
     operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     // Nudge elevator 5 inches up
-    operatorController.povUp().onTrue(new InstantCommand(
-      () -> elevator.setElevatorSetpoint(
-        elevator.getElevatorPositionMeters() + Units.inchesToMeters(5))));
+    // operatorController.povUp().onTrue(new InstantCommand(
+    //   () -> elevator.setElevatorSetpoint(
+    //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(5))));
 
     // Nudge elevator 5 inches down
-    operatorController.povDown().onTrue(new InstantCommand(
-      () -> elevator.setElevatorSetpoint(
-        elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
+    // operatorController.povDown().onTrue(new InstantCommand(
+    //   () -> elevator.setElevatorSetpoint(
+    //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
 
     // Nudge arm 5 degrees up
     operatorController.povLeft().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-        90)));// arm.getArmAngleDegrees() + 5)));
+        -7), arm));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-        arm.getArmAngleDegrees() - 5),arm));
+      -11),arm));
+
+    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(-6), arm));
 
     // Mode bindings
-    operatorController.b().onTrue(new InstantCommand(
-      () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
+    // operatorController.b().onTrue(new InstantCommand(
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
 
-    operatorController.x().onTrue(new InstantCommand(
-      () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
+    // operatorController.x().onTrue(new InstantCommand(
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
 
-    operatorController.a().onTrue(new InstantCommand(
-      () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
+    // operatorController.a().onTrue(new InstantCommand(
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
 
     SmartDashboard.putData(arm);
-    operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
+    // operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
   }
 
   public double getArmAngleDegrees() {

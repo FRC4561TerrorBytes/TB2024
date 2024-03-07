@@ -31,7 +31,7 @@ public class ShooterIOReal implements ShooterIO {
 
         var leftSlot0Config = leftConfig.Slot0;
         leftSlot0Config.kS = 0.5; // Add 0.25 V output to overcome static friction
-        leftSlot0Config.kV = 0.05; // A velocity target of 1 rps results in 0.12 V output
+        leftSlot0Config.kV = 0.15; // A velocity target of 1 rps results in 0.12 V output
         leftSlot0Config.kA = 0.02; // An acceleration of 1 rps/s requires 0.01 V output
         leftSlot0Config.kP = 0.4; // An error of 1 rps results in 0.11 V output
         leftSlot0Config.kI = 0.0; // no output for integrated error
