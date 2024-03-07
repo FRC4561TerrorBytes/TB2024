@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
@@ -66,7 +67,7 @@ public class NoteAlign extends Command {
     DriveCommands.joystickDrive(drive, () -> xRequest, () -> yRequest, () -> 0.0);
 
     if (inXTol && inYTol) {
-      new IntakeCommand(intake, indexer);
+      new IntakeCommand(intake, indexer, new GenericHID(0));
       DriveCommands.joystickDrive(drive, () -> 0.2, () -> 0.0, () -> 0.0);
     }
   }
