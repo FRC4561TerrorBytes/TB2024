@@ -34,5 +34,7 @@ public interface ArmIO {
 
     public default void stopArm() {}
 
+    public default double getArmEncoderRotation(){return 0.0;}
+
     public default void nudge(double degrees) {}
 }

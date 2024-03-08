@@ -158,18 +158,20 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, driverController.getHID()));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, driverController.getHID()));
     NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
+    NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up FF characterization routines
-    autoChooser.addOption(
-        "Drive FF Characterization",
-        new FeedForwardCharacterization(
-            drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
+    // autoChooser.addOption(
+    //     "Drive FF Characterization",
+    //     new FeedForwardCharacterization(
+    //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
+    autoChooser.addOption("ShootLeave", AutoBuilder.buildAuto("ShootLeave"));
 
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
@@ -187,9 +189,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(), // / driveRatio,
-            () -> -driverController.getLeftX(), // / driveRatio,
-            () -> driverController.getRightX())); // / driveRatio));
+            () -> -driverController.getLeftY() / driveRatio,
+            () -> -driverController.getLeftX() / driveRatio,
+            () -> driverController.getRightX() / driveRatio));
 
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
@@ -198,12 +200,12 @@ public class RobotContainer {
     //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     // Attempted orchestra
-    driverController.start().whileTrue(new RunCommand(() -> drive.playSound(), drive));
-    driverController.back().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
+    // driverController.start().whileTrue(new RunCommand(() -> drive.playSound(), drive));
+    // driverController.back().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, driverController.getHID()));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, driverController.getHID()));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
@@ -215,8 +217,10 @@ public class RobotContainer {
     driverController.b().whileTrue(new SnapTo90(drive));
     driverController.a().whileTrue(new SnapTo45(drive));
 
+    driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
+
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake));
+    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
 
     // Lock drive to no rotation
     driverController.rightTrigger().whileTrue(
@@ -232,16 +236,15 @@ public class RobotContainer {
     driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
     driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
 
-    operatorController.povUp().onTrue(new InstantCommand(
-      () -> arm.setArmSetpoint(
-        7.7), arm));
-    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.5), indexer));
-    operatorController.rightBumper().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
+    // operatorController.povUp().onTrue(new InstantCommand(
+    //   () -> arm.setArmSetpoint(
+    //     7.7), arm));
+    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
 
   //DEEKSHI CONTROLS
     // Set elevator climbing setpoints
-    operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    // operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
+    // operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     // Nudge elevator 5 inches up
     // operatorController.povUp().onTrue(new InstantCommand(
@@ -256,14 +259,17 @@ public class RobotContainer {
     // Nudge arm 5 degrees up
     operatorController.povLeft().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-        -7), arm));// arm.getArmAngleDegrees() + 5)));
+        -6), arm));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-      -11),arm));
+      Constants.ARM_STOW),arm));
 
-    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(-6), arm));
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.5), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.5), arm));
+
+    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(-5.5), arm));
 
     // Mode bindings
     // operatorController.b().onTrue(new InstantCommand(
@@ -316,7 +322,7 @@ public class RobotContainer {
 
   public void adjustDriveRatio(){
     slowMode = !slowMode;
-    if (slowMode = true){
+    if (slowMode == true){
       driveRatio = 2;
     } else {
       driveRatio = 1;

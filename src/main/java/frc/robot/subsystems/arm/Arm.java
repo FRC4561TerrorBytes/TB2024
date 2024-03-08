@@ -72,6 +72,10 @@ public class Arm extends SubsystemBase {
         io.nudge(degrees);
     }
 
+    public double getArmEncoderRotation(){
+        return io.getArmEncoderRotation();
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

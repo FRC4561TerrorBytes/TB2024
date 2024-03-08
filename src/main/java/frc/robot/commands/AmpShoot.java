@@ -39,14 +39,13 @@ public class AmpShoot extends Command {
   public void initialize() {
     shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
     targetMPS = shooter.getVelocity();
-    shooter.setFlywheelSpeed(4);
-    // arm.setArmSetpoint(shooter.getPivotAngle());
+    shooter.setFlywheelSpeed(3.25);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.flywheelUpToSpeed(3.5)){
+    if(shooter.flywheelUpToSpeed(2.75)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
         shooter.launchCommand().withTimeout(0.5).schedule();

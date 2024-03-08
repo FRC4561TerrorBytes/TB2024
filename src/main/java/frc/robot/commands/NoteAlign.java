@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Detector;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -18,12 +19,14 @@ public class NoteAlign extends Command {
   private Drive drive;
   private Indexer indexer;
   private Intake intake;
+  private Arm arm;
 
   /** Creates a new NoteAlign. */
-  public NoteAlign(Drive drive, Indexer indexer, Intake intake) {
+  public NoteAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
+    this.arm = arm;
 
     addRequirements(drive);
   }
@@ -67,7 +70,7 @@ public class NoteAlign extends Command {
     DriveCommands.joystickDrive(drive, () -> xRequest, () -> yRequest, () -> 0.0);
 
     if (inXTol && inYTol) {
-      new IntakeCommand(intake, indexer, new GenericHID(0));
+      new IntakeCommand(intake, indexer, arm, new GenericHID(0));
       DriveCommands.joystickDrive(drive, () -> 0.2, () -> 0.0, () -> 0.0);
     }
   }

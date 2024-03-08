@@ -92,6 +92,10 @@ public void stopArm() {
     m_armMotorLeft.setVoltage(0);
 }
 
+public double getArmEncoderRotation(){
+    return m_armMotorLeft.getPosition().getValueAsDouble();
+}
+
 public void setArmSetpoint(double angle){
     // set target position
     armSetPoint = angle;

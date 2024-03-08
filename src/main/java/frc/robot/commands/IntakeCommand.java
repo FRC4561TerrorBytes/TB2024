@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 
@@ -20,11 +21,13 @@ public class IntakeCommand extends Command {
 
   private Intake intake;
   private Indexer indexer;
+  private Arm arm;
   private GenericHID controllerHID;
 
-  public IntakeCommand(Intake intake, Indexer indexer, GenericHID HID) {
+  public IntakeCommand(Intake intake, Indexer indexer, Arm arm, GenericHID HID) {
     this.intake = intake;
     this.indexer = indexer;
+    this.arm = arm;
     this.controllerHID = HID;
 
     addRequirements(intake, indexer);
@@ -34,6 +37,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
+    arm.setArmSetpoint(Constants.ARM_STOW);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,8 +53,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
-      Commands.waitSeconds(0.75)
-        .andThen(new InstantCommand(() -> intake.stopIntake()))
+        new InstantCommand(() -> intake.stopIntake())
         .alongWith(new InstantCommand(() -> indexer.stopIndexer()))
         .alongWith(new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1));
       // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);

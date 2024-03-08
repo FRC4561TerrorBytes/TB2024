@@ -177,6 +177,8 @@ public final class Constants {
   public static final int ARM_MOTOR_LEFT = 60;
   public static final int ARM_MOTOR_RIGHT = 61;
 
+  public static final double ARM_STOW = -10.0;
+
   //relative to ground
   public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
   public static final double ELEVATOR_X_OFFSET = Units.inchesToMeters(-1); //positive further back negative further forward

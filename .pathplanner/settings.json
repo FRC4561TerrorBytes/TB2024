@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.6604,
-  "robotLength": 0.6604,
+  "robotWidth": 0.66,
+  "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
     "Alex Flip",
@@ -12,8 +12,8 @@
   "autoFolders": [
     "New Folder"
   ],
-  "defaultMaxVel": 4.8,
-  "defaultMaxAccel": 4.5,
+  "defaultMaxVel": 2.4,
+  "defaultMaxAccel": 2.25,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5
