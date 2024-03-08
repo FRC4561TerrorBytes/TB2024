@@ -1,10 +1,14 @@
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 /**
  * A singleton instance of this class holds the current robot state with regard
  * to game objectives such as the current game piece mode.
  */
-public class GameMode {
+public class GameMode extends SubsystemBase{
 
   /** The singleton instance. */
   private static final GameMode INSTANCE = new GameMode();
@@ -47,5 +51,9 @@ public class GameMode {
    */
   public void setCurrentMode(final Mode mode) {
     currentMode = mode;
+  }
+
+  public void periodic() {
+    Logger.recordOutput("GameMode/Mode", currentMode);
   }
 }

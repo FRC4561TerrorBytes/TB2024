@@ -14,6 +14,7 @@
 package frc.robot;
 
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -288,6 +289,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
+    Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }
 

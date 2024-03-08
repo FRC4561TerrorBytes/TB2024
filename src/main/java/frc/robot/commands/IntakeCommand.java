@@ -54,8 +54,9 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
         new InstantCommand(() -> intake.stopIntake())
-        .alongWith(new InstantCommand(() -> indexer.stopIndexer()))
-        .alongWith(new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1));
+        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
+        
+        new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1).schedule();
       // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
     
