@@ -6,9 +6,6 @@ package frc.robot.subsystems.indexer;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
 
@@ -23,8 +20,9 @@ public class IndexerIOReal implements IndexerIO {
     public IndexerIOReal(){
         m_indexer.restoreFactoryDefaults();
         //set inverted here
-        m_indexer.setSmartCurrentLimit(35);
+        m_indexer.setSmartCurrentLimit(60, 35);
         m_indexer.setIdleMode(IdleMode.kBrake);
+        
         m_indexer.burnFlash();
         m_limitSwitch.enableLimitSwitch(false);
     }
@@ -32,7 +30,7 @@ public class IndexerIOReal implements IndexerIO {
      public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerAppliedVolts = m_indexer.getAppliedOutput();
         inputs.indexerState = m_limitSwitch.isPressed();
-        inputs.indexerCurrentAmps = new double[] {m_indexer.getOutputCurrent()};
+        inputs.indexerCurrentAmps = m_indexer.getOutputCurrent();
 
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
     }

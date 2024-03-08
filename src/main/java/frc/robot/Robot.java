@@ -43,8 +43,8 @@ public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
 
-  //public MechanismLigament2d m_arm;
-  //public MechanismLigament2d m_elevator;
+  public MechanismLigament2d m_arm;
+  public MechanismLigament2d m_elevator;
   private MechanismLigament2d m_shooter;
 
   /**
@@ -106,9 +106,9 @@ public class Robot extends LoggedRobot {
 
     MechanismRoot2d root = mech.getRoot("base", 2, 0);
 
-    //m_elevator = root.append(new MechanismLigament2d("elevator", 0, 90));
-    //m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.324, 0, 6, new Color8Bit(Color.kPurple)));
-    //m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.118, 120, 4, new Color8Bit(Color.kHotPink)));
+    m_elevator = root.append(new MechanismLigament2d("elevator", 0, 90));
+    m_arm = m_elevator.append(new MechanismLigament2d("arm", 0.324, 0, 6, new Color8Bit(Color.kPurple)));
+    m_shooter = m_arm.append(new MechanismLigament2d("shooter", 0.118, 120, 4, new Color8Bit(Color.kHotPink)));
 
     SmartDashboard.putData("Mech 2d", mech);
 
@@ -122,19 +122,19 @@ public class Robot extends LoggedRobot {
 
   public void robotPeriodic() {
 
-    //Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
-    //Pose3d armPose = new Pose3d(-0.025, 0, 0.605 + robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
-    // Pose3d intakePose = new Pose3d(0.4175, 0, 0.02, new Rotation3d(0, 0, 0));
+    Pose3d elevatorPose = new Pose3d(0, 0, robotContainer.getElevatorPositionMeters(), new Rotation3d());
+    Pose3d armPose = new Pose3d(-0.025, 0, 0.605 + robotContainer.getElevatorPositionMeters(), new Rotation3d(Units.degreesToRadians(robotContainer.getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+    Pose3d intakePose = new Pose3d(0.407, 0, 0.277, new Rotation3d(0, 0, 0));
 
 
     Logger.recordOutput("random 2d thing", new Pose3d());
+    
+    Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
 
-    // robotContainer.periodic();
+    m_elevator.setLength(robotContainer.getElevatorPositionMeters());
+    m_arm.setAngle(robotContainer.getArmAngleDegrees());
 
-    //Logger.recordOutput("Mech3d", elevatorPose, armPose, intakePose);
-
-    //m_elevator.setLength(robotContainer.getElevatorPositionMeters());
-    //m_arm.setAngle(robotContainer.getArmAngleDegrees());
+    robotContainer.flywheelSpinup();
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.

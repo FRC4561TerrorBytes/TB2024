@@ -8,14 +8,10 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkAbsoluteEncoder;
-import com.revrobotics.SparkPIDController;
 
 import frc.robot.Constants;
 
@@ -23,21 +19,18 @@ import frc.robot.Constants;
 public class IntakeIOReal implements IntakeIO{
 
     private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE_MOTOR, MotorType.kBrushless);
-    
 
       public IntakeIOReal() {
 
         // Restore front/back factory defaults
         m_frontIntake.restoreFactoryDefaults();
-        //m_rotatorRoller.restoreFactoryDefaults();
 
         // Idle phase for front and back
         m_frontIntake.setIdleMode(IdleMode.kCoast);
-        //m_rotatorRoller.setIdleMode(IdleMode.kCoast);
 
         // Limit of currents front/back
-        REVLibError frontCurrent = m_frontIntake.setSmartCurrentLimit(30);
-        m_frontIntake.setSmartCurrentLimit(30);
+        REVLibError frontCurrent = m_frontIntake.setSmartCurrentLimit(35);
+        m_frontIntake.setSmartCurrentLimit(35);
         boolean frontIntakeNoLongerGood;
         if ( frontCurrent!= REVLibError.kOk)
         {
@@ -50,21 +43,14 @@ public class IntakeIOReal implements IntakeIO{
         
         //Voltage compensation
         m_frontIntake.enableVoltageCompensation(12.0);
-        //m_rotatorRoller.enableVoltageCompensation(12.0);
 
         //Set inverted
-        m_frontIntake.setInverted(false);
-        //m_rotatorRoller.setInverted(false);
+        m_frontIntake.setInverted(true);
 
-
-        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
+        m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 50);
         m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 50);
 
-        m_frontIntake.burnFlash();
-        //m_rotatorRoller.burnFlash();
-
-        
-        
+        m_frontIntake.burnFlash();       
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
@@ -76,7 +62,6 @@ public class IntakeIOReal implements IntakeIO{
         m_frontIntake.set(velocity);
         //m_rotatorRoller.setVoltage(velocity * 12);
     };
-
 
     public void stopIntake() {
         setIntakeSpeed(0);

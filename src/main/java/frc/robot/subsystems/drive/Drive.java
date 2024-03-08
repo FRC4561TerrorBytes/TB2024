@@ -16,6 +16,7 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -56,6 +58,8 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
+  private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -109,8 +113,8 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
-    pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(1);
+        //m_orchestra.addInstrument(modules[1].getDriveTalon());
+
   }
 
   public void periodic() {
@@ -160,7 +164,7 @@ public class Drive extends SubsystemBase {
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
     if(limelightMeasurement.tagCount >= 2)
     {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
       m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds);
@@ -173,6 +177,7 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    //speeds = new ChassisSpeeds(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
@@ -239,6 +244,11 @@ public class Drive extends SubsystemBase {
   public Pose2d getPose() {
     //return pose;
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  @AutoLogOutput(key = "Odometry/Robot 3d")
+  public Pose3d get3dPose() {
+    return new Pose3d(m_poseEstimator.getEstimatedPosition());
   }
 
   /** Returns the module positions (turn angles and drive positions) for all of the modules. */
@@ -330,5 +340,15 @@ public class Drive extends SubsystemBase {
     Pose2d relative = getSpeakerPose().relativeTo(getPose());
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
+  }
+
+  public void playSound() {
+    m_orchestra.loadMusic("verySecretMusicFile.chrp");
+    m_orchestra.play();
+    System.out.println("Orchesta playing: " + m_orchestra.isPlaying());
+  }
+
+  public void resetTrack() {
+    m_orchestra.stop();
   }
 }

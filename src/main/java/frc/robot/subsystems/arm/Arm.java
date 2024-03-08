@@ -48,7 +48,7 @@ public class Arm extends SubsystemBase {
     }
     
     public double getArmAngleDegrees() {
-        return inputs.armAngleDegrees;
+        return inputs.armRelativeAngleDegrees;
     }
 
     public void incrementArmAngle(double inc) {
@@ -63,15 +63,22 @@ public class Arm extends SubsystemBase {
         io.seedEncoders();
     }
 
+    public void stopArm() {
+        io.setArmVoltage(0);
+    }
+
+    public void nudge(double degrees){
+        System.out.println("\n\n\n\n\n\n\n\n\nArm nudge is running");
+        io.nudge(degrees);
+    }
+
+    public double getArmEncoderRotation(){
+        return io.getArmEncoderRotation();
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Arm/IO", inputs);
-
-        runArmWithVoltage(
-            armFeedforward.calculate(inputs.armVelocityRadPerSec)
-              + armFeedback.calculate(inputs.armAngleDegrees, inputs.armSetpoint));
-
-        
     }
 }

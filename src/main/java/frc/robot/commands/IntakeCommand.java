@@ -4,21 +4,31 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
+import frc.robot.GameMode;
+import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.Shooter;
 
 public class IntakeCommand extends Command {
 
   private Intake intake;
   private Indexer indexer;
+  private Arm arm;
+  private GenericHID controllerHID;
 
-  public IntakeCommand(Intake intake, Indexer indexer) {
+  public IntakeCommand(Intake intake, Indexer indexer, Arm arm, GenericHID HID) {
     this.intake = intake;
     this.indexer = indexer;
+    this.arm = arm;
+    this.controllerHID = HID;
 
     addRequirements(intake, indexer);
   }
@@ -26,7 +36,8 @@ public class IntakeCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    GameMode.getInstance().setCurrentMode(Mode.INTAKING);
+    arm.setArmSetpoint(Constants.ARM_STOW);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,11 +52,13 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      new WaitCommand(0.5);
-      intake.stopIntake();
-      indexer.stopIndexer();
+    GameMode.getInstance().setCurrentMode(Mode.IDLE);
+        new InstantCommand(() -> intake.stopIntake())
+        .alongWith(new InstantCommand(() -> indexer.stopIndexer()))
+        .alongWith(new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1));
       // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
+    
   }
 
   // Returns true when the command should end.

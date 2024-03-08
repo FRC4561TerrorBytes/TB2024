@@ -7,11 +7,9 @@ package frc.robot.subsystems.shooter;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -29,9 +27,11 @@ public class ShooterIOReal implements ShooterIO {
         leftConfig.CurrentLimits.SupplyCurrentLimit = 30;
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+        // we don't need this anymore: leftConfig.MotorOutput.PeakReverseDutyCycle = 0;
+
         var leftSlot0Config = leftConfig.Slot0;
         leftSlot0Config.kS = 0.5; // Add 0.25 V output to overcome static friction
-        leftSlot0Config.kV = 0.05; // A velocity target of 1 rps results in 0.12 V output
+        leftSlot0Config.kV = 0.15; // A velocity target of 1 rps results in 0.12 V output
         leftSlot0Config.kA = 0.02; // An acceleration of 1 rps/s requires 0.01 V output
         leftSlot0Config.kP = 0.4; // An error of 1 rps results in 0.11 V output
         leftSlot0Config.kI = 0.0; // no output for integrated error

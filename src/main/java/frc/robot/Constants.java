@@ -100,6 +100,8 @@ public final class Constants {
   public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
   public static final double BACK_RIGHT_STEER_OFFSET = Units.degreesToRadians(140);//-2.1184274; Fulcrum drivebase
 
+  public static final double ARM_CURRENT_LIMIT = 40.0;
+
   public static final double DRIVE_CURRENT_LIMIT = 40.0;
   public static final int TURN_CURRENT_LIMIT = 20;
   public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
@@ -144,8 +146,8 @@ public final class Constants {
   // To calculate kG, and kV use Recalc.
   public static final double ELEVATOR_STATIC_GAIN = 0.1;
   public static final double ELEVATOR_GRAVITY_GAIN = 0.14;
-  public static final double ELEVATOR_VELOCITY_GAIN = 1.41;
-  public static final double ELEVATOR_ACCELERATION_GAIN = 0.01;
+  public static final double ELEVATOR_VELOCITY_GAIN = 46.63;
+  public static final double ELEVATOR_ACCELERATION_GAIN = 0.02;
 
   public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
     
@@ -162,7 +164,7 @@ public final class Constants {
   public static final int RIGHT_FLYWHEEL = 52;
   public static final int INDEXER = 16;
 
-  public static final int LEFT_RAISE_MOTOR = 99;
+  public static final int LEFT_RAISE_MOTOR = 14;
   public static final int RIGHT_RAISE_MOTOR = 13;
 
   public static final double TARGET_Y = 1.974; //+ Units.inchesToMeters(3);
@@ -172,8 +174,10 @@ public final class Constants {
   public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(11);
   public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
 
-  public static final int ARM_MOTOR_LEFT = 65;
-  public static final int ARM_MOTOR_RIGHT = 67;
+  public static final int ARM_MOTOR_LEFT = 60;
+  public static final int ARM_MOTOR_RIGHT = 61;
+
+  public static final double ARM_STOW = -10.0;
 
   //relative to ground
   public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
@@ -183,7 +187,7 @@ public final class Constants {
 
   public static final int INDEX_BEAMBREAKER = 0;
 
-  public static final double INDEXER_FEED_SPEED = 0.9;
+  public static final double INDEXER_FEED_SPEED = 0.7;
 
   public static final double AUTO_X_KP = 1.0;
   public static final double AUTO_X_KI = 0.0;
@@ -198,8 +202,6 @@ public final class Constants {
   public static final double AUTO_THETA_KD = 0.0;
 
   public static final int FRONT_INTAKE_MOTOR = 15;
-  public static final int INTAKE_BAR_MOTOR = 17;
-  public static final int INTAKE_ROLLER_MOTOR = 18;
 
   public static final Mode currentMode = Mode.REAL;
 

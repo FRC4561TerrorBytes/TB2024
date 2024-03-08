@@ -56,10 +56,6 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator/IO", inputs);
 
-    io.goToSetPoint();
-
-    runElevatorWithVoltage(
-      elevatorFeedForward.calculate(inputs.elevatorVelocityRadPerSec)
-        + elevatorFeedback.calculate(inputs.elevatorPositionMeters, inputs.elevatorSetpoint));
+    // io.goToSetPoint();
   }
 }

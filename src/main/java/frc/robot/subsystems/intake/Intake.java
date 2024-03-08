@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.intake;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,9 +15,6 @@ public class Intake extends SubsystemBase {
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   
   public double m_velocitySetpoint;
-
-  private double launchSpeedFeeder = 0.75;
-  private double intakeSpeedFeeder = 1.0;
 
   /** Creates a new Intake. */
   public Intake(IntakeIO io) {

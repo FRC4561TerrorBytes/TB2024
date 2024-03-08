@@ -14,7 +14,7 @@ import frc.robot.subsystems.drive.Drive;
 
 public class SnapTo45 extends Command {
 
-  private PIDController pidController = new PIDController(0.0175, 0, 0.002);
+  private PIDController pidController = new PIDController(0.04, 0, 0.00);
 
   private Drive drive;
 
@@ -69,12 +69,12 @@ public class SnapTo45 extends Command {
     double rawAngle = drive.getRotation().getDegrees();
 
     rotationRate = pidController.calculate(rawAngle + 180);    
-    rotationRate += 1.2 * Math.signum(rotationRate);
+    //rotationRate += 1.2 * Math.signum(rotationRate);
     rotationRate = MathUtil.applyDeadband(rotationRate, 0.1);
 
     rotationRate = Math.copySign(rotationRate * rotationRate, rotationRate);
 
-    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, rotationRate * drive.getMaxAngularSpeedRadPerSec(), drive.getRotation()));
+    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, rotationRate, drive.getRotation()));
 
     Logger.recordOutput("Snap45/Raw Angle", rawAngle + 180);
     Logger.recordOutput("Snap45/Rotation Rate", rotationRate);

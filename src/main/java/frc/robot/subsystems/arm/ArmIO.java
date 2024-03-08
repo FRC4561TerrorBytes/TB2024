@@ -11,10 +11,11 @@ public interface ArmIO {
 
     @AutoLog
     public static class ArmIOInputs {
-        public double armAngleDegrees = 0.0;
+        public double armAbsoluteAngleDegrees = 0.0;
+        public double armRelativeAngleDegrees = 0.0;
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
-        public double[] armCurrentAmps = new double[] {};
+        public double armCurrentAmps = 0.0;
 
         public double armSetpoint = 0.0;
     }
@@ -30,4 +31,10 @@ public interface ArmIO {
     public default void incrementArmAngle(double inc) {}
 
     public default void decrementArmAngle(double inc) {}
+
+    public default void stopArm() {}
+
+    public default double getArmEncoderRotation(){return 0.0;}
+
+    public default void nudge(double degrees) {}
 }
