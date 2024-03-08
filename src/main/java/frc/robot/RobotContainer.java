@@ -172,6 +172,7 @@ public class RobotContainer {
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
     autoChooser.addOption("ShootLeave", AutoBuilder.buildAuto("ShootLeave"));
+    autoChooser.addOption("Shoot(safe)", AutoBuilder.buildAuto("Shoot"));
 
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    

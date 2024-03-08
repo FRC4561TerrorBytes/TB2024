@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6777587794889373,
-      "y": 4.479133108534554
+      "x": 0.6337017325197449,
+      "y": 4.449761743888425
     },
     "rotation": 120.0
   },
@@ -24,12 +24,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -42,16 +36,10 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.5
+                  "waitTime": 1.0
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Leave"
           }
         }
       ]
