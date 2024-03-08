@@ -173,6 +173,7 @@ public class RobotContainer {
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
     autoChooser.addOption("ShootLeave", AutoBuilder.buildAuto("ShootLeave"));
     autoChooser.addOption("Shoot(safe)", AutoBuilder.buildAuto("Shoot"));
+    autoChooser.addOption("Do Nothing", AutoBuilder.buildAuto("DoNothing"));
 
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
