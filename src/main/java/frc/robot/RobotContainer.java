@@ -25,11 +25,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
@@ -176,6 +178,13 @@ public class RobotContainer {
     autoChooser.addOption("Shoot(safe)", AutoBuilder.buildAuto("Shoot"));
     autoChooser.addOption("Do Nothing", AutoBuilder.buildAuto("DoNothing"));
 
+    autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
+      .andThen(new WaitCommand(1.5))
+      .andThen(new ShootCommand(shooter, drive, indexer, intake, arm, visualizer))
+        .withTimeout(1.0)
+      .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
+        .withTimeout(1.5));
+
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
     // Configure the button bindings
@@ -246,6 +255,8 @@ public class RobotContainer {
     //     7.7), arm));
     operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
 
+    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+
   //DEEKSHI CONTROLS
     // Set elevator climbing setpoints
     // operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
@@ -278,7 +289,7 @@ public class RobotContainer {
 
     // Mode bindings
     // operatorController.b().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));d
 
     // operatorController.x().onTrue(new InstantCommand(
     //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
