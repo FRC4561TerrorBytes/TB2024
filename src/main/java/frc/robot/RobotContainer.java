@@ -225,6 +225,8 @@ public class RobotContainer {
     // Auto align based on current mode
     driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
 
+    driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+
     // Lock drive to no rotation
     driverController.rightTrigger().whileTrue(
       DriveCommands.joystickDrive(
