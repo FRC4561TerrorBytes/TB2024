@@ -4,12 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
@@ -22,13 +18,11 @@ public class IntakeCommand extends Command {
   private Intake intake;
   private Indexer indexer;
   private Arm arm;
-  private GenericHID controllerHID;
 
-  public IntakeCommand(Intake intake, Indexer indexer, Arm arm, GenericHID HID) {
+  public IntakeCommand(Intake intake, Indexer indexer, Arm arm) {
     this.intake = intake;
     this.indexer = indexer;
     this.arm = arm;
-    this.controllerHID = HID;
 
     addRequirements(intake, indexer);
   }
@@ -55,9 +49,7 @@ public class IntakeCommand extends Command {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
         new InstantCommand(() -> intake.stopIntake())
         .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
-        
-        new RunCommand(() -> controllerHID.setRumble(RumbleType.kBothRumble, 0.75)).withTimeout(1).schedule();
-      // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
+              // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
       //ADD LED STUFF
     
   }

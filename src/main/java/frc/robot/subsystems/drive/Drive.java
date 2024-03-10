@@ -163,13 +163,13 @@ public class Drive extends SubsystemBase {
 
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
     Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults("limelight-test").targetingResults.botpose_wpiblue);
-    // if(limelightMeasurement.tagCount >= 2)
-    // {
-      // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
-      // m_poseEstimator.addVisionMeasurement(
-      //     limelightMeasurement.pose,
-      //     limelightMeasurement.timestampSeconds);
-    // }
+    if(limelightMeasurement.tagCount >= 2)
+    {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
+      m_poseEstimator.addVisionMeasurement(
+          limelightMeasurement.pose,
+          limelightMeasurement.timestampSeconds);
+    }
   }
 
   /**

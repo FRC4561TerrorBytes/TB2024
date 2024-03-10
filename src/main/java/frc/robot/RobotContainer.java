@@ -161,8 +161,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, driverController.getHID()));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
@@ -174,13 +174,10 @@ public class RobotContainer {
     //     "Drive FF Characterization",
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
-    autoChooser.addOption("ShootLeave", AutoBuilder.buildAuto("ShootLeave"));
-    autoChooser.addOption("Shoot(safe)", AutoBuilder.buildAuto("Shoot"));
-    autoChooser.addOption("Do Nothing", AutoBuilder.buildAuto("DoNothing"));
 
     autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
       .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, drive, indexer, intake, arm, visualizer))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, visualizer))
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
@@ -217,13 +214,13 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, driverController.getHID()));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
 
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new SnapTo90(drive));

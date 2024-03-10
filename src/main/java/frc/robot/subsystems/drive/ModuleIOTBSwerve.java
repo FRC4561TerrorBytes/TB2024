@@ -99,10 +99,15 @@ public class ModuleIOTBSwerve implements ModuleIO{
         var driveConfig = new TalonFXConfiguration();
         driveConfig.CurrentLimits.SupplyCurrentLimit = Constants.DRIVE_CURRENT_LIMIT;
         driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        driveConfig.CurrentLimits.StatorCurrentLimit = 100;
+        driveConfig.CurrentLimits.StatorCurrentLimit = 150;
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+
         driveTalon.getConfigurator().apply(driveConfig);
-        setDriveBrakeMode(true, isDriveMotorInverted);
+        if (errorLabel == "Module3") {
+          setDriveBrakeMode(false, isDriveMotorInverted);
+        } else {
+          setDriveBrakeMode(true, isDriveMotorInverted);
+        }
         
         turnSparkMax.restoreFactoryDefaults();
         turnSparkMax.setCANTimeout(250);
