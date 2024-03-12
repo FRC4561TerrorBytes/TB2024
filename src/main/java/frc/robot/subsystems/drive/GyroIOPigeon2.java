@@ -40,6 +40,7 @@ public class GyroIOPigeon2 implements GyroIO {
     inputs.connected = BaseStatusSignal.refreshAll(yaw, yawVelocity).equals(StatusCode.OK);
     inputs.yawPosition = Rotation2d.fromDegrees(yaw.getValueAsDouble());
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
+    inputs.odometryYawPositions = new Rotation2d[] {Rotation2d.fromDegrees(yaw.getValueAsDouble())};
   }
 
   public void resetGyro() {

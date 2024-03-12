@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.OptionalDouble;
+import java.util.Queue;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -45,6 +48,9 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final StatusSignal<Double> driveAppliedVolts;
     private final StatusSignal<Double> driveCurrent;
     private final StatusSignal<Double> turnAbsolutePosition;
+    private final Queue<Double> timestampQueue;
+    private final Queue<Double> drivePositionQueue;
+    private final Queue<Double> turnPositionQueue;
 
     private final RelativeEncoder turnRelativeEncoder;
 
@@ -146,6 +152,21 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
         turnSparkMax.setCANTimeout(0);
 
+        timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+        drivePositionQueue =
+        PhoenixOdometryThread.getInstance().registerSignal(driveTalon, driveTalon.getPosition());
+        turnPositionQueue =
+            SparkMaxOdometryThread.getInstance()
+                .registerSignal(
+                    () -> {
+                    double value = turnRelativeEncoder.getPosition();
+                    if (turnSparkMax.getLastError() == REVLibError.kOk) {
+                        return OptionalDouble.of(value);
+                    } else {
+                        return OptionalDouble.empty();
+                    }
+                    });
+
         turnSparkMax.burnFlash();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -185,6 +206,17 @@ public class ModuleIOTBSwerve implements ModuleIO{
                 / TURN_GEAR_RATIO;
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
         inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
+
+    inputs.odometryTimestamps =
+        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryDrivePositionsRad =
+        drivePositionQueue.stream()
+            .mapToDouble((Double value) -> Units.rotationsToRadians(value) / DRIVE_GEAR_RATIO)
+            .toArray();
+    inputs.odometryTurnPositions =
+        turnPositionQueue.stream()
+            .map((Double value) -> Rotation2d.fromRotations(value / TURN_GEAR_RATIO))
+            .toArray(Rotation2d[]::new);
     }
 
     public void setDriveVoltage(double volts) {
