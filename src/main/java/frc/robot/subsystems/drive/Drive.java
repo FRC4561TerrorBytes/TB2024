@@ -162,6 +162,7 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
     LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
+    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults("limelight-test").targetingResults.botpose_wpiblue);
     if(limelightMeasurement.tagCount >= 2)
     {
       m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));

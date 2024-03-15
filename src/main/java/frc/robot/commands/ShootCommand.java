@@ -16,16 +16,14 @@ import frc.robot.util.NoteVisualizer;
 public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
-  Drive m_driveSubsystem;
   Intake intake;
   Indexer indexer;
   Arm arm;
   NoteVisualizer visualizer;
   double targetMPS = 0;
 
-  public ShootCommand(Shooter shooter, Drive driveSubsystem, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
+  public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
     this.shooter = shooter;
-    m_driveSubsystem = driveSubsystem;
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
@@ -37,7 +35,6 @@ public class ShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
     targetMPS = shooter.getVelocity();
     shooter.setFlywheelSpeed(20);
     // arm.setArmSetpoint(shooter.getPivotAngle());

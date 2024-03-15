@@ -102,7 +102,7 @@ public final class Constants {
 
   public static final double ARM_CURRENT_LIMIT = 40.0;
 
-  public static final double DRIVE_CURRENT_LIMIT = 40.0;
+  public static final double DRIVE_CURRENT_LIMIT = 50.0;
   public static final int TURN_CURRENT_LIMIT = 20;
   public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
   public static final double DRIVE_CURRENT_TIME_THRESHOLD = 0.1; // seconds

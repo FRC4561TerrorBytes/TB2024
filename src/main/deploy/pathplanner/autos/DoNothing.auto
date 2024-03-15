@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4074180498442035,
-      "y": 5.556746197230914
+      "x": 0.6630730971658731,
+      "y": 4.435076061565361
     },
-    "rotation": 0
+    "rotation": 120.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "1grab"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1shoot"
+            "waitTime": 1.0
           }
         }
       ]

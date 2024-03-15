@@ -44,7 +44,7 @@ public ArmIOReal () {
     armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 12.805908;
 
     armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true; 
-    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -11.626221;
+    armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -11.8;
 
 
     //armConfig.Feedback.SensorToMechanismRatio = 50;

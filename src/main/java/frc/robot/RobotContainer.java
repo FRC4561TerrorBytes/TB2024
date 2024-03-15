@@ -14,6 +14,7 @@
 package frc.robot;
 
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -24,11 +25,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
@@ -158,8 +161,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, driverController.getHID()));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
@@ -171,7 +174,13 @@ public class RobotContainer {
     //     "Drive FF Characterization",
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
-    autoChooser.addOption("ShootLeave", AutoBuilder.buildAuto("ShootLeave"));
+
+    autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
+      .andThen(new WaitCommand(1.5))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, visualizer))
+        .withTimeout(1.0)
+      .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
+        .withTimeout(1.5));
 
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
@@ -205,13 +214,13 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, driverController.getHID()));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, drive, indexer, intake, arm, visualizer));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
 
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new SnapTo90(drive));
@@ -221,6 +230,8 @@ public class RobotContainer {
 
     // Auto align based on current mode
     driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
+
+    driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
     // Lock drive to no rotation
     driverController.rightTrigger().whileTrue(
@@ -240,6 +251,8 @@ public class RobotContainer {
     //   () -> arm.setArmSetpoint(
     //     7.7), arm));
     operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
+
+    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
 
   //DEEKSHI CONTROLS
     // Set elevator climbing setpoints
@@ -273,7 +286,7 @@ public class RobotContainer {
 
     // Mode bindings
     // operatorController.b().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));d
 
     // operatorController.x().onTrue(new InstantCommand(
     //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
@@ -286,6 +299,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
+    Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }
 
