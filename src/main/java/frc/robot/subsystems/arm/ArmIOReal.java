@@ -8,6 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -24,8 +25,8 @@ public class ArmIOReal implements ArmIO {
 
 public ArmIOReal () {
     encoder = new DutyCycleEncoder(0);
-    encoder.setDistancePerRotation(1/12.0);
-    encoder.setPositionOffset(0.75);
+    encoder.setDistancePerRotation(41.0);
+    encoder.setPositionOffset(0.3115);
 
     m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
     m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
@@ -54,9 +55,9 @@ public ArmIOReal () {
     slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
     slot0Configs.kS = 0.28;//0.25; // Add 0.25 V output to overcome static friction
     slot0Configs.kV = 0.30;//2.82; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kA = 0.000; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
     slot0Configs.kP = 0.36;//0.0004; // A position error of 2.5 rotations results in 12 V output
-    slot0Configs.kI = 0;//0.0005; // no output for integrated error
+    slot0Configs.kI = 0.0;//0.0005; // no output for integrated error
     slot0Configs.kD = 0.002;//0.0003; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
@@ -76,7 +77,7 @@ public ArmIOReal () {
 
 public void updateInputs(ArmIOInputs inputs) {
     inputs.armSetpoint = m_request.Position;
-    inputs.armAbsoluteAngleDegrees = encoder.getDistance();
+    inputs.armAbsoluteAngleDegrees = -encoder.getDistance();
     inputs.armRelativeAngleDegrees = m_armMotorLeft.getPosition().getValueAsDouble();
     inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
     Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
@@ -84,8 +85,8 @@ public void updateInputs(ArmIOInputs inputs) {
 }
 
 public void seedEncoders() {
-    m_armMotorLeft.setPosition(encoder.getDistance());
-    m_armMotorRight.setPosition(encoder.getDistance());
+    m_armMotorLeft.setPosition(-encoder.getDistance());
+    m_armMotorRight.setPosition(-encoder.getDistance());
 }
 
 public void stopArm() {

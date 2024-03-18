@@ -201,7 +201,7 @@ public class RobotContainer {
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
             () -> driverController.getRightX() / driveRatio));
-
+    
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
@@ -325,12 +325,12 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    // arm.seedEncoders();
+    arm.seedEncoders();
     // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   public void teleopInit() {
-    // arm.seedEncoders();
+    arm.seedEncoders();
     // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 

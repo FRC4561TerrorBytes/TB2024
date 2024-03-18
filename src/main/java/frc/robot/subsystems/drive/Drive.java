@@ -114,7 +114,6 @@ public class Drive extends SubsystemBase {
         });
 
         //m_orchestra.addInstrument(modules[1].getDriveTalon());
-
   }
 
   public void periodic() {
