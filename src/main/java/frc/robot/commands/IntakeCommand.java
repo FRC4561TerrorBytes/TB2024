@@ -46,7 +46,7 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    GameMode.getInstance().setCurrentMode(Mode.IDLE);
+    // GameMode.getInstance().setCurrentMode(Mode.IDLE);
         new InstantCommand(() -> intake.stopIntake())
         .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
               // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);

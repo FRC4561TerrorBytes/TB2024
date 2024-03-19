@@ -25,7 +25,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -33,11 +32,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.GameMode.Mode;
+import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.FeedForwardCharacterization;
+import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ModeAlign;
+import frc.robot.commands.NoteAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
@@ -228,8 +230,16 @@ public class RobotContainer {
 
     driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
+    Trigger intakeTrigger = new Trigger(()-> GameMode.getInstance().getCurrentMode() == Mode.INTAKING);
+    Trigger speakerTrigger = new Trigger(() -> GameMode.getInstance().getCurrentMode() == Mode.SPEAKER);
+    Trigger ampTrigger = new Trigger(() -> GameMode.getInstance().getCurrentMode() == Mode.AMP);
+
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
+    intakeTrigger.and(driverController.y().whileTrue(new NoteAlign(drive, indexer, intake, arm)));
+
+    // speakerTrigger.and(driverController.y().whileTrue(new FaceSpeaker(drive)));
+
+    // ampTrigger.and(driverController.y().whileTrue(new AmpDrive(drive)));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
@@ -286,13 +296,13 @@ public class RobotContainer {
 
     // Mode bindings
     // operatorController.b().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));d
+    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));
 
-    // operatorController.x().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
+    operatorController.x().onTrue(new InstantCommand(
+      () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
 
-    // operatorController.a().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
+    operatorController.a().onTrue(new InstantCommand(
+      () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
 
     SmartDashboard.putData(arm);
     // operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));

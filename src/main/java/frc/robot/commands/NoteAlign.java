@@ -27,19 +27,19 @@ public class NoteAlign extends Command {
     this.intake = intake;
     this.arm = arm;
 
-    addRequirements(drive);
+    addRequirements(drive, indexer, intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    LimelightHelpers.setPipelineIndex("limelight-test", 1);
+    LimelightHelpers.setPipelineIndex("limelight-driver", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
+    LimelightResults results = LimelightHelpers.getLatestResults("limelight-driver");
 
     LimelightTarget_Detector[] notes = results.targetingResults.targets_Detector;
     LimelightTarget_Detector closestNote = getClosestNote(notes);
@@ -50,16 +50,16 @@ public class NoteAlign extends Command {
     boolean inXTol = false;
     boolean inYTol = false;
 
-    if (closestNote.tx < -0.1) {
+    if (closestNote.ty > -0.1) {
       xRequest = 0.2;
     } else {
       xRequest = 0.0;
       inXTol = true;
     }
 
-    if (closestNote.ty < -0.1) {
+    if (closestNote.tx < -0.1) {
       yRequest = 0.2;
-    } else if (closestNote.ty > 0.1) {
+    } else if (closestNote.tx > 0.1) {
       yRequest = -0.2;
     } else {
       yRequest = 0.0;
@@ -76,11 +76,13 @@ public class NoteAlign extends Command {
 
   private LimelightTarget_Detector getClosestNote(LimelightTarget_Detector[] noteArray) {
     LimelightTarget_Detector closestNote = null;
+    double closest = 999;
 
     for (LimelightTarget_Detector note : noteArray) {
-      double distance = note.tx;
-      if (distance < closestNote.tx) {
+      double distance = note.ty;
+      if (distance < closest) {
         closestNote = note;
+        closest = note.ty;
       }
     }
     return closestNote;
@@ -90,7 +92,9 @@ public class NoteAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     drive.stop();
-    LimelightHelpers.setPipelineIndex("limelight-test", 0);
+    indexer.stopIndexer();
+    intake.stopIntake();
+    LimelightHelpers.setPipelineIndex("limelight-driver", 1);
   }
 
   // Returns true when the command should end.
