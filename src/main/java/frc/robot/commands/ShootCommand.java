@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -21,6 +22,7 @@ public class ShootCommand extends Command {
   Arm arm;
   NoteVisualizer visualizer;
   double targetMPS = 0;
+  LEDSubsystem led;
 
   public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
     this.shooter = shooter;
@@ -28,6 +30,7 @@ public class ShootCommand extends Command {
     this.intake = intake;
     this.arm = arm;
     this.visualizer = visualizer;
+    led = new LEDSubsystem();
 
     addRequirements(shooter, indexer, intake);
   }
@@ -48,6 +51,7 @@ public class ShootCommand extends Command {
         intake.setIntakeSpeed(0.5);
         shooter.launchCommand().withTimeout(0.5).schedule();
     }
+    led.setColor(128,3,145);
   }
 
   // Called once the command ends or is interrupted.

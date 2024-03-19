@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -18,6 +19,7 @@ public class ModeAlign extends Command {
   private Indexer indexer;
   private Intake intake;
   private Arm arm;
+  private LEDSubsystem led;
 
   /** Creates a new ModeAlign. */
   public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
@@ -25,6 +27,7 @@ public class ModeAlign extends Command {
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
+    led = new LEDSubsystem();
 
     addRequirements(drive);
   }
@@ -47,6 +50,7 @@ public class ModeAlign extends Command {
       } else {
 
       }
+      led.setColor(176,11,105);
     }
 
   // Called once the command ends or is interrupted.

@@ -41,6 +41,7 @@ import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOReal;
@@ -84,6 +85,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
+  private final LEDSubsystem led;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
@@ -118,6 +120,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
         indexer = new Indexer(new IndexerIOReal());
+        led = new LEDSubsystem();
         break;
 
       case SIM:
@@ -134,6 +137,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOSim());
         intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        led = new LEDSubsystem();
         break;
 
       default:
@@ -150,6 +154,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        led = new LEDSubsystem();
         break;
     }
 

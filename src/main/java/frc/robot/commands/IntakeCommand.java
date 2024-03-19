@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -18,11 +19,13 @@ public class IntakeCommand extends Command {
   private Intake intake;
   private Indexer indexer;
   private Arm arm;
+  private LEDSubsystem led;
 
   public IntakeCommand(Intake intake, Indexer indexer, Arm arm) {
     this.intake = intake;
     this.indexer = indexer;
     this.arm = arm;
+    led = new LEDSubsystem();
 
     addRequirements(intake, indexer);
   }
