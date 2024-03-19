@@ -203,6 +203,9 @@ public final class Constants {
 
   public static final int FRONT_INTAKE_MOTOR = 15;
 
+  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.3121;
+  public static final double ARM_ABSOLUTE_CONVERSION_FACTOR = 40;
+
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
