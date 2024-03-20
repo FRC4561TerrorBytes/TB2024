@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
@@ -44,43 +46,56 @@ public class NoteAlign extends Command {
     LimelightTarget_Detector[] notes = results.targetingResults.targets_Detector;
     LimelightTarget_Detector closestNote = getClosestNote(notes);
 
+    Logger.recordOutput("NoteAlign/Note Count", notes.length);
+
     double xRequest;
     double yRequest;
 
     boolean inXTol = false;
     boolean inYTol = false;
 
-    if (closestNote.ty > -0.1) {
-      xRequest = 0.2;
-    } else {
-      xRequest = 0.0;
-      inXTol = true;
+    if (closestNote == null) {
+      System.out.println("\n\n note null :(\n\n");
+      return;
     }
 
-    if (closestNote.tx < -0.1) {
+    if (closestNote.ty > -25) {
       yRequest = 0.2;
-    } else if (closestNote.tx > 0.1) {
-      yRequest = -0.2;
     } else {
       yRequest = 0.0;
       inYTol = true;
     }
 
-    DriveCommands.joystickDrive(drive, () -> xRequest, () -> yRequest, () -> 0.0);
+    Logger.recordOutput("NoteAlign/yRequest", yRequest);
+    Logger.recordOutput("NoteAlign/inYTol", inYTol);
+
+    if (closestNote.tx < -1) {
+      xRequest = 0.2;
+    } else if (closestNote.tx > 1) {
+      xRequest = -0.2;
+    } else {
+      xRequest = 0.0;
+      inXTol = true;
+    }
+
+    Logger.recordOutput("NoteAlign/xRequest", xRequest);
+    Logger.recordOutput("NoteAlign/inXTol", inXTol);
+
+    DriveCommands.joystickDrive(drive, () -> -yRequest, () -> -xRequest, () -> 0.0);
 
     if (inXTol && inYTol) {
       new IntakeCommand(intake, indexer, arm);
-      DriveCommands.joystickDrive(drive, () -> 0.2, () -> 0.0, () -> 0.0);
+      DriveCommands.joystickDrive(drive, () -> -0.2, () -> 0.0, () -> 0.0);
     }
   }
 
   private LimelightTarget_Detector getClosestNote(LimelightTarget_Detector[] noteArray) {
     LimelightTarget_Detector closestNote = null;
-    double closest = 999;
+    double closest = -999;
 
     for (LimelightTarget_Detector note : noteArray) {
       double distance = note.ty;
-      if (distance < closest) {
+      if (distance > closest) {
         closestNote = note;
         closest = note.ty;
       }
