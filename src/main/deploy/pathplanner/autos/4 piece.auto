@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2202882421032024,
+      "y": 5.55
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far Left Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center from left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right from center"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
