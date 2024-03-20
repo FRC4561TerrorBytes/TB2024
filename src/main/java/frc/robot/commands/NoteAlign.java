@@ -6,11 +6,12 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Detector;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -20,16 +21,14 @@ public class NoteAlign extends Command {
   private Drive drive;
   private Indexer indexer;
   private Intake intake;
-  private Arm arm;
 
   /** Creates a new NoteAlign. */
-  public NoteAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
+  public NoteAlign(Drive drive, Indexer indexer, Intake intake) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
-    this.arm = arm;
 
-    addRequirements(drive, indexer, intake);
+    addRequirements(drive, intake);
   }
 
   // Called when the command is initially scheduled.
@@ -81,11 +80,12 @@ public class NoteAlign extends Command {
     Logger.recordOutput("NoteAlign/xRequest", xRequest);
     Logger.recordOutput("NoteAlign/inXTol", inXTol);
 
-    DriveCommands.joystickDrive(drive, () -> -yRequest, () -> -xRequest, () -> 0.0);
+    drive.runVelocity(new ChassisSpeeds(yRequest, xRequest, 0.0));
 
     if (inXTol && inYTol) {
-      new IntakeCommand(intake, indexer, arm);
-      DriveCommands.joystickDrive(drive, () -> -0.2, () -> 0.0, () -> 0.0);
+      intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
     }
   }
 

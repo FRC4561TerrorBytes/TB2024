@@ -32,12 +32,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.GameMode.Mode;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.NoteAlign;
+import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
@@ -228,14 +227,8 @@ public class RobotContainer {
 
     driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
-    Trigger intakeTrigger = new Trigger(()-> GameMode.getInstance().getCurrentMode().equals(Mode.INTAKING));
-    Trigger speakerTrigger = new Trigger(() -> GameMode.getInstance().getCurrentMode().equals(Mode.SPEAKER));
-    Trigger ampTrigger = new Trigger(() -> GameMode.getInstance().getCurrentMode().equals(Mode.AMP));
-
     // Auto align based on current mode
-    intakeTrigger.and(driverController.y().whileTrue(new NoteAlign(drive, indexer, intake, arm)));
-    // speakerTrigger.and(driverController.y().whileTrue(new FaceSpeaker(drive)));
-    // ampTrigger.and(driverController.y().whileTrue(new AmpDrive(drive)));
+    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
