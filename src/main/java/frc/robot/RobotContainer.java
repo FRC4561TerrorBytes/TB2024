@@ -167,7 +167,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
@@ -182,7 +182,7 @@ public class RobotContainer {
 
     autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
       .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, visualizer))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, led))
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
@@ -225,7 +225,7 @@ public class RobotContainer {
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, led));
 
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new SnapTo90(drive));
