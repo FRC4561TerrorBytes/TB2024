@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.GameMode;
+import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode.Mode;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -29,13 +30,13 @@ public class ModeAlign extends Command {
     this.arm = arm;
     led = new LEDSubsystem();
 
-    addRequirements(drive);
+    addRequirements(drive, led);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    led.setColor(176,11,105);
+    led.setColor(rgbValues.FUNNY_COLOR);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,7 +58,7 @@ public class ModeAlign extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.setColor(0, 0, 0);
+    led.setColor(rgbValues.BLANK);
   }
 
   // Returns true when the command should end.

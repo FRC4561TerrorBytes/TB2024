@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.rgbValues;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
@@ -28,7 +29,7 @@ public class ShootCommand extends Command {
     this.arm = arm;
     this.led = led;
 
-    addRequirements(shooter, indexer, intake);
+    addRequirements(shooter, indexer, intake, led);
   }
 
   // Called when the command is initially scheduled.
@@ -52,7 +53,7 @@ public class ShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.flashColor(128, 3, 145, 2);
+    led.flashColor(rgbValues.PURPLE_SHOOT, 2);
   }
 
   // Returns true when the command should end.

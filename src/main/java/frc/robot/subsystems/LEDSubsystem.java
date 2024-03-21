@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.rgbValues;
 
 public class LEDSubsystem extends SubsystemBase {
     private final AddressableLED m_led;
@@ -20,30 +21,30 @@ public class LEDSubsystem extends SubsystemBase {
         m_led.start();
     }   
 
-    public void setColor(int r, int g, int b) {
+    public void setColor(rgbValues rgb) {
         for (int i = 0; i < m_ledBuffer.getLength(); i++)
         {
-            m_ledBuffer.setRGB(i,r,g,b);
+            m_ledBuffer.setRGB(i, rgb.r, rgb.g, rgb.b);
         }
         m_led.setData(m_ledBuffer);
     }
 
-    public void flashColor(int r, int g, int b, int count) {
+    public void flashColor(rgbValues rgb, int count) {
         for (int i = 0; i < count; i++) {
-            setColor(r, g, b);
+            setColor(rgb);
             new WaitCommand(0.5)
-                .andThen(new InstantCommand(() -> setColor(0, 0, 0)))
+                .andThen(new InstantCommand(() -> setColor(rgbValues.BLANK)))
                 .andThen(new WaitCommand(1));    
         }
     }
 
-    public void flashColorThenSolid(int r, int g, int b, int count) {
+    public void flashColorThenSolid(rgbValues rgb, int count) {
         for (int i = 0; i < count; i++) {
-            setColor(r, g, b);
+            setColor(rgb);
             new WaitCommand(0.5)
-                .andThen(new InstantCommand(() -> setColor(0, 0, 0)))
+                .andThen(new InstantCommand(() -> setColor(rgbValues.BLANK)))
                 .andThen(new WaitCommand(1));    
         }
-        setColor(r, g, b);
+        setColor(rgb);
     }
 }

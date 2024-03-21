@@ -149,6 +149,27 @@ public final class Constants {
   public static final double ELEVATOR_VELOCITY_GAIN = 46.63;
   public static final double ELEVATOR_ACCELERATION_GAIN = 0.02;
 
+  public static enum rgbValues{
+    HIGHTIDE_BLUE(0, 182, 174),
+    NOTE_INTAKEN(255, 119, 51),
+    PURPLE_SHOOT(128, 3, 145),
+    BLUE_254(20, 65, 254),
+    FUNNY_COLOR(176, 11, 105),
+    IDLE_PINK(237, 145, 179 ),
+    GREEN(3, 145, 46),
+    BLANK(0, 0, 0);
+
+    public int r;
+    public int g;
+    public int b;
+
+    private rgbValues(int r, int g, int b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+  }
+
   public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
     
   public static final double INDEXER_MOTOR_GEAR_RATIO = 1.0;

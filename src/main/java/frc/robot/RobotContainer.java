@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.rgbValues;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -166,7 +167,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
     NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
@@ -211,6 +212,7 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
+    led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN)));
     //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     // Attempted orchestra
@@ -219,7 +221,7 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, led));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
