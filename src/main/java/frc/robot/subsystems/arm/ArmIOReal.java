@@ -39,10 +39,10 @@ public class ArmIOReal implements ArmIO {
 
         // These soft limits are highly suspect
         armConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 12.805908;
+        armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.75;
 
         armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -11.8;
+        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -13.2;
 
         // armConfig.Feedback.SensorToMechanismRatio = 50;
 
@@ -50,16 +50,16 @@ public class ArmIOReal implements ArmIO {
         var slot0Configs = armConfig.Slot0;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
         slot0Configs.kS = 0.28;// 0.25; // Add 0.25 V output to overcome static friction
-        slot0Configs.kV = 0.30;// 2.82; // A velocity target of 1 rps results in 0.12 V output
+        slot0Configs.kV = 0.3;// 2.82; // A velocity target of 1 rps results in 0.12 V output
         slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0Configs.kP = 0.36;// 0.0004; // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kI = 0.0;// 0.0005; // no output for integrated error
-        slot0Configs.kD = 0.002;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
+        slot0Configs.kP = 1.8;// 0.0004; // A position error of 2.5 rotations results in 12 V output
+        slot0Configs.kI = 0.002;// 0.0005; // no output for integrated error
+        slot0Configs.kD = 0.008;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
 
         // set Motion Magic settings
         var motionMagicConfigs = armConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 10; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 30; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicCruiseVelocity = 15; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 60; // Target acceleration of 160 rps/s (0.5 seconds)
 
         m_armMotorLeft.getConfigurator().apply(armConfig);
         m_armMotorRight.getConfigurator().apply(armConfig);
@@ -75,12 +75,13 @@ public class ArmIOReal implements ArmIO {
     }
 
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.armSetpoint = m_request.Position;
+        inputs.armSetpoint = armSetPoint;
         inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
         Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue().booleanValue());
+        Logger.recordOutput("Arm/Absoulte Encoder Connected", encoder.isConnected());
     }
 
     public void seedEncoders() {

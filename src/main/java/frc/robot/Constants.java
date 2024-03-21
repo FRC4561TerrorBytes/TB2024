@@ -177,7 +177,7 @@ public final class Constants {
   public static final int ARM_MOTOR_LEFT = 60;
   public static final int ARM_MOTOR_RIGHT = 61;
 
-  public static final double ARM_STOW = -10.0;
+  public static final double ARM_STOW = -12;
 
   //relative to ground
   public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); //30 degrees tilted up
@@ -203,8 +203,8 @@ public final class Constants {
 
   public static final int FRONT_INTAKE_MOTOR = 15;
 
-  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.3121;
-  public static final double ARM_ABSOLUTE_CONVERSION_FACTOR = 40;
+  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.3171;
+  public static final double ARM_ABSOLUTE_CONVERSION_FACTOR = 49.87;
 
   public static final Mode currentMode = Mode.REAL;
 

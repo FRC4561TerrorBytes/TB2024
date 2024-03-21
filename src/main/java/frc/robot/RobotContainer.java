@@ -79,7 +79,6 @@ import frc.robot.util.NoteVisualizer;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Elevator elevator;
   private final Arm arm;
   private final Shooter shooter;
   private final Intake intake;
@@ -113,7 +112,6 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
 
-        elevator = new Elevator(new ElevatorIOReal());
         arm = new Arm(new ArmIOReal());
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
@@ -129,7 +127,6 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        elevator = new Elevator(new ElevatorIOSim());
         arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
         intake = new Intake(new IntakeIOSim());
@@ -145,7 +142,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
         arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
@@ -153,13 +149,9 @@ public class RobotContainer {
         break;
     }
 
-    NoteVisualizer.setElevatorSystem(elevator);
     NoteVisualizer.setRobotPoseSupplier(drive::getPose);
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
-
-    NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
@@ -223,10 +215,10 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
 
     // Snap 90 and 45 bindings
-    driverController.b().whileTrue(new SnapTo90(drive));
+    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
     driverController.a().whileTrue(new SnapTo45(drive));
 
-    driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
+    //driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
     driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
@@ -272,17 +264,19 @@ public class RobotContainer {
     // Nudge arm 5 degrees up
     operatorController.povLeft().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
-        -6), arm));// arm.getArmAngleDegrees() + 5)));
+        -4.7), arm));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
       Constants.ARM_STOW),arm));
 
-    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.5), arm));
-    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.5), arm));
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.5), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
 
-    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(-5.5), arm));
+    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(7.3), arm));
+
+   operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
 
     // Mode bindings
     // operatorController.b().onTrue(new InstantCommand(
@@ -317,7 +311,7 @@ public class RobotContainer {
   }
 
   public double getElevatorPositionMeters() {
-    return elevator.getElevatorPositionMeters();
+    return 0.0;
   }
 
   public double getIntakeAngleDegrees() {
