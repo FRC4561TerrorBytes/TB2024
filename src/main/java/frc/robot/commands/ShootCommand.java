@@ -52,7 +52,7 @@ public class ShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    led.flashColor(128, 3, 145);
+    led.flashColor(128, 3, 145, 2);
   }
 
   // Returns true when the command should end.

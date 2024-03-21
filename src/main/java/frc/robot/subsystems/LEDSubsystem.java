@@ -28,8 +28,22 @@ public class LEDSubsystem extends SubsystemBase {
         m_led.setData(m_ledBuffer);
     }
 
-    public void flashColor(int r, int g, int b) {
+    public void flashColor(int r, int g, int b, int count) {
+        for (int i = 0; i < count; i++) {
+            setColor(r, g, b);
+            new WaitCommand(0.5)
+                .andThen(new InstantCommand(() -> setColor(0, 0, 0)))
+                .andThen(new WaitCommand(1));    
+        }
+    }
+
+    public void flashColorThenSolid(int r, int g, int b, int count) {
+        for (int i = 0; i < count; i++) {
+            setColor(r, g, b);
+            new WaitCommand(0.5)
+                .andThen(new InstantCommand(() -> setColor(0, 0, 0)))
+                .andThen(new WaitCommand(1));    
+        }
         setColor(r, g, b);
-        new WaitCommand(1).andThen(new InstantCommand(() -> setColor(0, 0, 0)));
     }
 }
