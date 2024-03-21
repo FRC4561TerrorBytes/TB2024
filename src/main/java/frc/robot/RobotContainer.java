@@ -212,7 +212,7 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
-    led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN)));
+    // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
     //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     // Attempted orchestra
@@ -236,7 +236,7 @@ public class RobotContainer {
     driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
+    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 

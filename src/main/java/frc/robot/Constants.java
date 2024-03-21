@@ -151,12 +151,12 @@ public final class Constants {
 
   public static enum rgbValues{
     HIGHTIDE_BLUE(0, 182, 174),
-    NOTE_INTAKEN(255, 119, 51),
-    PURPLE_SHOOT(128, 3, 145),
+    NOTE_INTAKEN(255, 40, 3),
+    PURPLE_SHOOT(200, 5, 200),
     BLUE_254(20, 65, 254),
     FUNNY_COLOR(176, 11, 105),
-    IDLE_PINK(237, 145, 179 ),
-    GREEN(3, 145, 46),
+    PINK(255, 10, 10),
+    GREEN(0, 200, 0),
     BLANK(0, 0, 0);
 
     public int r;

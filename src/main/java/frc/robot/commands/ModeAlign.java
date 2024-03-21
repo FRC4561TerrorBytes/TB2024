@@ -23,12 +23,12 @@ public class ModeAlign extends Command {
   private LEDSubsystem led;
 
   /** Creates a new ModeAlign. */
-  public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
+  public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm, LEDSubsystem led) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
-    led = new LEDSubsystem();
+    this.led = led;
 
     addRequirements(drive, led);
   }
@@ -49,7 +49,7 @@ public class ModeAlign extends Command {
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.TRAP)) {
 
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.INTAKING)) {
-        new NoteAlign(drive, indexer, intake, arm);
+        new NoteAlign(drive, indexer, intake, arm, led);
       } else {
 
       }
