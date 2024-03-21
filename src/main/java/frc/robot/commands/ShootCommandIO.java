@@ -9,14 +9,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.NoteVisualizer;
 
 public class ShootCommandIO extends Command {
   /** Creates a new ShootCommand. */
   Shooter shooter;
   Indexer indexer;
   Drive m_driveSubsystem;
-  NoteVisualizer visualizer;
   double targetMPS = 0;
 
   public ShootCommandIO(Shooter shooter, Indexer indexer) {

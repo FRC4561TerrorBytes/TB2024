@@ -68,7 +68,6 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.NoteVisualizer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -83,7 +82,6 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
-  private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
   private double driveRatio = 1.0;
@@ -97,6 +95,28 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
+
+  public enum shootPositions{
+    SUBWOOFER(-4.7, 15.0), 
+    PODIUM(-8, 20.0);
+
+    private double shootSpeed;
+    private double shootAngle;
+    private shootPositions(double shootAngle, double shootSpeed){
+        this.shootSpeed = shootSpeed;
+        this.shootAngle = shootAngle;
+    }
+
+    public double getShootSpeed(){
+        return shootSpeed;
+    }
+
+    public double getShootAngle(){
+        return shootAngle;
+    }
+}
+
+  private shootPositions shootEnum = shootPositions.SUBWOOFER;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -149,12 +169,10 @@ public class RobotContainer {
         break;
     }
 
-    NoteVisualizer.setRobotPoseSupplier(drive::getPose);
-
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
@@ -169,7 +187,7 @@ public class RobotContainer {
 
     autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
       .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, visualizer))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER))
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
@@ -212,7 +230,7 @@ public class RobotContainer {
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
 
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
@@ -262,9 +280,8 @@ public class RobotContainer {
     //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
 
     // Nudge arm 5 degrees up
-    operatorController.povLeft().onTrue(new InstantCommand(
-      () -> arm.setArmSetpoint(
-        -4.7), arm));// arm.getArmAngleDegrees() + 5)));
+    operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(
@@ -275,6 +292,8 @@ public class RobotContainer {
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
 
     operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(7.3), arm));
+
+    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
    operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
 
