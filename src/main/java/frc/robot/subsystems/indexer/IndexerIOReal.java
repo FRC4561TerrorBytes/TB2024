@@ -18,7 +18,7 @@ import frc.robot.Constants;
 public class IndexerIOReal implements IndexerIO {
 
     private final CANSparkMax m_indexer = new CANSparkMax(Constants.INDEXER, MotorType.kBrushless);
-    private final DigitalInput m_beamBrake = new DigitalInput(1);
+    private final DigitalInput m_limitSwitch = new DigitalInput(1);
 
     public IndexerIOReal(){
         m_indexer.restoreFactoryDefaults();
@@ -31,7 +31,7 @@ public class IndexerIOReal implements IndexerIO {
 
      public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerAppliedVolts = m_indexer.getAppliedOutput();
-        inputs.indexerState = !m_beamBrake.get();
+        inputs.indexerState = !m_limitSwitch.get();
         inputs.indexerCurrentAmps = m_indexer.getOutputCurrent();
 
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
@@ -46,6 +46,6 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     public boolean getIndexerState(){
-        return !m_beamBrake.get();
+        return !m_limitSwitch.get();
     }
 }

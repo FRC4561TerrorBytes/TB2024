@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.GameMode;
+import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -18,20 +20,24 @@ public class ModeAlign extends Command {
   private Indexer indexer;
   private Intake intake;
   private Arm arm;
+  private LEDSubsystem led;
 
   /** Creates a new ModeAlign. */
-  public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
+  public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm, LEDSubsystem led) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
+    this.led = led;
 
-    addRequirements(drive);
+    addRequirements(drive, led);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    led.setColor(rgbValues.FUNNY_COLOR);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -43,7 +49,7 @@ public class ModeAlign extends Command {
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.TRAP)) {
 
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.INTAKING)) {
-        new NoteAlign(drive, indexer, intake, arm);
+        new NoteAlign(drive, indexer, intake, arm, led);
       } else {
 
       }
@@ -51,7 +57,9 @@ public class ModeAlign extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    led.setColor(rgbValues.BLANK);
+  }
 
   // Returns true when the command should end.
   @Override
