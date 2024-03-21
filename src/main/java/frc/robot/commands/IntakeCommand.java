@@ -46,6 +46,10 @@ public class IntakeCommand extends Command {
 
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+
+    if (intake.getIntakeBreak()) {
+      led.setColor(rgbValues.BLUE_254);
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -48,4 +48,8 @@ public class Intake extends SubsystemBase {
     public void stopIntake(){
       io.stopIntake();
     }
+
+    public boolean getIntakeBreak() {
+      return inputs.noteInIntake;
+    }
   }
