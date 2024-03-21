@@ -6,12 +6,9 @@ package frc.robot.subsystems.indexer;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
-
 import frc.robot.Constants;
 
 /** Add your docs here. */
