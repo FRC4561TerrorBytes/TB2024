@@ -148,13 +148,34 @@ public final class Constants {
     public static final double ELEVATOR_MOTOR_GEAR_RATIO = 16.15;
     public static final double ELEVATOR_RATIO = 11.0 / 720.0;
 
-    // Needs Calculation
-    // To calculate kS find smallest volatage to move
-    // To calculate kG, and kV use Recalc.
-    public static final double ELEVATOR_STATIC_GAIN = 0.1;
-    public static final double ELEVATOR_GRAVITY_GAIN = 0.14;
-    public static final double ELEVATOR_VELOCITY_GAIN = 46.63;
-    public static final double ELEVATOR_ACCELERATION_GAIN = 0.02;
+  // Needs Calculation
+  // To calculate kS find smallest volatage to move
+  // To calculate kG, and kV use Recalc.
+  public static final double ELEVATOR_STATIC_GAIN = 0.1;
+  public static final double ELEVATOR_GRAVITY_GAIN = 0.14;
+  public static final double ELEVATOR_VELOCITY_GAIN = 46.63;
+  public static final double ELEVATOR_ACCELERATION_GAIN = 0.02;
+
+  public static enum rgbValues{
+    HIGHTIDE_BLUE(0, 182, 174),
+    NOTE_INTAKEN(255, 40, 3),
+    PURPLE_SHOOT(200, 5, 200),
+    BLUE_254(20, 65, 254),
+    FUNNY_COLOR(176, 11, 105),
+    PINK(255, 10, 10),
+    GREEN(0, 200, 0),
+    BLANK(0, 0, 0);
+
+    public int r;
+    public int g;
+    public int b;
+
+    private rgbValues(int r, int g, int b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+    }
+  }
 
     public static final double SHOOTER_MOTOR_GEAR_RATIO = 1.0;
 

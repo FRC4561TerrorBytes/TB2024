@@ -6,12 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.rgbValues;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.NoteVisualizer;
 
 public class ShootCommand extends Command {
   /** Creates a new ShootCommand. */
@@ -19,17 +19,17 @@ public class ShootCommand extends Command {
   Intake intake;
   Indexer indexer;
   Arm arm;
-  NoteVisualizer visualizer;
   double targetMPS = 0;
+  LEDSubsystem led;
 
-  public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
+  public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, LEDSubsystem led) {
     this.shooter = shooter;
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
-    this.visualizer = visualizer;
+    this.led = led;
 
-    addRequirements(shooter, indexer, intake);
+    addRequirements(shooter, indexer, intake, led);
   }
 
   // Called when the command is initially scheduled.
@@ -53,22 +53,21 @@ public class ShootCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // new WaitCommand(1.0).schedule();
+    led.flashColor(rgbValues.PURPLE_SHOOT, 2);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
     // return !indexer.noteInIndexer();//Should be beam breaks when we get them
-    // if(!indexer.noteInIndexer()){
-    //   for(int i = 0; i < 25; i++){
-    //     continue;
-    //   }
-    //   return true;
-    // }
-    // else{
-    //   return false;
-    // }
+    if(!indexer.noteInIndexer()){
+      for(int i = 0; i < 25; i++){
+        continue;
+      }
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }

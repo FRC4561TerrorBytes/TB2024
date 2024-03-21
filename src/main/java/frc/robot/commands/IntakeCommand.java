@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
+import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -18,13 +20,15 @@ public class IntakeCommand extends Command {
   private Intake intake;
   private Indexer indexer;
   private Arm arm;
+  private LEDSubsystem led;
 
-  public IntakeCommand(Intake intake, Indexer indexer, Arm arm) {
+  public IntakeCommand(Intake intake, Indexer indexer, Arm arm, LEDSubsystem led) {
     this.intake = intake;
     this.indexer = indexer;
     this.arm = arm;
+    this.led = led;
 
-    addRequirements(intake, indexer);
+    addRequirements(intake, indexer, led);
   }
 
   // Called when the command is initially scheduled.
@@ -32,6 +36,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
     arm.setArmSetpoint(Constants.ARM_STOW);
+    led.flashColor(rgbValues.FUNNY_COLOR, 999);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,6 +52,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
+    led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
         new InstantCommand(() -> intake.stopIntake())
         .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
               // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);

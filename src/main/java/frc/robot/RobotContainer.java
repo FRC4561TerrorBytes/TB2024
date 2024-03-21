@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.rgbValues;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
@@ -41,6 +42,7 @@ import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.commands.SnapTo90;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOReal;
@@ -84,6 +86,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
+  private final LEDSubsystem led;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
@@ -118,6 +121,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
         indexer = new Indexer(new IndexerIOReal());
+        led = new LEDSubsystem();
         break;
 
       case SIM:
@@ -134,6 +138,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIOSim());
         intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        led = new LEDSubsystem();
         break;
 
       default:
@@ -150,6 +155,7 @@ public class RobotContainer {
         shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        led = new LEDSubsystem();
         break;
     }
 
@@ -161,8 +167,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
     NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
 
-    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
+    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
 
@@ -177,7 +183,7 @@ public class RobotContainer {
 
     autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
       .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, visualizer))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, led))
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
@@ -206,6 +212,7 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
+    // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
     //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
     // Attempted orchestra
@@ -214,13 +221,13 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
+    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, led));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, visualizer));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, led));
 
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new SnapTo90(drive));
@@ -229,7 +236,7 @@ public class RobotContainer {
     driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm));
+    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
