@@ -10,6 +10,9 @@ import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 
@@ -19,6 +22,7 @@ import frc.robot.Constants;
 public class IntakeIOReal implements IntakeIO{
 
     private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE_MOTOR, MotorType.kBrushless);
+    private final DigitalInput m_intakeBreak = new DigitalInput(2);
 
       public IntakeIOReal() {
 
@@ -56,6 +60,7 @@ public class IntakeIOReal implements IntakeIO{
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeAppliedVolts = m_frontIntake.getAppliedOutput();
         inputs.intakeCurrentAmps = new double[] {m_frontIntake.getOutputCurrent()};
+        inputs.noteInIntake = !m_intakeBreak.get();
     };
 
     public void setIntakeSpeed(double velocity) {

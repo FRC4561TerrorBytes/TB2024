@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer.shootPositions;
 import frc.robot.Constants.rgbValues;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -21,12 +22,14 @@ public class ShootCommand extends Command {
   Arm arm;
   double targetMPS = 0;
   LEDSubsystem led;
+  shootPositions shooterPositions;
 
-  public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, LEDSubsystem led) {
+  public ShootCommand(Shooter shooter, Indexer indexer, Intake intake, Arm arm, shootPositions shooterPosition, LEDSubsystem led) {
     this.shooter = shooter;
     this.indexer = indexer;
     this.intake = intake;
     this.arm = arm;
+    this.shooterPositions = shooterPosition;
     this.led = led;
 
     addRequirements(shooter, indexer, intake, led);
@@ -36,17 +39,16 @@ public class ShootCommand extends Command {
   @Override
   public void initialize() {
     targetMPS = shooter.getVelocity();
-    shooter.setFlywheelSpeed(20);
+    shooter.setFlywheelSpeed(shooterPositions.getShootSpeed());
     // arm.setArmSetpoint(shooter.getPivotAngle());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.flywheelUpToSpeed(17.5)){
+    if(shooter.flywheelUpToSpeed(shooterPositions.getShootSpeed() * 0.875)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
-        shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
 
@@ -54,6 +56,7 @@ public class ShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     led.flashColor(rgbValues.PURPLE_SHOOT, 2);
+    shooter.setFlywheelSpeed(0);
   }
 
   // Returns true when the command should end.

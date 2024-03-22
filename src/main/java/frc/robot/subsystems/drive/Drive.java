@@ -20,6 +20,7 @@ import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
@@ -39,6 +40,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LocalADStarAK;
@@ -97,6 +99,8 @@ public class Drive extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
+            new PIDConstants(1.75, 0, 0), 
+            new PIDConstants(0.8,0,0),
             MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
         () -> 
         DriverStation.getAlliance().isPresent()
@@ -114,7 +118,6 @@ public class Drive extends SubsystemBase {
         });
 
         //m_orchestra.addInstrument(modules[1].getDriveTalon());
-
   }
 
   public void periodic() {
@@ -161,8 +164,8 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
-    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-test");
-    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults("limelight-test").targetingResults.botpose_wpiblue);
+    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.VISION_LIMELIGHT);
+    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
     if(limelightMeasurement.tagCount >= 2)
     {
       m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));

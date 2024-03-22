@@ -48,7 +48,6 @@ public class AmpShoot extends Command {
     if(shooter.flywheelUpToSpeed(2.75)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
-        shooter.launchCommand().withTimeout(0.5).schedule();
     }
   }
 

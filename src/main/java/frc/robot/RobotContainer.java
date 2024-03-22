@@ -25,7 +25,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -33,15 +32,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.rgbValues;
-import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
-import frc.robot.commands.SnapTo90;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -53,10 +47,6 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
-import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorIOReal;
-import frc.robot.subsystems.elevator.ElevatorIOSim;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -81,7 +71,6 @@ import frc.robot.util.NoteVisualizer;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Elevator elevator;
   private final Arm arm;
   private final Shooter shooter;
   private final Intake intake;
@@ -102,6 +91,29 @@ public class RobotContainer {
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
 
+  public enum shootPositions{
+    SUBWOOFER(-4.7, 15.0), 
+    PODIUM(-8, 20.0),
+    CENTER_AUTO_NOTE(-8.25, 20.0);
+
+    private double shootSpeed;
+    private double shootAngle;
+    private shootPositions(double shootAngle, double shootSpeed){
+        this.shootSpeed = shootSpeed;
+        this.shootAngle = shootAngle;
+    }
+
+    public double getShootSpeed(){
+        return shootSpeed;
+    }
+
+    public double getShootAngle(){
+        return shootAngle;
+    }
+}
+
+  private shootPositions shootEnum = shootPositions.SUBWOOFER;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
@@ -116,7 +128,6 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
 
-        elevator = new Elevator(new ElevatorIOReal());
         arm = new Arm(new ArmIOReal());
         shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
@@ -133,7 +144,6 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim());
-        elevator = new Elevator(new ElevatorIOSim());
         arm = new Arm(new ArmIOSim());
         shooter = new Shooter(new ShooterIOSim());
         intake = new Intake(new IntakeIOSim());
@@ -150,7 +160,6 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        elevator = new Elevator(new ElevatorIO() {});
         arm = new Arm(new ArmIO() {});
         shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
@@ -159,18 +168,16 @@ public class RobotContainer {
         break;
     }
 
-    NoteVisualizer.setElevatorSystem(elevator);
-    NoteVisualizer.setRobotPoseSupplier(drive::getPose);
-
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
-    NamedCommands.registerCommand("ElevatorUp", new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    NamedCommands.registerCommand("ElevatorDown", new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
+    NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
 
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
-    NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
+    NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
+    NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE, led));
+    NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(-4.7)));
+    NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(-8)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -183,7 +190,7 @@ public class RobotContainer {
 
     autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
       .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, led))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led))
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
@@ -207,7 +214,7 @@ public class RobotContainer {
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
             () -> driverController.getRightX() / driveRatio));
-
+    
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
@@ -227,16 +234,16 @@ public class RobotContainer {
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, led));
+    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
 
     // Snap 90 and 45 bindings
-    driverController.b().whileTrue(new SnapTo90(drive));
+    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
     driverController.a().whileTrue(new SnapTo45(drive));
 
-    driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
+    //driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
+    //driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
@@ -277,31 +284,26 @@ public class RobotContainer {
     //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
 
     // Nudge arm 5 degrees up
-    operatorController.povLeft().onTrue(new InstantCommand(
-      () -> arm.setArmSetpoint(
-        -6), arm));// arm.getArmAngleDegrees() + 5)));
+    operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
 
     // Nudge arm 5 degrees down
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
       Constants.ARM_STOW),arm));
 
-    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.5), arm));
-    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.5), arm));
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.5), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
 
-    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(-5.5), arm));
+    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(7.3), arm));
 
-    // Mode bindings
-    // operatorController.b().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));d
+    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
-    // operatorController.x().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
-
-    // operatorController.a().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
+   operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
 
     SmartDashboard.putData(arm);
+    SmartDashboard.putData(indexer);
+
     // operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
   }
 
@@ -324,7 +326,7 @@ public class RobotContainer {
   }
 
   public double getElevatorPositionMeters() {
-    return elevator.getElevatorPositionMeters();
+    return 0.0;
   }
 
   public double getIntakeAngleDegrees() {
@@ -332,12 +334,10 @@ public class RobotContainer {
   }
 
   public void autonomousInit() {
-    // arm.seedEncoders();
     // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 
   public void teleopInit() {
-    // arm.seedEncoders();
     // arm.setArmSetpoint(arm.getArmAngleDegrees());
   }
 

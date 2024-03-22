@@ -13,6 +13,7 @@ public interface IntakeIO {
     public static class IntakeIOInputs {
         public double intakeAppliedVolts = 0.0;
         public double[] intakeCurrentAmps = new double[] {};
+        public boolean noteInIntake = false;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {};

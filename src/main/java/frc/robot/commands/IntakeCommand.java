@@ -46,6 +46,10 @@ public class IntakeCommand extends Command {
 
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+
+    if (intake.getIntakeBreak()) {
+      led.setColor(rgbValues.BLUE_254);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -53,10 +57,8 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
     led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
-        new InstantCommand(() -> intake.stopIntake())
-        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
-              // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
-      //ADD LED STUFF
+    intake.stopIntake();
+    indexer.stopIndexer();
     
   }
 

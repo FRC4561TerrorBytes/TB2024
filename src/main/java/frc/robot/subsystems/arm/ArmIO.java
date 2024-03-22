@@ -11,8 +11,8 @@ public interface ArmIO {
 
     @AutoLog
     public static class ArmIOInputs {
-        public double armAbsoluteAngleDegrees = 0.0;
-        public double armRelativeAngleDegrees = 0.0;
+        public double armAbsoluteAngleRotations = 0.0;
+        public double armRelativeAngleRotations = 0.0;
         public double armVelocityRadPerSec = 0.0;
         public double armAppliedVolts = 0.0;
         public double armCurrentAmps = 0.0;
@@ -37,4 +37,6 @@ public interface ArmIO {
     public default double getArmEncoderRotation(){return 0.0;}
 
     public default void nudge(double degrees) {}
+
+    public default double getAbsoluteRotations(){return 0.0;}
 }

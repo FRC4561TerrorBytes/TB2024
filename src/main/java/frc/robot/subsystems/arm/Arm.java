@@ -48,7 +48,7 @@ public class Arm extends SubsystemBase {
     }
     
     public double getArmAngleDegrees() {
-        return inputs.armRelativeAngleDegrees;
+        return inputs.armRelativeAngleRotations;
     }
 
     public void incrementArmAngle(double inc) {
@@ -74,6 +74,10 @@ public class Arm extends SubsystemBase {
 
     public double getArmEncoderRotation(){
         return io.getArmEncoderRotation();
+    }
+
+    public double getAbsoluteRotations(){
+        return io.getAbsoluteRotations();
     }
 
     @Override
