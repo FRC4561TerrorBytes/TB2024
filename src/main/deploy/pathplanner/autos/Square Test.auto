@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2202882421032024,
-      "y": 5.55
+      "x": 1.5,
+      "y": 5.55472336015897
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,24 +14,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far Left Note"
+            "pathName": "Square Pt1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center from left"
+            "pathName": "SquarePt2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Right from center"
+            "pathName": "SquarePt3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SquarePt4"
           }
         }
       ]
     }
   },
-  "folder": "Drive Turn",
+  "folder": "Test Autos",
   "choreoAuto": false
 }

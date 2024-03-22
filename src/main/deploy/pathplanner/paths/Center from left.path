@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7,
-        "y": 4.3
+        "x": 2.7856981070087494,
+        "y": 4.092954054853979
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7529525135386155,
-        "y": 4.12553700425467
+        "x": 1.8386506205473647,
+        "y": 3.918491059108649
       },
       "isLocked": false,
       "linkedName": "Far Left / Podium"
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

@@ -94,6 +94,7 @@ public class RobotContainer {
   public enum shootPositions{
     SUBWOOFER(-4.7, 15.0), 
     PODIUM(-8, 20.0),
+    AMP(7.3, 0.0),
     CENTER_AUTO_NOTE(-8.25, 20.0);
 
     private double shootSpeed;
@@ -291,13 +292,13 @@ public class RobotContainer {
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
       Constants.ARM_STOW),arm));
-
+    
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.5), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
 
-    operatorController.y().onTrue(new InstantCommand(() -> arm.setArmSetpoint(7.3), arm));
+    operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
-    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+    operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
    operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
 
