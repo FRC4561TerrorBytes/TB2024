@@ -46,7 +46,7 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.flywheelUpToSpeed(shooterPositions.SUBWOOFER.getShootSpeed() * 0.875)){
+    if(shooter.flywheelUpToSpeed(shooterPositions.getShootSpeed() * 0.875)){
         indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
         intake.setIntakeSpeed(0.5);
     }
@@ -56,6 +56,7 @@ public class ShootCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     led.flashColor(rgbValues.PURPLE_SHOOT, 2);
+    shooter.setFlywheelSpeed(0);
   }
 
   // Returns true when the command should end.

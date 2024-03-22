@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.6052110897478227,
-      "y": 6.0
+      "x": 1.2100668566698944,
+      "y": 5.502078857064002
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StraightBack"
+            "pathName": "Center Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Print Test"
           }
         }
       ]

@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ModeAlign;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.SnapTo45;
 import frc.robot.subsystems.LEDSubsystem;
@@ -94,7 +93,8 @@ public class RobotContainer {
 
   public enum shootPositions{
     SUBWOOFER(-4.7, 15.0), 
-    PODIUM(-8, 20.0);
+    PODIUM(-8, 20.0),
+    CENTER_AUTO_NOTE(-8.25, 20.0);
 
     private double shootSpeed;
     private double shootAngle;
@@ -170,10 +170,14 @@ public class RobotContainer {
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
+    NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
+
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
-    NamedCommands.registerCommand("Shoot", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
-    NamedCommands.registerCommand("ArmShootSetPoint", new InstantCommand(() -> arm.setArmSetpoint(-6)));
+    NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
+    NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE, led));
+    NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(-4.7)));
+    NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(-8)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -239,7 +243,7 @@ public class RobotContainer {
     //driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
+    //driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
@@ -297,17 +301,9 @@ public class RobotContainer {
 
    operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
 
-    // Mode bindings
-    // operatorController.b().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.TRAP)));d
-
-    // operatorController.x().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.SPEAKER)));
-
-    // operatorController.a().onTrue(new InstantCommand(
-    //   () -> GameMode.getInstance().setCurrentMode(Mode.AMP)));
-
     SmartDashboard.putData(arm);
+    SmartDashboard.putData(indexer);
+
     // operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
   }
 

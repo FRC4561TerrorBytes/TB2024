@@ -57,10 +57,8 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
     led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
-        new InstantCommand(() -> intake.stopIntake())
-        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
-              // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
-      //ADD LED STUFF
+    intake.stopIntake();
+    indexer.stopIndexer();
     
   }
 
