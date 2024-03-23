@@ -92,10 +92,10 @@ public class RobotContainer {
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
 
   public enum shootPositions{
-    SUBWOOFER(-4.7, 15.0), 
-    PODIUM(-8, 20.0),
+    SUBWOOFER(-4.7, 20),    
+    PODIUM(-8.5, 20.0),
     AMP(7.3, 0.0),
-    CENTER_AUTO_NOTE(-8.25, 20.0);
+    CENTER_AUTO_NOTE(-8.5, 20.0);
 
     private double shootSpeed;
     private double shootAngle;

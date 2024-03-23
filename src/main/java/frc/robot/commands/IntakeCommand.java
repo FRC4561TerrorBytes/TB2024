@@ -36,14 +36,12 @@ public class IntakeCommand extends Command {
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
     arm.setArmSetpoint(Constants.ARM_STOW);
-    led.flashColor(rgbValues.FUNNY_COLOR, 999);
+    led.setColor(rgbValues.FUNNY_COLOR);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
-
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
 

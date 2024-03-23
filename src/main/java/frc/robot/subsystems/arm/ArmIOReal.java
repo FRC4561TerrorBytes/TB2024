@@ -58,7 +58,7 @@ public class ArmIOReal implements ArmIO {
 
         // set Motion Magic settings
         var motionMagicConfigs = armConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 15; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicCruiseVelocity = 25; // Target cruise velocity of 80 rps
         motionMagicConfigs.MotionMagicAcceleration = 60; // Target acceleration of 160 rps/s (0.5 seconds)
 
         m_armMotorLeft.getConfigurator().apply(armConfig);

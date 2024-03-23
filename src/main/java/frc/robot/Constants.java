@@ -102,8 +102,7 @@ public final class Constants {
     public static final int BACK_RIGHT_STEER_MOTOR = 6; // 2 for fulcrum
     public static final int BACK_RIGHT_STEER_ENCODER = 23; // 21 for fulcrum
     public static final InvertedValue BACK_RIGHT_DRIVE_MOTOR_INVERTED = InvertedValue.Clockwise_Positive; // clockwise
-                                                                                                                 // for
-                                                                                                                 // fulcrum
+                                                                                                                 // for                                                                                     // fulcrum
     public static final boolean BACK_RIGHT_TURN_MOTOR_INVERTED = true;
     public static final double BACK_RIGHT_STEER_OFFSET = 2.4541988;// -2.1184274; Fulcrum drivebase
 
@@ -232,7 +231,7 @@ public final class Constants {
 
   public static final int FRONT_INTAKE_MOTOR = 15;
 
-  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.3171;
+  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.0478 - 0.0025;
   public static final double ARM_ABSOLUTE_CONVERSION_FACTOR = 49.87;
 
   public static String VISION_LIMELIGHT = "limelight-vanap";

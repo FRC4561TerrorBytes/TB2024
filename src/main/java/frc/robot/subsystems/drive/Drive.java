@@ -164,15 +164,15 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
-    LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.VISION_LIMELIGHT);
-    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
-    if(limelightMeasurement.tagCount >= 2)
-    {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
-      m_poseEstimator.addVisionMeasurement(
-          limelightMeasurement.pose,
-          limelightMeasurement.timestampSeconds);
-    }
+    // LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.VISION_LIMELIGHT);
+    // Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
+    // // if(limelightMeasurement.tagCount >= 2)
+    // {
+    //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
+    //   m_poseEstimator.addVisionMeasurement(
+    //       limelightMeasurement.pose,
+    //       limelightMeasurement.timestampSeconds);
+    // }
   }
 
   /**
