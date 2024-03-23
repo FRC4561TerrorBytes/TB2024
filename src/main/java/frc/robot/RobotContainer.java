@@ -189,13 +189,6 @@ public class RobotContainer {
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
 
-    autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
-      .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led))
-        .withTimeout(1.0)
-      .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
-        .withTimeout(1.5));
-
     // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
     // Configure the button bindings

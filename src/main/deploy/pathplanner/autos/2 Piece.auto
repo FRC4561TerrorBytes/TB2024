@@ -5,7 +5,7 @@
       "x": 1.2100668566698944,
       "y": 5.502078857064002
     },
-    "rotation": -0.23121336242873147
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -43,19 +43,19 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Center Note"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Note"
                 }
               }
             ]
