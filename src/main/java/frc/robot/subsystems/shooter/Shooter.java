@@ -182,9 +182,9 @@ public class Shooter extends SubsystemBase {
   }
 
   /** Returns a command that launches a note. */
-  // public Command launchCommand() {
-  //   return Commands.sequence(
-  //               NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
-  //           Commands.idle());
-  // }
+  public Command launchCommand() {
+    return Commands.sequence(
+                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
+            Commands.idle());
+  }
 }

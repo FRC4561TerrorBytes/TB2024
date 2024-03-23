@@ -5,10 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
-import frc.robot.GameMode;
 import frc.robot.Constants.rgbValues;
+import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -36,19 +35,17 @@ public class IntakeCommand extends Command {
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
     arm.setArmSetpoint(Constants.ARM_STOW);
-    led.flashColor(rgbValues.FUNNY_COLOR, 999);
+    led.IntakingLedCycle.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
-
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
 
     if (intake.getIntakeBreak()) {
-      led.setColor(rgbValues.BLUE_254);
+      led.setColor(rgbValues.FUNNY_COLOR);
     }
   }
 
@@ -58,8 +55,7 @@ public class IntakeCommand extends Command {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
     led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
     intake.stopIntake();
-    indexer.stopIndexer();
-    
+    indexer.stopIndexer();    
   }
 
   // Returns true when the command should end.
