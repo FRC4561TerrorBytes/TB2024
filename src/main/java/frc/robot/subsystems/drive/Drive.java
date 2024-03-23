@@ -61,7 +61,7 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
-  private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
+  // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -345,13 +345,13 @@ public class Drive extends SubsystemBase {
     return angle;
   }
 
-  public void playSound() {
-    m_orchestra.loadMusic("verySecretMusicFile.chrp");
-    m_orchestra.play();
-    System.out.println("Orchesta playing: " + m_orchestra.isPlaying());
-  }
+  // public void playSound() {
+  //   m_orchestra.loadMusic("verySecretMusicFile.chrp");
+  //   m_orchestra.play();
+  //   System.out.println("Orchesta playing: " + m_orchestra.isPlaying());
+  // }
 
-  public void resetTrack() {
-    m_orchestra.stop();
-  }
+  // public void resetTrack() {
+  //   m_orchestra.stop();
+  // }
 }

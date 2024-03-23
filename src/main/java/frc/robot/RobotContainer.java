@@ -172,7 +172,6 @@ public class RobotContainer {
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
     NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
-
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
@@ -214,12 +213,7 @@ public class RobotContainer {
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
-    //arm.setDefaultCommand(new InstantCommand(() -> arm.stopArm(), arm));
    
-    // Attempted orchestra
-    // driverController.start().whileTrue(new RunCommand(() -> drive.playSound(), drive));
-    // driverController.back().onTrue(new InstantCommand(() -> drive.resetTrack(), drive));
-
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, led));
@@ -233,12 +227,6 @@ public class RobotContainer {
     // Snap 90 and 45 bindings
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
     driverController.a().whileTrue(new SnapTo45(drive));
-
-    //driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
-
-    // Auto align based on current mode
-    //driverController.y().whileTrue(new ModeAlign(drive, indexer, intake, arm, led));
-
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
     // Lock drive to no rotation
@@ -255,50 +243,38 @@ public class RobotContainer {
     driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
     driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
 
-    // operatorController.povUp().onTrue(new InstantCommand(
-    //   () -> arm.setArmSetpoint(
-    //     7.7), arm));
-    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
-
-    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
-
   //DEEKSHI CONTROLS
-    // Set elevator climbing setpoints
-    // operatorController.rightTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0.419)));
-    // operatorController.leftTrigger().onTrue(new InstantCommand(() -> elevator.setElevatorSetpoint(0)));
-
-    // Nudge elevator 5 inches up
-    // operatorController.povUp().onTrue(new InstantCommand(
-    //   () -> elevator.setElevatorSetpoint(
-    //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(5))));
-
-    // Nudge elevator 5 inches down
-    // operatorController.povDown().onTrue(new InstantCommand(
-    //   () -> elevator.setElevatorSetpoint(
-    //     elevator.getElevatorPositionMeters() + Units.inchesToMeters(-5))));
-
-    // Nudge arm 5 degrees up
+    // Subwoofer angle
     operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
 
-    // Nudge arm 5 degrees down
+    // Stow arm
     operatorController.povRight().onTrue(new InstantCommand(
       () -> arm.setArmSetpoint(
       Constants.ARM_STOW),arm));
     
+    //Nudge arm up/down
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.5), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
 
-    operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+    //Amp angle
+    operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
-    operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM).andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+    //Podium shot angle
+    operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
-   operatorController.rightStick().and(operatorController.leftStick()).onTrue(new InstantCommand(() -> arm.seedEncoders()));
+    //Re seed arm with abs encoder
+    operatorController.rightStick().and(operatorController.leftStick())
+      .onTrue(new InstantCommand(() -> arm.seedEncoders()));
+
+    //Outtake, out-index
+    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
+    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
-
-    // operatorController.y().onTrue(new InstantCommand(() -> arm.nudge(5), arm));
   }
 
   public double getArmAngleDegrees() {
