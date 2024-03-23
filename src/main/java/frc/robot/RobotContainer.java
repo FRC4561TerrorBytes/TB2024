@@ -207,7 +207,7 @@ public class RobotContainer {
             drive,
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
-            () -> driverController.getRightX() / driveRatio));
+            () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
