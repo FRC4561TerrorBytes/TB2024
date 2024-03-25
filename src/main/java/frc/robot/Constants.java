@@ -238,7 +238,7 @@ public final class Constants {
   public static String VISION_LIMELIGHT = "limelight-vanap";
   public static String DRIVER_LIMELIGHT = "limelight-panav";
 
-    public static final Mode currentMode = Mode.REAL;
+    public static final Mode currentMode = Mode.SIM;
 
     public static enum Mode {
         /** Running on a real robot. */

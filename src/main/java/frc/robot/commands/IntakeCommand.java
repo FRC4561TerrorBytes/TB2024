@@ -6,10 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
-import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -19,15 +18,13 @@ public class IntakeCommand extends Command {
   private Intake intake;
   private Indexer indexer;
   private Arm arm;
-  private LEDSubsystem led;
 
-  public IntakeCommand(Intake intake, Indexer indexer, Arm arm, LEDSubsystem led) {
+  public IntakeCommand(Intake intake, Indexer indexer, Arm arm) {
     this.intake = intake;
     this.indexer = indexer;
     this.arm = arm;
-    this.led = led;
 
-    addRequirements(intake, indexer, led);
+    addRequirements(intake, indexer);
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +32,7 @@ public class IntakeCommand extends Command {
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
     arm.setArmSetpoint(Constants.ARM_STOW);
-    led.IntakingLedCycle.schedule();
+    Leds.getInstance().intaking = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,18 +41,18 @@ public class IntakeCommand extends Command {
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
 
-    if (intake.getIntakeBreak()) {
-      led.setColor(rgbValues.FUNNY_COLOR);
-    }
+    Leds.getInstance().noteInIntake = intake.getIntakeBreak();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     GameMode.getInstance().setCurrentMode(Mode.IDLE);
-    led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
     intake.stopIntake();
-    indexer.stopIndexer();    
+    indexer.stopIndexer();
+    Leds.getInstance().noteInIndexer = true;
+    Leds.getInstance().intaking = false;
+    Leds.getInstance().noteInIntake = false;
   }
 
   // Returns true when the command should end.
