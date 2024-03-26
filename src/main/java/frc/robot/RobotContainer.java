@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.GameMode.Mode;
+import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AmpShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
@@ -228,7 +229,7 @@ public class RobotContainer {
     driverController.x().whileTrue(new AmpShoot(shooter, drive, indexer, intake, arm, visualizer));
 
     // Auto align based on current mode
-    driverController.y().whileTrue(new ModeAlign(drive, indexer, intake));
+    driverController.y().whileTrue(new AmpDrive(drive));
 
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 

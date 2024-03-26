@@ -7,16 +7,20 @@ package frc.robot.commands;
 import java.util.ArrayList;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPoint;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.util.AllianceFlipUtil;
 
 public class AmpDrive extends Command {
 
@@ -31,36 +35,26 @@ public class AmpDrive extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    PathPoint ampPoint = new PathPoint(new Translation2d());
-    PathPoint currentPoint = new PathPoint(drive.getPose().getTranslation());
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      ampPoint = new PathPoint(new Translation2d(1.80, 7.70));
-    } else {
-      ampPoint = new PathPoint(new Translation2d(14.75, 7.70));
-    }
-
-    ArrayList<PathPoint> points = new ArrayList<PathPoint>();
-    points.add(currentPoint);
-    points.add(ampPoint);
-
-    PathPlannerPath path = PathPlannerPath.fromPathPoints(
-      points,
-      new PathConstraints(1, 1, 540, 720),
-      new GoalEndState(0, Rotation2d.fromDegrees(0)));
-
-      pathCommand = AutoBuilder.followPath(path);
-
-      pathCommand.schedule();
-    }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    Pose2d ampPose = new Pose2d(14.75, 7.70, Rotation2d.fromDegrees(90));
+
+    AllianceFlipUtil.apply(ampPose);
+
+    pathCommand = AutoBuilder.pathfindToPose(
+      ampPose, 
+      new PathConstraints(4, 4.5, 540, 720));
+
+    pathCommand.schedule();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    pathCommand.end(interrupted);
     drive.stop();
   }
 
