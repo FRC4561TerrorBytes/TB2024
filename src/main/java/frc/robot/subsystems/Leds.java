@@ -39,8 +39,8 @@ public class Leds extends SubsystemBase {
   public double autoFinishedTime = 0.0;
 
   private Optional<Alliance> alliance = Optional.empty();
-  private Color allianceColor = Color.kForestGreen;
-  private Color secondaryDisabledColor = Color.kDeepPink;
+  private Color allianceColor = Color.kBlack;
+  private Color secondaryDisabledColor = Color.kHotPink;
   private boolean lastEnabledAuto = false;
   private double lastEnabledTime = 0.0;
   private boolean estopped = false;
@@ -64,7 +64,7 @@ public class Leds extends SubsystemBase {
   private static final double waveFastCycleLength = 25.0;
   private static final double waveFastDuration = 0.25;
   private static final double waveSlowCycleLength = 25.0;
-  private static final double waveSlowDuration = 3.0;
+  private static final double waveSlowDuration = 1.0;
   private static final double waveAllianceCycleLength = 15.0;
   private static final double waveAllianceDuration = 2.0;
   private static final double autoFadeTime = 2.5; // 3s nominal
@@ -94,8 +94,8 @@ public class Leds extends SubsystemBase {
       allianceColor = 
         alliance
           .map(alliance -> alliance == Alliance.Blue ? Color.kBlue : Color.kRed)
-          .orElse(Color.kForestGreen);
-      secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kDeepPink;
+          .orElse(Color.kBurlywood);
+      secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kThistle;
     }
 
     // Update auto state
@@ -145,7 +145,7 @@ public class Leds extends SubsystemBase {
                 Color.kWhite,
                 Color.kDeepPink,
                 new Color(0.15, 0.3, 1.0)),
-            3,
+            50,
             5.0);
         buffer.setLED(staticLength, allianceColor);
       } else {
@@ -154,18 +154,18 @@ public class Leds extends SubsystemBase {
       }
     }
       if (DriverStation.isAutonomous()) {
-        wave(Color.kForestGreen, Color.kDeepPink, waveFastCycleLength, waveFastDuration);
+        wave(Color.kDarkGreen, Color.kPurple, waveSlowCycleLength, waveSlowDuration);
         if (autoFinished) {
           double fullTime = (double) length / waveFastCycleLength * waveFastDuration;
           solid((Timer.getFPGATimestamp() - autoFinishedTime) / fullTime, Color.kGreen);
         }
       } else { // Enabled
         if (intaking) {
-          strobe(Color.kMidnightBlue, strobeSlowDuration);
+          strobe(Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoDrive || autoShoot) {
           rainbow(rainbowCycleLength, rainbowDuration);
         } else if (noteInIntake) {
-          solid(Color.kGreen);
+          solid(Color.kLawnGreen);
         } else if (noteInIndexer) {
           solid(Color.kOrange);
         }
