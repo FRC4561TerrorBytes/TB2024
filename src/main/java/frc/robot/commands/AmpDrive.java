@@ -4,20 +4,11 @@
 
 package frc.robot.commands;
 
-import java.util.ArrayList;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.path.PathPoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.AllianceFlipUtil;
@@ -46,7 +37,7 @@ public class AmpDrive extends Command {
 
     pathCommand = AutoBuilder.pathfindToPose(
       ampPose, 
-      new PathConstraints(4, 4.5, 540, 720));
+      new PathConstraints(2, 2, 540, 540));
 
     pathCommand.schedule();
   }
@@ -54,7 +45,7 @@ public class AmpDrive extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pathCommand.end(interrupted);
+    pathCommand.cancel();
     drive.stop();
   }
 
