@@ -12,11 +12,16 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
@@ -70,6 +75,17 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("Shooter/Angle", Units.radiansToDegrees(m_angle));
         Logger.recordOutput("Shooter/Height", m_height);
+
+      NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+      NetworkTableEntry ty = table.getEntry("ty");
+      double targetOffsetAngleVert = ty.getDouble(0.0);
+
+      double llMountAngleDeg = 25.0;
+      double llHeightIn = 20.0;
+      double targetHeightIn = 80.515;
+
+      double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
+      Logger.recordOutput("Angle to Speaker", angleToGoalDeg);
     }
 
         /** Run open loop at the specified voltage. */
