@@ -103,11 +103,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
 
         driveTalon.getConfigurator().apply(driveConfig);
-        if (errorLabel == "Module3") {
-          setDriveBrakeMode(false, isDriveMotorInverted);
-        } else {
-          setDriveBrakeMode(true, isDriveMotorInverted);
-        }
         
         turnSparkMax.restoreFactoryDefaults();
         turnSparkMax.setCANTimeout(250);

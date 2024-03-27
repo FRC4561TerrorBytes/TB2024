@@ -5,7 +5,7 @@
       "x": 0.6630730971658731,
       "y": 4.435076061565361
     },
-    "rotation": 120.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -20,6 +20,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Drive Turn",
   "choreoAuto": false
 }
