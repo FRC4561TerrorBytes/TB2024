@@ -38,7 +38,7 @@ public class AutoShootCommand extends Command {
     new FaceSpeaker(drive);
     
     arm.setArmSetpoint(shooter.calculateArmRotations());
-    targetMPS = 40;
+    targetMPS = 25;
     shooter.setFlywheelSpeed(targetMPS);
   }
 

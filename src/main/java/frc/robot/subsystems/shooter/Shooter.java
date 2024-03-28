@@ -116,7 +116,7 @@ public class Shooter extends SubsystemBase {
 
     double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
 
-    return angleToGoalDeg;
+    return angleToGoalDeg + 2;
   }
 
   public double calculateArmRotations(){
