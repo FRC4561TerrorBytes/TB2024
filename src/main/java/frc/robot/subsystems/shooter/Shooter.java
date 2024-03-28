@@ -116,7 +116,7 @@ public class Shooter extends SubsystemBase {
 
     double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
 
-    return angleToGoalDeg + 4;
+    return angleToGoalDeg;
   }
 
   public double calculateArmRotations(){
@@ -133,18 +133,18 @@ public class Shooter extends SubsystemBase {
     return Units.degreesToRotations(degrees)*encoderToArm;
   }
 
-  public double calculateFlywheelSpeed(double distance){
-    m_angle = Units.degreesToRadians(findStraightLineAngle());
+  // public double calculateFlywheelSpeed(){
+  //   m_angle = Units.degreesToRadians(findStraightLineAngle());
 
-    double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle)) + Constants.ELEVATOR_X_OFFSET;
+  //   double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle)) + Constants.ELEVATOR_X_OFFSET;
 
-    //need this here because it is used in find velocity function
-    m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ARM_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(m_angle));
+  //   //need this here because it is used in find velocity function
+  //   m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ARM_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(m_angle));
 
-    //distance from flywheel exit using flat distance to frame and subtracting(closer) the arm based off angle using trig
-    m_velocitySetpoint = findVelocity(findFlatDistanceWithVision() + (Units.inchesToMeters(26.0)/2) - xOffset)*1.8;
-    return m_velocitySetpoint;
-  }
+  //   //distance from flywheel exit using flat distance to frame and subtracting(closer) the arm based off angle using trig
+  //   m_velocitySetpoint = findVelocity(findFlatDistanceWithVision() + (Units.inchesToMeters(26.0)/2) - xOffset)*6;
+  //   return m_velocitySetpoint;
+  // }
 
   @AutoLogOutput(key = "Shooter/VelocitySetpoint")
   public double getVelocity(){

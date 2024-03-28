@@ -102,6 +102,10 @@ public class ArmIOReal implements ArmIO {
         m_armMotorLeft.setControl(m_request.withPosition(armSetPoint));
     }
 
+    public boolean armAtSetpoint(){
+        return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.5;
+    }
+
     @AutoLogOutput(key = "ArmAbsoluteRotations")
     public double getAbsoluteRotations() {
         return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;

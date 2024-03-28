@@ -38,14 +38,14 @@ public class AutoShootCommand extends Command {
     new FaceSpeaker(drive);
     
     arm.setArmSetpoint(shooter.calculateArmRotations());
-    shooter.setFlywheelSpeed(25.0);
-    targetMPS = 25.0;
+    targetMPS = 40;
+    shooter.setFlywheelSpeed(targetMPS);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.flywheelUpToSpeed(targetMPS * 0.875)) {
+    if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
       intake.setIntakeSpeed(0.5);
     }

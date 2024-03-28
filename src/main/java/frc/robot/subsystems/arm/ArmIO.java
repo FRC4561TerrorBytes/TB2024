@@ -28,6 +28,8 @@ public interface ArmIO {
 
     public default void setArmSetpoint(double setpoint) {}
 
+    public default boolean armAtSetpoint(){return false;}
+
     public default void incrementArmAngle(double inc) {}
 
     public default void decrementArmAngle(double inc) {}
