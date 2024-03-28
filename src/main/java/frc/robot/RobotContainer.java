@@ -31,10 +31,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.SnapTo45;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -87,6 +87,7 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
+  private boolean autoShoot = false;
 
   public enum shootPositions{
     SUBWOOFER(-4.7, 20),    
@@ -219,12 +220,14 @@ public class RobotContainer {
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
+    driverController.rightBumper().and(() -> autoShoot).whileTrue(new AutoShootCommand(drive, arm, shooter, indexer, intake));
+    driverController.rightBumper().and(() -> !autoShoot).whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
 
-    // Snap 90 and 45 bindings
-    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
-    driverController.a().whileTrue(new SnapTo45(drive));
+    // Reset gyro
     driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+
+    // Auto shoot toggle
+    driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot));
 
     // Lock drive to no rotation
     driverController.rightTrigger().whileTrue(
@@ -275,6 +278,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
+    Logger.recordOutput("Auto Shoot", autoShoot);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }

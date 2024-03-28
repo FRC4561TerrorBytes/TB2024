@@ -21,7 +21,6 @@ public class AmpShoot extends Command {
   Indexer indexer;
   Arm arm;
   NoteVisualizer visualizer;
-  double targetMPS = 0;
 
   public AmpShoot(Shooter shooter, Drive driveSubsystem, Indexer indexer, Intake intake, Arm arm, NoteVisualizer visualizer) {
     this.shooter = shooter;
@@ -37,8 +36,7 @@ public class AmpShoot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.calculateShooter(m_driveSubsystem.getDistanceFromSpeaker());
-    targetMPS = shooter.getVelocity();
+    shooter.calculateFlywheelSpeed(m_driveSubsystem.getDistanceFromSpeaker());
     shooter.setFlywheelSpeed(3.25);
   }
 

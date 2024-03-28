@@ -97,7 +97,7 @@ public class Shooter extends SubsystemBase {
     double llMountAngleDeg = 25.0;
     double llHeightIn = 20.0;
     double targetHeightIn = 57.25;
-    double llToFrontRailIn = -3.021416;
+    double llToFrontRailIn = 3.021416;
 
     double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
 

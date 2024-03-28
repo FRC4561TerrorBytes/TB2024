@@ -6,34 +6,48 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
-public class ShootCommandIO extends Command {
-  /** Creates a new ShootCommand. */
-  Shooter shooter;
-  Indexer indexer;
-  Drive m_driveSubsystem;
-  double targetMPS = 0;
+public class AutoShootCommand extends Command {
 
-  public ShootCommandIO(Shooter shooter, Indexer indexer) {
+  private final Drive drive;
+  private final Arm arm;
+  private final Shooter shooter;
+  private final Indexer indexer;
+  private final Intake intake;
+  private double targetMPS;
+
+  public AutoShootCommand(Drive drive, Arm arm, Shooter shooter, Indexer indexer, Intake intake) {
+    this.drive = drive;
+    this.arm = arm;
     this.shooter = shooter;
     this.indexer = indexer;
-    addRequirements(shooter, indexer);
+    this.intake = intake;
+
+    addRequirements(drive, shooter, indexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setFlywheelSpeed(shooter.calculateShooter(2));
+    // Dont think this will actually work but ;-;
+    new FaceSpeaker(drive);
+    
+    arm.setArmSetpoint(shooter.calculateArmRotations());
+    shooter.setFlywheelSpeed(25.0);
+    targetMPS = 25.0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.flywheelUpToSpeed(targetMPS)){
+    if (shooter.flywheelUpToSpeed(targetMPS * 0.875)) {
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      intake.setIntakeSpeed(0.5);
     }
   }
 
@@ -42,11 +56,20 @@ public class ShootCommandIO extends Command {
   public void end(boolean interrupted) {
     shooter.stopFlywheel();
     indexer.stopIndexer();
+    intake.stopIntake();
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;//shooter.flywheelUpToSpeed(targetMPS);
+    if (!indexer.noteInIndexer()) {
+      for (int i = 0; i < 25; i++) {
+        continue;
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }
