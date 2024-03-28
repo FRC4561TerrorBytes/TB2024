@@ -198,8 +198,8 @@ public final class Constants {
     public static final double TARGET_X = 0.196;
 
     public static final double ELEVATOR_PIVOT_HEIGHT = Units.inchesToMeters(23.75);
-    public static final double ELEVATOR_PIVOT_LENGTH = Units.inchesToMeters(11);
-    public static final double SHOOTER_FROM_ELEVATOR = Units.inchesToMeters(7);
+    public static final double ARM_LENGTH = Units.inchesToMeters(10);
+    public static final double FLYWHEELS_FROM_ARM = Units.inchesToMeters(7);
 
     public static final int ARM_MOTOR_LEFT = 60;
     public static final int ARM_MOTOR_RIGHT = 61;
@@ -207,7 +207,7 @@ public final class Constants {
   public static final double ARM_STOW = -12;
 
     // relative to ground
-    public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(30); // 30 degrees tilted up
+    public static final double FLYWHEEL_OFFSET = Units.degreesToRadians(10); // 10 degrees tilted up
     public static final double ELEVATOR_X_OFFSET = Units.inchesToMeters(-1); // positive further back negative further
                                                                              // forward
 

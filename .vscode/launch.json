@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Shooter",
+      "request": "launch",
+      "mainClass": "frc.robot.subsystems.shooter.Shooter",
+      "projectName": "TB2024"
+    },
+    {
+      "type": "java",
       "name": "PoseTest",
       "request": "launch",
       "mainClass": "frc.robot.PoseTest",
@@ -36,13 +43,13 @@
       "type": "wpilib",
       "name": "WPILib Desktop Debug",
       "request": "launch",
-      "desktop": true,
+      "desktop": true
     },
     {
       "type": "wpilib",
       "name": "WPILib roboRIO Debug",
       "request": "launch",
-      "desktop": false,
+      "desktop": false
     }
   ]
 }

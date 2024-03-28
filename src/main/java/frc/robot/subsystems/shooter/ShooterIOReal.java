@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.shooter;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -68,6 +70,7 @@ public class ShooterIOReal implements ShooterIO {
 
         // VELOCITY IN MPS
         velocity = velocity/Constants.FLYWHEEL_CIRCUMFERENCE;
+        Logger.recordOutput("Shooter/VelocitySetpoint", velocity);
         m_leftFlywheel.setControl(m_request.withVelocity(velocity));
     }
 

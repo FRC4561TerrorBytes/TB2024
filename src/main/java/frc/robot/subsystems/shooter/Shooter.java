@@ -37,8 +37,6 @@ public class Shooter extends SubsystemBase {
 
     private double m_pivotAngle;
 
-    private double xOffset;
-
     public Shooter(ShooterIO io) {
         this.io = io;
 
@@ -90,14 +88,14 @@ public class Shooter extends SubsystemBase {
                                 /2);
   }
 
-  public double findTrajectoryPoint(double x, double distance){
-    return((distance + x)*Math.tan(m_angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(m_angle), 2))));
-  }
+  // public double findTrajectoryPoint(double x, double distance){
+  //   return((distance + x)*Math.tan(m_angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(m_angle), 2))));
+  // }
 
   @AutoLogOutput(key = "Shooter/distance to tags")
-  public double findFlatAngleWithVision() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-vanap");
-    NetworkTableEntry ty = table.getEntry("ty");
+  public double findFlatDistanceWithVision() {
+    NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+    NetworkTableEntry ty = chair.getEntry("ty");
     double targetOffsetAngleVert = ty.getDouble(0.0);
 
     double llMountAngleDeg = 25.0;
@@ -112,55 +110,43 @@ public class Shooter extends SubsystemBase {
     return distanceInches - llToFrontRailIn;
   }
 
-  public double findBestAngle(double distance){
-    double add = 0.1;
-    int searchLength = 100;
-    if(findTrajectoryPoint(-Constants.TARGET_X, distance) < Constants.TARGET_X){
-      add *= -1;
-    }
+  @AutoLogOutput(key = "Shooter/straight line angle")
+  public double findStraightLineAngle(){
+    NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+    NetworkTableEntry ty = chair.getEntry("ty");
+    double targetOffsetAngleVert = ty.getDouble(0.0);
 
-    double startAngle = Units.radiansToDegrees(Math.atan((Constants.TARGET_Y-m_height)/(distance - Constants.TARGET_X)))+6;
-    double[] angles = new double[searchLength];
+    double llMountAngleDeg = 25.0;
 
-    for(int i = 0; i < searchLength; i++){
-      angles[i] = startAngle+(add*i);
-    }
+    double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
 
-    //a high number aka mechanical advantage
-    double closestError = 6328;
-    int angleIndex = 0;
-
-    double originalDistance = distance;
-
-    for(int i = 0; i < searchLength; i++){
-      m_angle = Units.degreesToRadians(angles[i]);
-      m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
-
-      double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
-      distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
-      double error = Math.abs(findTrajectoryPoint(-Constants.TARGET_X, distance) - (Constants.TARGET_Y - m_height));
-
-      if (error < closestError){
-        closestError = error;
-        angleIndex = i;
-      }
-    }
-    return angles[angleIndex];
+    return angleToGoalDeg + 4;
   }
 
-  public double calculateShooter(double distance){
-    m_angle = Units.degreesToRadians(findBestAngle(distance));
+  public double calculateArmRotations(){
+    double degrees = findStraightLineAngle() - Units.radiansToDegrees(Constants.FLYWHEEL_OFFSET);
+    return degreesToArmRotations(degrees);
+  }
+  //use this to determine how many rotations 90 degrees is
+  //because 0 is 90 and straight down is 0
+  double straightDownRotations = -12.0;
+  public double degreesToArmRotations(double degrees){
+    //because 0 degrees is 90 relative to elevator
+    degrees = degrees - 90;
+    double encoderToArm = Math.abs(straightDownRotations)*4;
+    return Units.degreesToRotations(degrees)*encoderToArm;
+  }
 
-    double originalDistance = distance;
-    double xOffset = (Constants.ELEVATOR_PIVOT_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(Units.degreesToRadians(90) - m_angle));
-    distance = originalDistance - xOffset + Constants.ELEVATOR_X_OFFSET;
-    m_velocitySetpoint = findVelocity(distance);
+  public double calculateFlywheelSpeed(double distance){
+    m_angle = Units.degreesToRadians(findStraightLineAngle());
 
-    this.xOffset = xOffset;
+    double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle));
 
-    m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ELEVATOR_PIVOT_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.SHOOTER_FROM_ELEVATOR*Math.sin(m_angle));
-    m_pivotAngle = m_angle - Constants.FLYWHEEL_OFFSET;
+    //need this here because it is used in find velocity function
+    m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ARM_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(m_angle));
 
+    //distance from flywheel exit using flat distance to frame and subtracting(closer) the arm based off angle using trig
+    m_velocitySetpoint = findVelocity(findFlatDistanceWithVision() + (Units.inchesToMeters(26.0)/2) - xOffset)*1.8;
     return m_velocitySetpoint;
   }
 
@@ -204,10 +190,7 @@ public class Shooter extends SubsystemBase {
     return sysId.dynamic(direction);
   }
 
-  /** Returns a command that launches a note. */
-  // public Command launchCommand() {
-  //   return Commands.sequence(
-  //               NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
-  //           Commands.idle());
-  // }
+  public static void main(String[] args){
+    
+  }
 }
