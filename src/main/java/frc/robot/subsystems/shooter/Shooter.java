@@ -75,17 +75,6 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("Shooter/Angle", Units.radiansToDegrees(m_angle));
         Logger.recordOutput("Shooter/Height", m_height);
-
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-vanap");
-      NetworkTableEntry ty = table.getEntry("ty");
-      double targetOffsetAngleVert = ty.getDouble(0.0);
-
-      double llMountAngleDeg = 25.0;
-      double llHeightIn = 20.0;
-      double targetHeightIn = 80.515;
-
-      double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
-      Logger.recordOutput("Angle to Speaker", angleToGoalDeg);
     }
 
         /** Run open loop at the specified voltage. */
@@ -103,6 +92,24 @@ public class Shooter extends SubsystemBase {
 
   public double findTrajectoryPoint(double x, double distance){
     return((distance + x)*Math.tan(m_angle)-((9.8*Math.pow((distance + x), 2)) / (2*Math.pow(findVelocity(distance), 2) * Math.pow(Math.cos(m_angle), 2))));
+  }
+
+  @AutoLogOutput(key = "Shooter/distance to tags")
+  public double findFlatAngleWithVision() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+    NetworkTableEntry ty = table.getEntry("ty");
+    double targetOffsetAngleVert = ty.getDouble(0.0);
+
+    double llMountAngleDeg = 25.0;
+    double llHeightIn = 20.0;
+    double targetHeightIn = 57.25;
+    double llToFrontRailIn = -3.021416;
+
+    double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
+
+    double distanceInches = (targetHeightIn - llHeightIn) / Math.tan(Units.degreesToRadians(angleToGoalDeg));
+
+    return distanceInches - llToFrontRailIn;
   }
 
   public double findBestAngle(double distance){
