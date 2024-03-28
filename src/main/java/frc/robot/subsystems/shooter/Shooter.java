@@ -136,7 +136,7 @@ public class Shooter extends SubsystemBase {
   public double calculateFlywheelSpeed(double distance){
     m_angle = Units.degreesToRadians(findStraightLineAngle());
 
-    double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle));
+    double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle)) + Constants.ELEVATOR_X_OFFSET;
 
     //need this here because it is used in find velocity function
     m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ARM_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(m_angle));
