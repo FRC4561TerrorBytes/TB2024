@@ -7,36 +7,30 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
 
 public class AutoShootCommand extends Command {
 
-  private final Drive drive;
   private final Arm arm;
   private final Shooter shooter;
   private final Indexer indexer;
   private final Intake intake;
   private double targetMPS;
 
-  public AutoShootCommand(Drive drive, Arm arm, Shooter shooter, Indexer indexer, Intake intake) {
-    this.drive = drive;
+  public AutoShootCommand(Arm arm, Shooter shooter, Indexer indexer, Intake intake) {
     this.arm = arm;
     this.shooter = shooter;
     this.indexer = indexer;
     this.intake = intake;
 
-    addRequirements(drive, shooter, indexer);
+    addRequirements(shooter, indexer, intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    // Dont think this will actually work but ;-;
-    new FaceSpeaker(drive);
-    
+  public void initialize() {    
     arm.setArmSetpoint(shooter.calculateArmRotations());
     targetMPS = 25;
     shooter.setFlywheelSpeed(targetMPS);
