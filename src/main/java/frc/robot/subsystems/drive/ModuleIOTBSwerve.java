@@ -104,6 +104,8 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
         driveTalon.getConfigurator().apply(driveConfig);
         
+        setDriveBrakeMode(true, isDriveMotorInverted);
+
         turnSparkMax.restoreFactoryDefaults();
         turnSparkMax.setCANTimeout(250);
         turnRelativeEncoder = turnSparkMax.getEncoder();

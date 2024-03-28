@@ -212,19 +212,27 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-  //PANAV CONTROLS
+  //PANAV CONTROLS9
     // Intake command
     driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, led));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
-    // Run shoot command 
-    driverController.rightBumper().and(() -> autoShoot).whileTrue(new AutoShootCommand(drive, arm, shooter, indexer, intake));
-    driverController.rightBumper().and(() -> !autoShoot).whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
+    // Run shoot command (from anywhere)
+    driverController.rightBumper().and(() -> autoShoot)
+      .and(() -> shootEnum != shootPositions.AMP)
+      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake));
+
+    //Preset shooting
+    driverController.rightBumper().and(() -> !autoShoot)
+      .and(() -> shootEnum != shootPositions.AMP)
+      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
 
     // Reset gyro
-    driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
+    driverController.rightStick()
+      .and(driverController.leftStick())
+      .onTrue(new InstantCommand(() -> drive.resetGyro()));
 
     // Auto shoot toggle
     driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot));
