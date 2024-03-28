@@ -16,13 +16,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
@@ -188,9 +184,5 @@ public class Shooter extends SubsystemBase {
   /** Returns a command to run a dynamic test in the specified direction. */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysId.dynamic(direction);
-  }
-
-  public static void main(String[] args){
-    
   }
 }

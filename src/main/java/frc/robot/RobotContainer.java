@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
@@ -60,7 +59,6 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.NoteVisualizer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -76,7 +74,6 @@ public class RobotContainer {
   private final Intake intake;
   private final Indexer indexer;
   private final LEDSubsystem led;
-  private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
   private double driveRatio = 1.0;
