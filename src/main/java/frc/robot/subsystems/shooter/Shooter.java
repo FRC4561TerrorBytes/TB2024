@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -25,6 +26,8 @@ public class Shooter extends SubsystemBase {
 
     private ShooterIO io;
     private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+
+    private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
 
     private final SysIdRoutine sysId;
     public double m_velocitySetpoint;
@@ -50,6 +53,8 @@ public class Shooter extends SubsystemBase {
         }
         SignalLogger.setPath("/media/sda1/");
 
+        setAngleMap();
+
         // Configure SysId
         sysId =
           new SysIdRoutine(
@@ -60,6 +65,17 @@ public class Shooter extends SubsystemBase {
               (state) -> SignalLogger.writeString("state", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
             SignalLogger.start();
+    }
+
+    private void setAngleMap() {
+      angleMap.put(Units.feetToMeters(4), -4.7);
+      angleMap.put(Units.feetToMeters(11), -8.5);
+      angleMap.put(Units.feetToMeters(14), -10.0);
+      angleMap.put(Units.feetToMeters(19), -10.5);
+    }
+
+    public double interpolateArmAngle(double distanceMeters) {
+      return angleMap.get(distanceMeters);
     }
 
     @Override
@@ -94,16 +110,16 @@ public class Shooter extends SubsystemBase {
     NetworkTableEntry ty = chair.getEntry("ty");
     double targetOffsetAngleVert = ty.getDouble(0.0);
 
-    double llMountAngleDeg = 25.0;
-    double llHeightIn = 20.0;
-    double targetHeightIn = 57.25;
-    double llToFrontRailIn = 3.021416;
+    double llMountAngleDeg = 26.5;
+    double llHeightIn = 19.75;
+    double targetHeightIn = 59.5;
+    double llToFrontRailIn = 4;
 
     double angleToGoalDeg = llMountAngleDeg + targetOffsetAngleVert;
 
     double distanceInches = (targetHeightIn - llHeightIn) / Math.tan(Units.degreesToRadians(angleToGoalDeg));
 
-    return distanceInches - llToFrontRailIn;
+    return (distanceInches - llToFrontRailIn) * 1.42;
   }
 
   @AutoLogOutput(key = "Shooter/straight line angle")

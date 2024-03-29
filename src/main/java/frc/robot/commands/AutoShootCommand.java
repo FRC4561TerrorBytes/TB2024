@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.Arm;
@@ -31,7 +32,9 @@ public class AutoShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {    
-    arm.setArmSetpoint(shooter.calculateArmRotations());
+    double distanceMeters = Units.inchesToMeters(shooter.findFlatDistanceWithVision());
+    double armAngleInterpolated = shooter.interpolateArmAngle(distanceMeters);
+    arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
     shooter.setFlywheelSpeed(targetMPS);
   }
