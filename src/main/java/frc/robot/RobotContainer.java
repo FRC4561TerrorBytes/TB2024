@@ -90,9 +90,11 @@ public class RobotContainer {
   private boolean autoShoot = false;
 
   public enum shootPositions{
-    SUBWOOFER(-4.7, 20),    
-    PODIUM(-8.5, 20.0),
+    SUBWOOFER(-4.7, 25.0),    
+    PODIUM(-8.5, 25.0),
     AMP(7.3, 0.0),
+    STAGE(-10.0, 25.0),
+    WING(-10.5, 35.0),
     CENTER_AUTO_NOTE(-8.5, 20.0);
 
     private double shootSpeed;
@@ -207,7 +209,7 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(10), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
@@ -268,6 +270,12 @@ public class RobotContainer {
     //Amp angle
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    operatorController.b().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STAGE)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.WING)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));    
 
     //Podium shot angle
     operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM)
