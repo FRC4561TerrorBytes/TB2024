@@ -95,7 +95,8 @@ public class RobotContainer {
     AMP(7.3, 0.0),
     STAGE(-9.5, 25.0),
     WING(-10.125, 35.0),
-    CENTER_AUTO_NOTE(-8.5, 20.0);
+    CENTER_AUTO_NOTE(-8.5, 20.0),
+    SOURCE_SIDE_AUTO(-9.875, 30);
 
     private double shootSpeed;
     private double shootAngle;
@@ -176,8 +177,10 @@ public class RobotContainer {
     //NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
     NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE, led));
+    NamedCommands.registerCommand("ShootWing", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SOURCE_SIDE_AUTO, led));
     NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SUBWOOFER.getShootAngle())));
     NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.CENTER_AUTO_NOTE.getShootAngle())));
+    NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.667857791556038,
+        "y": 2.3388308884879883
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.122027367512877,
+        "y": 1.9289516093856354
+      },
+      "isLocked": false,
+      "linkedName": "Wide Auto 2"
+    },
+    {
+      "anchor": {
+        "x": 4.1480420763979895,
+        "y": 2.213348107152705
+      },
+      "prevControl": {
+        "x": 5.416882856557735,
+        "y": 1.274662834225955
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Wide Auto Shot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -46.42452474211537,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 20.323136829662914,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
