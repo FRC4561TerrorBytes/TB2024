@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.77430354290908,
+        "y": 6.537032333323926
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9086365238257539,
+        "y": 6.841080348827365
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.165608331216663,
+        "y": 6.969716047694203
+      },
+      "prevControl": {
+        "x": 3.1656083312166627,
+        "y": 6.969716047694203
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "OPAUTO1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 29.167613379577837,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "OP AUTO",
+  "previewStartingState": {
+    "rotation": 58.29857033049427,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
