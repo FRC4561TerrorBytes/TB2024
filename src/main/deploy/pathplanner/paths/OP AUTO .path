@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4174820372432768,
-        "y": 6.537032333323926
+        "x": 0.7158327706968803,
+        "y": 6.5136440244390466
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.142519612674553,
-        "y": 6.841080348827365
+        "x": 1.3940937283583965,
+        "y": 6.9346335843668845
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OP Start"
     },
     {
       "anchor": {
@@ -20,15 +20,15 @@
         "y": 7.308846526524962
       },
       "prevControl": {
-        "x": 7.685548818391084,
-        "y": 7.6713653142406
+        "x": 7.685543517377231,
+        "y": 7.671360526157711
       },
       "nextControl": {
-        "x": 8.441812515532588,
-        "y": 6.834073363833933
+        "x": 8.441819458011702,
+        "y": 6.8340796345524
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "OP Note 1"
     },
     {
       "anchor": {
@@ -132,7 +132,7 @@
   "reversed": false,
   "folder": "OP AUTO",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 56.309932474020336,
     "velocity": 0
   },
   "useDefaultConstraints": true
