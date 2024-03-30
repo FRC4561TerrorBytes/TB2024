@@ -93,8 +93,8 @@ public class RobotContainer {
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8.5, 25.0),
     AMP(7.3, 0.0),
-    STAGE(-10.0, 25.0),
-    WING(-10.5, 35.0),
+    STAGE(-9.5, 25.0),
+    WING(-10.125, 35.0),
     CENTER_AUTO_NOTE(-8.5, 20.0);
 
     private double shootSpeed;
