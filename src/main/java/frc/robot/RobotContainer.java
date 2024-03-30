@@ -93,9 +93,10 @@ public class RobotContainer {
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8.5, 25.0),
     AMP(7.3, 0.0),
-    STAGE(-9.5, 25.0),
+    STAGE(-9.5, 35.0),
     WING(-10.125, 35.0),
     CENTER_AUTO_NOTE(-8.5, 20.0),
+    LOB(-9.5, 15.0),
     SOURCE_SIDE_AUTO(-9.875, 30);
 
     private double shootSpeed;
@@ -242,13 +243,10 @@ public class RobotContainer {
     // Auto shoot toggle
     driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot));
 
-    // Lock drive to no rotation
-    driverController.rightTrigger().whileTrue(
-      DriveCommands.joystickDrive(
-        drive,
-        () -> -driverController.getLeftY(),
-        () -> -driverController.getLeftX(),
-        () -> 0));
+    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    driverController.rightTrigger().onTrue(new InstantCommand(() -> shootEnum = shootPositions.LOB)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));

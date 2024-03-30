@@ -26,7 +26,12 @@ public class ShooterIOReal implements ShooterIO {
         //constructor go brrrrrrr
         var leftConfig = new TalonFXConfiguration();
         //set inverted here
-        leftConfig.CurrentLimits.SupplyCurrentLimit = 30;
+        leftConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        leftConfig.CurrentLimits.SupplyCurrentLimit = Constants.SHOOTER_SUPPLY_CURRENT_LIMIT;
+
+        leftConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        leftConfig.CurrentLimits.StatorCurrentLimit = Constants.SHOOTER_STATOR_CURRENT_LIMIT;
+
         leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // we don't need this anymore: leftConfig.MotorOutput.PeakReverseDutyCycle = 0;
@@ -47,7 +52,11 @@ public class ShooterIOReal implements ShooterIO {
 
         var rightConfig = new TalonFXConfiguration();
 
-        rightConfig.CurrentLimits.SupplyCurrentLimit = 30;
+        rightConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        rightConfig.CurrentLimits.SupplyCurrentLimit = Constants.SHOOTER_SUPPLY_CURRENT_LIMIT;
+
+        rightConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        rightConfig.CurrentLimits.StatorCurrentLimit = Constants.SHOOTER_STATOR_CURRENT_LIMIT;
 
         m_rightFlywheel.getConfigurator().apply(rightConfig);
 

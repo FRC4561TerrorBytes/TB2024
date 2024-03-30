@@ -110,10 +110,14 @@ public final class Constants {
 
     public static final double DRIVE_CURRENT_LIMIT = 40.0;
     public static final int TURN_CURRENT_LIMIT = 20;
+    public static final double DRIVE_STATOR_CURRENT_LIMIT = 125;
     public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
     public static final double DRIVE_CURRENT_TIME_THRESHOLD = 0.1; // seconds
     // current limits for drivetrain turn and steer motors
     // (Amps)
+
+    public static final double SHOOTER_SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double SHOOTER_STATOR_CURRENT_LIMIT = 100.0;
 
     public static final double TURN_MOTOR_KP = 1.0;
     public static final double TURN_MOTOR_KI = 0.0;
