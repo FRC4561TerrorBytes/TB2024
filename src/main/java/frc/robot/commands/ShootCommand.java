@@ -46,7 +46,7 @@ public class ShootCommand extends Command {
     if(shooter.flywheelUpToSpeed(shooterPositions.getShootSpeed() * 0.875)){
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
       intake.setIntakeSpeed(0.5);
-      if (Constants.currentMode == Mode.REAL) {
+      if (Constants.currentMode == Mode.SIM) {
         shooter.launchCommand().withTimeout(0.5).schedule();
       }
     }
