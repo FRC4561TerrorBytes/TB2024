@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.Mode;
 import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
@@ -43,9 +44,11 @@ public class ShootCommand extends Command {
   @Override
   public void execute() {
     if(shooter.flywheelUpToSpeed(shooterPositions.getShootSpeed() * 0.875)){
-        indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-        intake.setIntakeSpeed(0.5);
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      intake.setIntakeSpeed(0.5);
+      if (Constants.currentMode == Mode.REAL) {
         shooter.launchCommand().withTimeout(0.5).schedule();
+      }
     }
   }
 
