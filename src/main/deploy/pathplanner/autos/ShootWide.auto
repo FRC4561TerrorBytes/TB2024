@@ -5,7 +5,7 @@
       "x": 0.6337017325197449,
       "y": 4.449761743888425
     },
-    "rotation": 120.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmShootSetPoint"
+            "name": "ArmSubwoofer"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "ShootSubwoofer"
                 }
               },
               {
@@ -45,6 +45,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Drive Turn",
   "choreoAuto": false
 }
