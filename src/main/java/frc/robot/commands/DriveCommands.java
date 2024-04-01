@@ -27,7 +27,7 @@ import frc.robot.subsystems.drive.Drive;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.1;
+  private static final double DEADBAND = 0.05;
 
   private DriveCommands() {}
 

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.502078857064002
+        "x": 8.667857791556038,
+        "y": 2.3388308884879883
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8545089614352266,
-        "y": 5.522967652022252
+        "x": 7.122027367512877,
+        "y": 1.9289516093856354
       },
       "isLocked": false,
-      "linkedName": "CenterNote"
+      "linkedName": "Wide Auto 2"
     },
     {
       "anchor": {
-        "x": 2.7,
-        "y": 6.85152474630649
+        "x": 4.1480420763979895,
+        "y": 2.213348107152705
       },
       "prevControl": {
-        "x": 2.3657792806679763,
-        "y": 6.72619197655698
+        "x": 5.416882856557735,
+        "y": 1.274662834225955
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Wide Auto Shot"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 21.90839274946848,
+    "rotation": -46.42452474211537,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 20.323136829662914,
     "velocity": 0
   },
   "useDefaultConstraints": true

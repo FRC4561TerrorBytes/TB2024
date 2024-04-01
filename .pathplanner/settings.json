@@ -7,16 +7,16 @@
     "Alex Flip",
     "Cool 8 Note",
     "New Folder",
-    "No Turn Paths",
+    "OP AUTO",
     "Other"
   ],
   "autoFolders": [
     "Drive No Turn",
-    "New Folder",
     "Drive Turn",
+    "OP Autos",
     "Test Autos"
   ],
-  "defaultMaxVel": 1.5,
+  "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

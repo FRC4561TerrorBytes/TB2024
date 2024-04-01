@@ -59,7 +59,7 @@ public class IntakeIOReal implements IntakeIO{
 
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeAppliedVolts = m_frontIntake.getAppliedOutput();
-        inputs.intakeCurrentAmps = new double[] {m_frontIntake.getOutputCurrent()};
+        inputs.intakeCurrentAmps =  m_frontIntake.getOutputCurrent();
         inputs.noteInIntake = !m_intakeBreak.get();
     };
 

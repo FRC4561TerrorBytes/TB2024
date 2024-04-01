@@ -46,6 +46,10 @@ public class Arm extends SubsystemBase {
     public void setArmSetpoint(double setpoint) {
         io.setArmSetpoint(setpoint);
     }
+
+    public boolean armAtSetpoint(){
+        return io.armAtSetpoint();
+    }
     
     public double getArmAngleDegrees() {
         return inputs.armRelativeAngleRotations;

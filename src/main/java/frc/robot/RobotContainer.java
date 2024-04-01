@@ -30,12 +30,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.SnapTo45;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -60,7 +59,6 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.NoteVisualizer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -76,7 +74,6 @@ public class RobotContainer {
   private final Intake intake;
   private final Indexer indexer;
   private final LEDSubsystem led;
-  private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
   private double driveRatio = 1.0;
@@ -90,12 +87,17 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
+  private boolean autoShoot = false;
 
   public enum shootPositions{
-    SUBWOOFER(-4.7, 20),    
-    PODIUM(-8.5, 20.0),
+    SUBWOOFER(-4.7, 25.0),    
+    PODIUM(-8.5, 25.0),
     AMP(7.3, 0.0),
-    CENTER_AUTO_NOTE(-8.5, 20.0);
+    STAGE(-9.5, 35.0),
+    WING(-10.125, 35.0),
+    CENTER_AUTO_NOTE(-8.5, 20.0),
+    LOB(-9.5, 15.0),
+    SOURCE_SIDE_AUTO(-9.875, 30);
 
     private double shootSpeed;
     private double shootAngle;
@@ -173,12 +175,16 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm, led));
-    NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
+    //NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
     NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE, led));
     NamedCommands.registerCommand("ShootPodium", new ShootCommand(shooter, indexer, intake, arm, shootPositions.PODIUM, led));
+    NamedCommands.registerCommand("ShootWing", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SOURCE_SIDE_AUTO, led));
+    NamedCommands.registerCommand("ShootStage", new ShootCommand(shooter, indexer, intake, arm, shootPositions.STAGE, led));
     NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SUBWOOFER.getShootAngle())));
     NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.CENTER_AUTO_NOTE.getShootAngle())));
+    NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
+    NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
     NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
 
     // Set up auto routines
@@ -211,33 +217,40 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.stopFlywheel(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(10), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-  //PANAV CONTROLS
+  //PANAV CONTROLS9
     // Intake command
     driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm, led));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
-    // Run shoot command 
-    driverController.rightBumper().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
+    // Run shoot command (from anywhere)
+    driverController.rightBumper().and(() -> autoShoot)
+      .and(() -> shootEnum != shootPositions.AMP)
+      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake));
 
-    // Snap 90 and 45 bindings
+    //Preset shooting
+    driverController.rightBumper().and(() -> !autoShoot)
+      .and(() -> shootEnum != shootPositions.AMP)
+      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
+
+    // Reset gyro
+    driverController.rightStick()
+      .and(driverController.leftStick())
+      .onTrue(new InstantCommand(() -> drive.resetGyro()));
+
+    // Auto shoot toggle
+    driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot));
+
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
-    driverController.a().whileTrue(new SnapTo45(drive));
-    driverController.rightStick().and(driverController.leftStick()).onTrue(new InstantCommand(() -> drive.resetGyro()));
 
-    // Lock drive to no rotation
-    driverController.rightTrigger().whileTrue(
-      DriveCommands.joystickDrive(
-        drive,
-        () -> -driverController.getLeftY(),
-        () -> -driverController.getLeftX(),
-        () -> 0));
+    driverController.rightTrigger().onTrue(new InstantCommand(() -> shootEnum = shootPositions.LOB)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
@@ -263,6 +276,12 @@ public class RobotContainer {
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
+    operatorController.b().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STAGE)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.WING)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));    
+
     //Podium shot angle
     operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
@@ -280,6 +299,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
+    Logger.recordOutput("Auto Shoot", autoShoot);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }

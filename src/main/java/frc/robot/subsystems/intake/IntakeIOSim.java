@@ -22,7 +22,7 @@ public class IntakeIOSim implements IntakeIO{
         intakeMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.intakeAppliedVolts = intakeAppliedVolts;
-        inputs.intakeCurrentAmps = new double[] {Math.abs(intakeMotorSim.getCurrentDrawAmps())};
+        inputs.intakeCurrentAmps = Math.abs(intakeMotorSim.getCurrentDrawAmps());
     }
 
     public void setIntakeSpeed(double volts){
