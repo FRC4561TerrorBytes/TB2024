@@ -229,12 +229,10 @@ public class RobotContainer {
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShoot)
-      .and(() -> shootEnum != shootPositions.AMP)
       .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
 
     //Preset shooting
     driverController.rightBumper().and(() -> !autoShoot)
-      .and(() -> shootEnum != shootPositions.AMP)
       .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
 
     // Reset gyro
