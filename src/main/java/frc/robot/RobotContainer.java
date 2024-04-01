@@ -131,10 +131,11 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
 
-        arm = new Arm(new ArmIOReal());
-        shooter = new Shooter(new ShooterIOReal());
-        intake = new Intake(new IntakeIOReal());
+                
         indexer = new Indexer(new IndexerIOReal());
+        arm = new Arm(new ArmIOReal());
+        shooter = new Shooter(new ShooterIOReal(), indexer);
+        intake = new Intake(new IntakeIOReal());
         led = new LEDSubsystem();
         break;
 
@@ -148,9 +149,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         arm = new Arm(new ArmIOSim());
-        shooter = new Shooter(new ShooterIOSim());
-        intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        shooter = new Shooter(new ShooterIOSim(), indexer);
+        intake = new Intake(new IntakeIOSim());
         led = new LEDSubsystem();
         break;
 
@@ -164,9 +165,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         arm = new Arm(new ArmIO() {});
-        shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        shooter = new Shooter(new ShooterIO() {}, indexer);
         led = new LEDSubsystem();
         break;
     }
@@ -217,7 +218,7 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(10), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheel(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
