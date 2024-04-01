@@ -5,18 +5,25 @@
   "pathFolders": [
     "78 Note",
     "Alex Flip",
+    "Center Paths",
+    "Close4",
     "Cool 8 Note",
-    "New Folder",
+    "Leave",
+    "Left Paths",
+    "Misc",
+    "Wide Auto",
+    "No Turn Paths",
     "OP AUTO",
-    "Other"
+    "Right Paths",
+    "Square"
   ],
   "autoFolders": [
     "Drive No Turn",
+    "New Folder",
     "Drive Turn",
-    "OP Autos",
     "Test Autos"
   ],
-  "defaultMaxVel": 3.0,
+  "defaultMaxVel": 1.5,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

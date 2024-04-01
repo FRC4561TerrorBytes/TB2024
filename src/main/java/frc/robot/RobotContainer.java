@@ -178,12 +178,14 @@ public class RobotContainer {
     //NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER, led));
     NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE, led));
+    NamedCommands.registerCommand("ShootPodium", new ShootCommand(shooter, indexer, intake, arm, shootPositions.PODIUM, led));
     NamedCommands.registerCommand("ShootWing", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SOURCE_SIDE_AUTO, led));
     NamedCommands.registerCommand("ShootStage", new ShootCommand(shooter, indexer, intake, arm, shootPositions.STAGE, led));
     NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SUBWOOFER.getShootAngle())));
     NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.CENTER_AUTO_NOTE.getShootAngle())));
     NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
     NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
+    NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
