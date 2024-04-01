@@ -230,4 +230,11 @@ public class Shooter extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysId.dynamic(direction);
   }
+
+  /** Returns a command that launches a note. */
+  public Command launchCommand() {
+    return Commands.sequence(
+                NoteVisualizer.shoot(m_velocitySetpoint, Units.radiansToDegrees(m_angle), m_height, xOffset),
+            Commands.idle());
+  }
 }
