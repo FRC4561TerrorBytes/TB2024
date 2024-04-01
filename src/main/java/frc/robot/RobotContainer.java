@@ -30,13 +30,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
-import frc.robot.commands.SnapTo45;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -61,6 +60,7 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.NoteVisualizer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -150,6 +150,8 @@ public class RobotContainer {
                 new ModuleIOSim());
         arm = new Arm(new ArmIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        intake = new Intake(new IntakeIOSim());
+        shooter = new Shooter(new ShooterIOSim(), indexer);
         break;
 
       default:
@@ -163,6 +165,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         arm = new Arm(new ArmIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        intake = new Intake(new IntakeIO() {});
+        shooter = new Shooter(new ShooterIO() {}, indexer);
         break;
     }
 
@@ -233,7 +237,7 @@ public class RobotContainer {
 
     //Preset shooting
     driverController.rightBumper().and(() -> !autoShoot)
-      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum, led));
+      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
 
     // Reset gyro
     driverController.rightStick()
@@ -241,7 +245,8 @@ public class RobotContainer {
       .onTrue(new InstantCommand(() -> drive.resetGyro()));
 
     // Auto shoot toggle
-    driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot));
+    driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot)
+      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 

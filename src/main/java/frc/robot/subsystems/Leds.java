@@ -162,12 +162,12 @@ public class Leds extends SubsystemBase {
       } else { // Enabled
         if (intaking) {
           strobe(Color.kDodgerBlue, strobeSlowDuration);
-        } else if (autoDrive || autoShoot) {
-          rainbow(rainbowCycleLength, rainbowDuration);
         } else if (noteInIntake) {
           solid(Color.kLawnGreen);
         } else if (noteInIndexer) {
-          solid(Color.kOrange);
+          solid(Color.kDarkOrange);
+        } else if (autoDrive || autoShoot) {
+          rainbow(rainbowCycleLength, rainbowDuration);
         }
       }
 

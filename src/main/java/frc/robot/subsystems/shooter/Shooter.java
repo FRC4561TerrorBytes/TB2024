@@ -17,10 +17,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
@@ -36,6 +38,8 @@ public class Shooter extends SubsystemBase {
     public double m_velocitySetpoint;
     private double m_angle;
     private double m_height;
+
+    private double xOffset = 0.0;
 
     private double m_pivotAngle;
 
