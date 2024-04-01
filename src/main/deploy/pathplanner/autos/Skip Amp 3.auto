@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.77430354290908,
-      "y": 6.537032333323926
+      "x": 0.7234175476497451,
+      "y": 6.532388453950674
     },
     "rotation": 60.0
   },
@@ -45,44 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OP Auto p1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmCenter"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCenter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OP Auto p2"
+            "pathName": "OP Skip Amp"
           }
         },
         {
