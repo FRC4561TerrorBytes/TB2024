@@ -131,11 +131,10 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(2),
                 new ModuleIOTBSwerve(3));
 
-                
-        indexer = new Indexer(new IndexerIOReal());
         arm = new Arm(new ArmIOReal());
-        shooter = new Shooter(new ShooterIOReal(), indexer);
+        shooter = new Shooter(new ShooterIOReal());
         intake = new Intake(new IntakeIOReal());
+        indexer = new Indexer(new IndexerIOReal());
         led = new LEDSubsystem();
         break;
 
@@ -149,9 +148,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         arm = new Arm(new ArmIOSim());
-        indexer = new Indexer(new IndexerIOSim());
-        shooter = new Shooter(new ShooterIOSim(), indexer);
+        shooter = new Shooter(new ShooterIOSim());
         intake = new Intake(new IntakeIOSim());
+        indexer = new Indexer(new IndexerIOSim());
         led = new LEDSubsystem();
         break;
 
@@ -165,9 +164,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         arm = new Arm(new ArmIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
-        shooter = new Shooter(new ShooterIO() {}, indexer);
         led = new LEDSubsystem();
         break;
     }
@@ -218,7 +217,7 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheel(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(10), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
