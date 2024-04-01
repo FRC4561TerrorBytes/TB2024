@@ -103,7 +103,7 @@ public class ArmIOReal implements ArmIO {
     }
 
     public boolean armAtSetpoint(){
-        return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.15;
+        return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.2;
     }
 
     @AutoLogOutput(key = "ArmAbsoluteRotations")

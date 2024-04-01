@@ -132,9 +132,9 @@ public class RobotContainer {
                 new ModuleIOTBSwerve(3));
 
         arm = new Arm(new ArmIOReal());
-        shooter = new Shooter(new ShooterIOReal());
-        intake = new Intake(new IntakeIOReal());
         indexer = new Indexer(new IndexerIOReal());
+        shooter = new Shooter(new ShooterIOReal(), indexer);
+        intake = new Intake(new IntakeIOReal());
         led = new LEDSubsystem();
         break;
 
@@ -148,9 +148,9 @@ public class RobotContainer {
                 new ModuleIOSim(),
                 new ModuleIOSim());
         arm = new Arm(new ArmIOSim());
-        shooter = new Shooter(new ShooterIOSim());
-        intake = new Intake(new IntakeIOSim());
         indexer = new Indexer(new IndexerIOSim());
+        shooter = new Shooter(new ShooterIOSim(), indexer);
+        intake = new Intake(new IntakeIOSim());
         led = new LEDSubsystem();
         break;
 
@@ -164,9 +164,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         arm = new Arm(new ArmIO() {});
-        shooter = new Shooter(new ShooterIO() {});
-        intake = new Intake(new IntakeIO() {});
         indexer = new Indexer(new IndexerIO() {});
+        shooter = new Shooter(new ShooterIO() {}, indexer);
+        intake = new Intake(new IntakeIO() {});
         led = new LEDSubsystem();
         break;
     }
@@ -215,7 +215,7 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.setFlywheelSpeed(10), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
@@ -230,7 +230,7 @@ public class RobotContainer {
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShoot)
       .and(() -> shootEnum != shootPositions.AMP)
-      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake));
+      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
 
     //Preset shooting
     driverController.rightBumper().and(() -> !autoShoot)
@@ -267,8 +267,8 @@ public class RobotContainer {
       Constants.ARM_STOW),arm));
     
     //Nudge arm up/down
-    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.5), arm));
-    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.5), arm));
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.25), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.25), arm));
 
     //Amp angle
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)

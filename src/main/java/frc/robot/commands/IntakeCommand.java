@@ -5,10 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
-import frc.robot.GameMode;
 import frc.robot.Constants.rgbValues;
+import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.arm.Arm;
@@ -53,11 +52,10 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    GameMode.getInstance().setCurrentMode(Mode.IDLE);
-    led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);
     intake.stopIntake();
     indexer.stopIndexer();
-    
+    GameMode.getInstance().setCurrentMode(Mode.IDLE);
+    led.flashColorThenSolid(rgbValues.NOTE_INTAKEN, 3);    
   }
 
   // Returns true when the command should end.

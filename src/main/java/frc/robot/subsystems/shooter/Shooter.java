@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.subsystems.indexer.Indexer;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
@@ -29,6 +30,8 @@ public class Shooter extends SubsystemBase {
 
     private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
 
+    private Indexer indexer;
+
     private final SysIdRoutine sysId;
     public double m_velocitySetpoint;
     private double m_angle;
@@ -36,7 +39,7 @@ public class Shooter extends SubsystemBase {
 
     private double m_pivotAngle;
 
-    public Shooter(ShooterIO io) {
+    public Shooter(ShooterIO io, Indexer indexer) {
         this.io = io;
 
         switch (Constants.currentMode) {
@@ -52,6 +55,7 @@ public class Shooter extends SubsystemBase {
                 break;
         }
         SignalLogger.setPath("/media/sda1/");
+        this.indexer = indexer;
 
         setAngleMap();
 
@@ -68,10 +72,27 @@ public class Shooter extends SubsystemBase {
     }
 
     private void setAngleMap() {
-      angleMap.put(Units.feetToMeters(4), -4.7);
-      angleMap.put(Units.feetToMeters(11), -8.5);
-      angleMap.put(Units.feetToMeters(14), -10.0);
-      angleMap.put(Units.feetToMeters(19), -10.5);
+      angleMap.put(Units.inchesToMeters(31), -4.7);
+      angleMap.put(Units.inchesToMeters(39), -5.0);
+      angleMap.put(Units.inchesToMeters(47), -5.7);
+      angleMap.put(Units.inchesToMeters(55), -6.2);
+      angleMap.put(Units.inchesToMeters(62), -7.2);
+      angleMap.put(Units.inchesToMeters(67), -7.3);
+      angleMap.put(Units.inchesToMeters(68), -7.4);
+      angleMap.put(Units.inchesToMeters(70), -7.75);
+      angleMap.put(Units.inchesToMeters(71), -7.8);
+      angleMap.put(Units.inchesToMeters(73), -7.9);
+      angleMap.put(Units.inchesToMeters(78), -8.125);
+      // angleMap.put(Units.inchesToMeters(79), -8.5);
+      angleMap.put(Units.inchesToMeters(80), -8.25);
+      angleMap.put(Units.inchesToMeters(88), -8.75);
+      angleMap.put(Units.inchesToMeters(94), -9.0);
+      angleMap.put(Units.inchesToMeters(98), -9.25);
+      angleMap.put(Units.inchesToMeters(104), -9.35);
+      angleMap.put(Units.inchesToMeters(110), -9.4);
+      angleMap.put(Units.inchesToMeters(112), -9.45);
+      angleMap.put(Units.inchesToMeters(114), -9.6);
+      angleMap.put(Units.inchesToMeters(123), -9.8);
     }
 
     public double interpolateArmAngle(double distanceMeters) {
@@ -119,7 +140,7 @@ public class Shooter extends SubsystemBase {
 
     double distanceInches = (targetHeightIn - llHeightIn) / Math.tan(Units.degreesToRadians(angleToGoalDeg));
 
-    return (distanceInches - llToFrontRailIn) * 1.42;
+    return (distanceInches - llToFrontRailIn);
   }
 
   @AutoLogOutput(key = "Shooter/straight line angle")
@@ -190,6 +211,14 @@ public class Shooter extends SubsystemBase {
   public boolean noteShot(){
     //return the beam break after the flywheels here
     return false;
+  }
+
+  public void idleFlywheels() {
+    if (indexer.noteInIndexer()) {
+      setFlywheelSpeed(10);
+    } else {
+      stopFlywheel();
+    }
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
