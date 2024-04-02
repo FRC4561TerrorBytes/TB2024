@@ -36,7 +36,7 @@ public class AutoShootCommand extends Command {
     this.intake = intake;
     this.drive = drive;
 
-    addRequirements(shooter, indexer, intake, drive);
+    addRequirements(shooter, indexer, intake);
   }
 
   // Called when the command is initially scheduled.
@@ -68,7 +68,7 @@ public class AutoShootCommand extends Command {
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
 
-    if (txAngle < 5 && txAngle > -5) {
+    if (txAngle < 3.5 && txAngle > -3.5) {
       shooter.setFlywheelSpeed(targetMPS);
 
       if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
@@ -93,14 +93,13 @@ public class AutoShootCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-    // if (!indexer.noteInIndexer()) {
-    //   for (int i = 0; i < 25; i++) {
-    //     continue;
-    //   }
-    //   return true;
-    // } else {
-    //   return false;
-    // }
+    if (!indexer.noteInIndexer()) {
+      for (int i = 0; i < 25; i++) {
+        continue;
+      }
+      return true;
+    } else {
+      return false;
+    }
   }
 }
