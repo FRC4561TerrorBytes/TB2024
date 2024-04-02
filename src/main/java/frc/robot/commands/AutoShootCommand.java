@@ -13,6 +13,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
@@ -40,7 +41,9 @@ public class AutoShootCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    Leds.getInstance().autoShootCommand = true;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -83,19 +86,21 @@ public class AutoShootCommand extends Command {
     shooter.stopFlywheel();
     indexer.stopIndexer();
     intake.stopIntake();
+    Leds.getInstance().autoShootCommand = false;
     Logger.recordOutput("Auto Rotate/Rotating", false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!indexer.noteInIndexer()) {
-      for (int i = 0; i < 25; i++) {
-        continue;
-      }
-      return true;
-    } else {
-      return false;
-    }
+    return false;
+    // if (!indexer.noteInIndexer()) {
+    //   for (int i = 0; i < 25; i++) {
+    //     continue;
+    //   }
+    //   return true;
+    // } else {
+    //   return false;
+    // }
   }
 }

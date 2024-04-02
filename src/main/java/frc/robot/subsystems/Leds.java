@@ -7,7 +7,12 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,10 +42,11 @@ public class Leds extends SubsystemBase {
   public boolean autoShoot = false;
   public boolean autoDrive = false;
   public double autoFinishedTime = 0.0;
+  public boolean autoShootCommand = false;
 
   private Optional<Alliance> alliance = Optional.empty();
   private Color allianceColor = Color.kBlack;
-  private Color secondaryDisabledColor = Color.kHotPink;
+  private Color secondaryDisabledColor = Color.kDeepPink;
   private boolean lastEnabledAuto = false;
   private double lastEnabledTime = 0.0;
   private boolean estopped = false;
@@ -56,7 +62,7 @@ public class Leds extends SubsystemBase {
   private static final int length = 57;
   private static final int staticLength = 7;
   private static final double strobeFastDuration = 0.1;
-  private static final double strobeSlowDuration = 0.2;
+  private static final double strobeSlowDuration = 0.4;
   private static final double breathDuration = 1.0;
   private static final double rainbowCycleLength = 25.0;
   private static final double rainbowDuration = 0.25;
@@ -89,13 +95,19 @@ public class Leds extends SubsystemBase {
   }
 
   public synchronized void periodic() {
+    Logger.recordOutput("LEDS/Auto Shoot", autoShoot);
+
+    NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+    NetworkTableEntry tx = chair.getEntry("tx");
+    double txAngle = Math.abs(tx.getDouble(57));
+
     if (DriverStation.isFMSAttached()) {
       alliance = DriverStation.getAlliance();
       allianceColor = 
         alliance
           .map(alliance -> alliance == Alliance.Blue ? Color.kBlue : Color.kRed)
-          .orElse(Color.kBurlywood);
-      secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kThistle;
+          .orElse(Color.kBlack);
+      secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kDeepPink;
     }
 
     // Update auto state
@@ -154,7 +166,7 @@ public class Leds extends SubsystemBase {
       }
     }
       if (DriverStation.isAutonomous()) {
-        wave(Color.kDarkGreen, Color.kPurple, waveSlowCycleLength, waveSlowDuration);
+        wave(Color.kDarkGreen, Color.kHotPink, waveSlowCycleLength, waveSlowDuration);
         if (autoFinished) {
           double fullTime = (double) length / waveFastCycleLength * waveFastDuration;
           solid((Timer.getFPGATimestamp() - autoFinishedTime) / fullTime, Color.kGreen);
@@ -162,12 +174,14 @@ public class Leds extends SubsystemBase {
       } else { // Enabled
         if (intaking) {
           strobe(Color.kDodgerBlue, strobeSlowDuration);
+        } else if (autoShootCommand) {
+          solid(txAngle / length, Color.kPurple);
+        } else if (autoShoot) {
+          rainbow(rainbowCycleLength, rainbowDuration);
         } else if (noteInIntake) {
           solid(Color.kLawnGreen);
         } else if (noteInIndexer) {
           solid(Color.kDarkOrange);
-        } else if (autoDrive || autoShoot) {
-          rainbow(rainbowCycleLength, rainbowDuration);
         }
       }
 

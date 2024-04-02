@@ -89,7 +89,7 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
-  private boolean autoShoot = false;
+  private boolean autoShootToggle = false;
 
   public enum shootPositions{
     SUBWOOFER(-4.7, 25.0),    
@@ -232,11 +232,11 @@ public class RobotContainer {
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
 
     // Run shoot command (from anywhere)
-    driverController.rightBumper().and(() -> autoShoot)
+    driverController.rightBumper().and(() -> autoShootToggle)
       .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
 
     //Preset shooting
-    driverController.rightBumper().and(() -> !autoShoot)
+    driverController.rightBumper().and(() -> !autoShootToggle)
       .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
 
     // Reset gyro
@@ -245,8 +245,8 @@ public class RobotContainer {
       .onTrue(new InstantCommand(() -> drive.resetGyro()));
 
     // Auto shoot toggle
-    driverController.x().onTrue(new InstantCommand(() -> autoShoot = !autoShoot)
-      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
+    driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
+      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = autoShootToggle)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
@@ -300,7 +300,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
-    Logger.recordOutput("Auto Shoot", autoShoot);
+    Logger.recordOutput("Auto Shoot", autoShootToggle);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }

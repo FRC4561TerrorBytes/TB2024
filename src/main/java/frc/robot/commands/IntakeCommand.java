@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
 import frc.robot.subsystems.Leds;
@@ -41,8 +40,6 @@ public class IntakeCommand extends Command {
   public void execute() {
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-
-    Leds.getInstance().noteInIntake = intake.getIntakeBreak();
   }
 
   // Called once the command ends or is interrupted.
@@ -50,9 +47,7 @@ public class IntakeCommand extends Command {
   public void end(boolean interrupted) {
     intake.stopIntake();
     indexer.stopIndexer();
-    Leds.getInstance().noteInIndexer = true;
     Leds.getInstance().intaking = false;
-    Leds.getInstance().noteInIntake = false;
   }
 
   // Returns true when the command should end.

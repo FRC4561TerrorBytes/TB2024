@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 
 /** Add your docs here. */
 public class IndexerIOReal implements IndexerIO {
@@ -30,6 +31,8 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerAppliedVolts = m_indexer.getAppliedOutput();
         inputs.indexerState = !m_limitSwitch.get();
         inputs.indexerCurrentAmps = m_indexer.getOutputCurrent();
+
+        Leds.getInstance().noteInIndexer = !m_limitSwitch.get();
 
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
     }

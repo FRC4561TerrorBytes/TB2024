@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 
 import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 
 /** Add your docs here. */
 public class IntakeIOReal implements IntakeIO{
@@ -61,6 +62,8 @@ public class IntakeIOReal implements IntakeIO{
         inputs.intakeAppliedVolts = m_frontIntake.getAppliedOutput();
         inputs.intakeCurrentAmps =  m_frontIntake.getOutputCurrent();
         inputs.noteInIntake = !beamBreak.get();
+
+        Leds.getInstance().noteInIntake = !beamBreak.get();
     };
 
     public void setIntakeSpeed(double velocity) {
