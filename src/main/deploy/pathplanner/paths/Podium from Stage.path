@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7290425352811662,
-        "y": 4.97511042936904
+        "x": 3.1695497638586083,
+        "y": 5.128467958937401
       },
       "isLocked": false,
       "linkedName": "Stage Shoot"
     },
     {
       "anchor": {
-        "x": 2.8143887343675305,
-        "y": 4.159279729384658
+        "x": 2.7856981070087494,
+        "y": 4.092954054853979
       },
       "prevControl": {
-        "x": 1.8143887343675305,
-        "y": 4.159279729384658
+        "x": 1.7288453257410594,
+        "y": 4.619623412708649
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Far Left / Podium"
     }
   ],
   "rotationTargets": [],
