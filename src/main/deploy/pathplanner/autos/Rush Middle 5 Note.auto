@@ -2,35 +2,47 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2261314366957867,
-      "y": 5.55
+      "x": 1.233716753147792,
+      "y": 5.514141427573006
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Rush Middle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Middle to Stage"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
+            "name": "ArmStage"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.7
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootSubwoofer"
+                  "name": "ShootStage"
                 }
               },
               {
@@ -43,13 +55,13 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Far Right Note"
+                  "pathName": "Podium from Stage"
                 }
               },
               {
@@ -70,11 +82,11 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.7
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -93,13 +105,13 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center from right"
+                  "pathName": "Center from left"
                 }
               },
               {
@@ -120,7 +132,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.07
           }
         },
         {
@@ -149,7 +161,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left from center"
+                  "pathName": "Right from center"
                 }
               },
               {
@@ -170,7 +182,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.7
           }
         },
         {
