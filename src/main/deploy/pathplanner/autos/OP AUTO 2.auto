@@ -43,9 +43,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "OP Auto p1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP Auto p1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
+              }
+            ]
           }
         },
         {
@@ -86,9 +99,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "OP Auto p2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP Auto p2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
+              }
+            ]
           }
         },
         {
@@ -123,9 +149,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "OP Auto p3"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP Auto p3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
+              }
+            ]
           }
         },
         {

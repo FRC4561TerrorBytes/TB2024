@@ -174,7 +174,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
-    // NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.calculateShooter(drive.getDistanceFromSpeaker())).andThen(new InstantCommand(() -> shooter.setFlywheelSpeed(shooter.m_velocitySetpoint))));
+    NamedCommands.registerCommand("Spin Flywheels", new RunCommand(() -> shooter.idleFlywheels(), shooter));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER));
     NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE));
     NamedCommands.registerCommand("ShootStage", new ShootCommand(shooter, indexer, intake, arm, shootPositions.STAGE));
