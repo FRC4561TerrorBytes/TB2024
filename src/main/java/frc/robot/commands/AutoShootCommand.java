@@ -52,6 +52,10 @@ public class AutoShootCommand extends Command {
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 
+    if (chair.getEntry("tid").getDouble(0.0) == 0.0) {
+      return;
+    }
+
     if (txAngle > 5) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
       Logger.recordOutput("Auto Rotate/Rotating", true);

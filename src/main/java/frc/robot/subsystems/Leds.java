@@ -99,6 +99,8 @@ public class Leds extends SubsystemBase {
 
     NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
     NetworkTableEntry tx = chair.getEntry("tx");
+    NetworkTableEntry tid = chair.getEntry("tid");
+    double id = tid.getDouble(0.0);
     double txAngle = Math.abs(tx.getDouble(57));
 
     if (DriverStation.isFMSAttached()) {
@@ -176,12 +178,14 @@ public class Leds extends SubsystemBase {
           strobe(Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
           solid(txAngle / length, Color.kPurple);
-        } else if (autoShoot) {
+        } else if (autoShoot && (id == 8.0 || id == 4.0)) {
           rainbow(rainbowCycleLength, rainbowDuration);
+        } else if (autoShoot && id == 0.0) {
+          strobe(Color.kRed, strobeSlowDuration);
+        }else if (noteInIndexer) {
+          solid(Color.kDarkOrange);
         } else if (noteInIntake) {
           solid(Color.kLawnGreen);
-        } else if (noteInIndexer) {
-          solid(Color.kDarkOrange);
         }
       }
 
