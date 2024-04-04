@@ -92,6 +92,7 @@ public class Drive extends SubsystemBase {
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
 
+    // Take tags that are out of tolerance out of this list
     int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     LimelightHelpers.SetFiducialIDFiltersOverride(Constants.DRIVER_LIMELIGHT, validIds);
 
@@ -167,6 +168,7 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
+    // Set robot orientation from gyro not megatag2
     LimelightHelpers.SetRobotOrientation(
       Constants.DRIVER_LIMELIGHT,
       m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
@@ -176,6 +178,7 @@ public class Drive extends SubsystemBase {
     LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DRIVER_LIMELIGHT);
     Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.DRIVER_LIMELIGHT).targetingResults.botpose_wpiblue);
 
+    // Only update if yaw velocity is less than 720 degrees / sec
     if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
       m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
       m_poseEstimator.addVisionMeasurement(
