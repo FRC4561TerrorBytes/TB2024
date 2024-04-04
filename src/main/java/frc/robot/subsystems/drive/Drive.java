@@ -178,12 +178,15 @@ public class Drive extends SubsystemBase {
     LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DRIVER_LIMELIGHT);
     Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.DRIVER_LIMELIGHT).targetingResults.botpose_wpiblue);
 
-    // Only update if yaw velocity is less than 720 degrees / sec
-    if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
-      m_poseEstimator.addVisionMeasurement(
-          mt2Pose.pose,
-          mt2Pose.timestampSeconds);
+    // Only run in teleop
+    if (!DriverStation.isAutonomous()) {
+      // Only update if yaw velocity is less than 720 degrees / sec
+      if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
+        m_poseEstimator.addVisionMeasurement(
+            mt2Pose.pose,
+            mt2Pose.timestampSeconds);
+      }
     }
   }
 
