@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.667857791556038,
-        "y": 2.3388308884879883
+        "x": 8.656319282469976,
+        "y": 2.090566168709977
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.122027367512877,
-        "y": 1.9289516093856354
+        "x": 7.110488858426815,
+        "y": 1.6806868896076241
       },
       "isLocked": false,
       "linkedName": "Wide Auto 2"
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -46.42452474211537,
+    "rotation": -34.49052289033597,
     "rotateFast": false
   },
   "reversed": false,

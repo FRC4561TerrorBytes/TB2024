@@ -20,7 +20,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -36,7 +36,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.75
                 }
               }
             ]
@@ -57,6 +57,12 @@
                 "data": {
                   "name": "Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
               }
             ]
           }
@@ -70,7 +76,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.6
           }
         },
         {
@@ -86,7 +92,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               }
             ]
@@ -107,6 +113,12 @@
                 "data": {
                   "name": "Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
               }
             ]
           }
@@ -120,7 +132,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.6
           }
         },
         {
@@ -136,7 +148,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 0.5
                 }
               }
             ]
@@ -157,6 +169,12 @@
                 "data": {
                   "name": "Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
               }
             ]
           }
@@ -170,7 +188,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.6
           }
         },
         {
@@ -181,12 +199,6 @@
                 "type": "named",
                 "data": {
                   "name": "ShootSubwoofer"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
                 }
               }
             ]

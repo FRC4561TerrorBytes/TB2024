@@ -3,51 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7167669684840067,
-        "y": 4.543804579763226
+        "x": 0.7529593763712814,
+        "y": 4.559910876698417
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2491310588321896,
-        "y": 1.9889506762386457
+        "x": 1.9767054263478534,
+        "y": 3.8023537981414917
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.61,
-        "y": 0.0
+        "x": 8.248403932477785,
+        "y": 0.6191572276667182
       },
       "prevControl": {
-        "x": 9.183013567679557,
-        "y": -0.011694154442440707
+        "x": 8.194635670284983,
+        "y": -0.3793962130567893
       },
       "nextControl": {
-        "x": 8.30006453627633,
-        "y": 0.00632521354538132
+        "x": 8.299393351226808,
+        "y": 1.566103575862875
       },
       "isLocked": false,
-      "linkedName": "Wide Auto 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.1480420763979895,
-        "y": 2.213348107152705
+        "x": 8.248403932477785,
+        "y": 7.5245813668202315
       },
       "prevControl": {
-        "x": 5.397733307669659,
-        "y": 1.6064742680590522
+        "x": 8.357666972654265,
+        "y": 4.2466901615258426
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wide Auto Shot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.95,
-      "rotationDegrees": 0.47602179143077966,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
       "rotateFast": false
     }
   ],
@@ -61,13 +61,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -17.67020643719558,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Wide Auto",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -59.99507912917599,
+    "rotation": -56.92932217723825,
     "velocity": 0
   },
   "useDefaultConstraints": true

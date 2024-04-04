@@ -98,7 +98,7 @@ public class RobotContainer {
     STAGE(-9.4, 30.0),
     WING(-10.125, 35.0),
     CENTER_AUTO_NOTE(-8.5, 25.0),
-    LOB(-9.5, 15.0),
+    LOB(-9, 10.0),
     SOURCE_SIDE_AUTO(-9.875, 30);
 
     private double shootSpeed;
@@ -174,7 +174,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
-    NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(10)));
+    NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER));
     NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE));
     NamedCommands.registerCommand("ShootStage", new ShootCommand(shooter, indexer, intake, arm, shootPositions.STAGE));
@@ -183,6 +183,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
     NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
     NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
+    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 0.5)));
+    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.25)));
+    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.25)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.762010207781099,
-        "y": 6.0692661556263285
+        "x": 4.577165782548069,
+        "y": 6.016751412384813
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.038697325726749,
-        "y": 6.85731328467846
+        "x": 6.332658628050176,
+        "y": 7.400749921286889
       },
       "isLocked": false,
       "linkedName": "OPAUTOSHOOT"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 4.762010207781099,
-        "y": 6.0692661556263285
+        "x": 4.577165782548069,
+        "y": 6.016751412384813
       },
       "prevControl": {
-        "x": 5.425631607378856,
-        "y": 6.391383338734061
+        "x": 5.400280685210883,
+        "y": 6.919992544510377
       },
       "nextControl": null,
       "isLocked": false,
@@ -73,13 +73,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 4.0,
+    "rotation": 13.284866484902086,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "OP AUTO",
   "previewStartingState": {
-    "rotation": 9.162347045721742,
+    "rotation": 11.73857120672234,
     "velocity": 0
   },
   "useDefaultConstraints": true
