@@ -16,7 +16,6 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -86,11 +85,15 @@ public class Drive extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
+
     this.gyroIO = gyroIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
+
+    int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.DRIVER_LIMELIGHT, validIds);
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
@@ -164,15 +167,21 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
-    // LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.VISION_LIMELIGHT);
-    // Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
-    // // if(limelightMeasurement.tagCount >= 2)
-    // {
-    //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
-    //   m_poseEstimator.addVisionMeasurement(
-    //       limelightMeasurement.pose,
-    //       limelightMeasurement.timestampSeconds);
-    // }
+    LimelightHelpers.SetRobotOrientation(
+      Constants.DRIVER_LIMELIGHT,
+      m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+      Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec),
+      0, 0, 0, 0);
+
+    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DRIVER_LIMELIGHT);
+    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.DRIVER_LIMELIGHT).targetingResults.botpose_wpiblue);
+
+    if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
+      m_poseEstimator.addVisionMeasurement(
+          mt2Pose.pose,
+          mt2Pose.timestampSeconds);
+    }
   }
 
   /**
