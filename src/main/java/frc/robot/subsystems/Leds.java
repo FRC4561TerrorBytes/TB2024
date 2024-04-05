@@ -177,8 +177,8 @@ public class Leds extends SubsystemBase {
         if (intaking) {
           strobe(Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
-          solid(txAngle / length, Color.kPurple);
-        } else if (autoShoot && (id == 8.0 || id == 4.0)) {
+          solid(1.0 - (txAngle / length), Color.kPurple);
+        } else if (autoShoot && (id == 7.0 || id == 4.0)) {
           rainbow(rainbowCycleLength, rainbowDuration);
         } else if (autoShoot && id == 0.0) {
           strobe(Color.kRed, strobeSlowDuration);
