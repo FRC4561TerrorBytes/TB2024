@@ -9,9 +9,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.AbsoluteEncoder;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 
@@ -100,6 +98,10 @@ public class ArmIOReal implements ArmIO {
         // set target position
         armSetPoint = angle;
         m_armMotorLeft.setControl(m_request.withPosition(armSetPoint));
+    }
+
+    public boolean armAtSetpoint(){
+        return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.2;
     }
 
     @AutoLogOutput(key = "ArmAbsoluteRotations")

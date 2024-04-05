@@ -61,7 +61,6 @@ public class ShootCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return !indexer.noteInIndexer();//Should be beam breaks when we get them
     if(!indexer.noteInIndexer()){
       for(int i = 0; i < 25; i++){
         continue;

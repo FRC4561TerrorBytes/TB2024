@@ -40,19 +40,14 @@ public class IntakeCommand extends Command {
   public void execute() {
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-
-    Leds.getInstance().noteInIntake = intake.getIntakeBreak();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    GameMode.getInstance().setCurrentMode(Mode.IDLE);
     intake.stopIntake();
     indexer.stopIndexer();
-    Leds.getInstance().noteInIndexer = true;
     Leds.getInstance().intaking = false;
-    Leds.getInstance().noteInIntake = false;
   }
 
   // Returns true when the command should end.

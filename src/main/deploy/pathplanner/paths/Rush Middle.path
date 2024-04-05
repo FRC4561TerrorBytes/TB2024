@@ -1,0 +1,102 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.233716753147792,
+        "y": 5.514141427573006
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0911884361479456,
+        "y": 3.9189010409964036
+      },
+      "isLocked": false,
+      "linkedName": "5 Note Start"
+    },
+    {
+      "anchor": {
+        "x": 5.0870599700383075,
+        "y": 4.446095209847917
+      },
+      "prevControl": {
+        "x": 4.191103040591174,
+        "y": 5.215489117757295
+      },
+      "nextControl": {
+        "x": 5.667599161222581,
+        "y": 3.9475630792069505
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.284824945869945,
+        "y": 4.115574513314067
+      },
+      "prevControl": {
+        "x": 7.257752368211036,
+        "y": 3.8169222034983554
+      },
+      "nextControl": {
+        "x": 9.311897523528852,
+        "y": 4.414226823129779
+      },
+      "isLocked": false,
+      "linkedName": "5 Note Middle"
+    },
+    {
+      "anchor": {
+        "x": 4.35,
+        "y": 4.90226840258472
+      },
+      "prevControl": {
+        "x": 5.240028226285379,
+        "y": 3.5182698936826444
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Stage Shoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.2000000000000002,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -11.269070893448783,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "5 Note",
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
