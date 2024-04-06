@@ -49,7 +49,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOReal;  
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -98,7 +98,7 @@ public class RobotContainer {
     STAGE(-9.4, 30.0),
     WING(-10.125, 35.0),
     CENTER_AUTO_NOTE(-8.5, 25.0),
-    LOB(-9, 10.0),
+    LOB(-9, 5.0),
     SOURCE_SIDE_AUTO(-9.875, 30);
 
     private double shootSpeed;
