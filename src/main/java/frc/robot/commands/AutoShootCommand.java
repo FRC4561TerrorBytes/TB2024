@@ -13,6 +13,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
@@ -71,6 +73,9 @@ public class AutoShootCommand extends Command {
     double armAngleInterpolated = shooter.interpolateArmAngle(distanceMeters);
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
+    if(RobotContainer.lobbing){
+      targetMPS = 5;
+    }
 
     if (txAngle < 3.5 && txAngle > -3.5) {
       shooter.setFlywheelSpeed(targetMPS);

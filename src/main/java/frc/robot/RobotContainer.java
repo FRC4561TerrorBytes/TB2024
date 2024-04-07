@@ -91,6 +91,8 @@ public class RobotContainer {
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
   private boolean autoShootToggle = false;
 
+  public static boolean lobbing = false;
+
   public enum shootPositions{
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8.5, 25.0),
@@ -117,7 +119,7 @@ public class RobotContainer {
     }
 }
 
-  private shootPositions shootEnum = shootPositions.SUBWOOFER;
+  public static shootPositions shootEnum = shootPositions.SUBWOOFER;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -185,6 +187,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
     NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 0.5)));
     NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.25)));
+    NamedCommands.registerCommand("ArmWideAutoStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() + 0.5)));
     NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.25)));
 
     // Set up auto routines
@@ -255,7 +258,7 @@ public class RobotContainer {
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
     driverController.rightTrigger().onTrue(new InstantCommand(() -> shootEnum = shootPositions.LOB)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))).andThen(new InstantCommand(() -> lobbing = true))).onFalse(new InstantCommand(() -> lobbing = false));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
@@ -298,6 +301,8 @@ public class RobotContainer {
     //Outtake, out-index
     operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
     operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+
+    operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);

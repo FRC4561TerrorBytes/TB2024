@@ -36,7 +36,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 1.2
                 }
               }
             ]
@@ -83,7 +83,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmWing"
+            "name": "ArmWideAutoStage"
           }
         },
         {
@@ -170,6 +170,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Source Side",
   "choreoAuto": false
 }

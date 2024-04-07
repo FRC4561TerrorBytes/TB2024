@@ -36,7 +36,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.6
+                  "waitTime": 1.2
                 }
               }
             ]
@@ -188,6 +188,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "AMP Side",
   "choreoAuto": false
 }

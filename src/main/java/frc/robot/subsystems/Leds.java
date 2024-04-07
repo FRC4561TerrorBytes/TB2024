@@ -166,8 +166,7 @@ public class Leds extends SubsystemBase {
         // Default pattern
         wave(allianceColor, secondaryDisabledColor, waveAllianceCycleLength, waveAllianceDuration);
       }
-    }
-      if (DriverStation.isAutonomous()) {
+    } else if (DriverStation.isAutonomous()) {
         wave(Color.kDarkGreen, Color.kHotPink, waveSlowCycleLength, waveSlowDuration);
         if (autoFinished) {
           double fullTime = (double) length / waveFastCycleLength * waveFastDuration;

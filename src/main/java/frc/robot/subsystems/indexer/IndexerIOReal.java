@@ -21,7 +21,7 @@ public class IndexerIOReal implements IndexerIO {
     public IndexerIOReal(){
         m_indexer.restoreFactoryDefaults();
         //set inverted here
-        m_indexer.setSmartCurrentLimit(50, 20);
+        m_indexer.setSmartCurrentLimit(60, 25);
         m_indexer.setIdleMode(IdleMode.kBrake);
         
         m_indexer.burnFlash();

@@ -20,10 +20,9 @@
     "Wide Auto"
   ],
   "autoFolders": [
-    "Drive No Turn",
-    "New Folder",
-    "Drive Turn",
-    "Test Autos"
+    "AMP Side",
+    "Center",
+    "Source Side"
   ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 5.0,

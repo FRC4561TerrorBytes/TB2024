@@ -72,14 +72,16 @@ public class ArmIOReal implements ArmIO {
          m_armMotorLeft.setPosition(getAbsoluteRotations());
     }
 
+
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armSetpoint = armSetPoint;
-        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
+        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23;
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
         Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue().booleanValue());
         Logger.recordOutput("Arm/Absoulte Encoder Connected", encoder.isConnected());
+        Logger.recordOutput("Arm/Raw Absolute Angle", encoder.getAbsolutePosition());
     }
 
     public void seedEncoders() {
@@ -106,7 +108,7 @@ public class ArmIOReal implements ArmIO {
 
     @AutoLogOutput(key = "ArmAbsoluteRotations")
     public double getAbsoluteRotations() {
-        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
+        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23;
     }
 
     public void nudge(double degrees) {
