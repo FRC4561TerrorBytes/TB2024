@@ -219,7 +219,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void idleFlywheels() {
-    if (indexer.noteInIndexer() && ) {
+    if (indexer.noteInIndexer()) {
       setFlywheelSpeed(10);
     } else {
       stopFlywheel();
