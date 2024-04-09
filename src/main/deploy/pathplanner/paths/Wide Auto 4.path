@@ -12,20 +12,20 @@
         "y": 1.6806868896076241
       },
       "isLocked": false,
-      "linkedName": "Wide Auto 2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.1480420763979895,
-        "y": 2.09
+        "x": 4.401811857737874,
+        "y": 2.3758028835553593
       },
       "prevControl": {
-        "x": 5.416882856557777,
-        "y": 1.1513147270732498
+        "x": 5.670652637897661,
+        "y": 1.4371176106286092
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wide Auto Shot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

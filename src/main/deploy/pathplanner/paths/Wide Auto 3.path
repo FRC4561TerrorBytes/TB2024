@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.1480420763979895,
-        "y": 2.09
+        "x": 4.401811857737874,
+        "y": 2.3758028835553593
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.49478827916289,
-        "y": 1.5513015188940509
+        "x": 5.748558060502774,
+        "y": 1.8371044024494103
       },
       "isLocked": false,
       "linkedName": "Wide Auto Shot"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wide Auto 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [

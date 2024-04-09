@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7234175476497451,
-      "y": 6.532388453950674
+      "x": 0.7172868904670353,
+      "y": 6.581433711421908
     },
-    "rotation": 60.0
+    "rotation": 60.36161631184874
   },
   "command": {
     "type": "sequential",
@@ -14,38 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootSubwoofer"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.2
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 6.0
+            "name": "AutoShoot"
           }
         },
         {
@@ -55,26 +24,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "OP Skip Amp"
+                  "pathName": "OP AUTO p1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "OP Auto Skip Amp p2"
+                  "name": "Intake"
                 }
               },
               {
@@ -89,19 +45,69 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP AUTO p2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "AutoShoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP AUTO p3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShoot"
           }
         }
       ]
