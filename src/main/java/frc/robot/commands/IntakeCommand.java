@@ -5,10 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -32,13 +32,12 @@ public class IntakeCommand extends Command {
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
     arm.setArmSetpoint(Constants.ARM_STOW);
+    Leds.getInstance().intaking = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // intake.setBarAngle(Constants.INTAKE_LOW_POSITION);
-
     intake.setIntakeSpeed(Constants.INTAKE_SPEED);
     indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
   }
@@ -46,12 +45,9 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // GameMode.getInstance().setCurrentMode(Mode.IDLE);
-        new InstantCommand(() -> intake.stopIntake())
-        .alongWith(new InstantCommand(() -> indexer.stopIndexer()));
-              // intake.setBarAngle(Constants.INTAKE_HIGH_POSITION);
-      //ADD LED STUFF
-    
+    intake.stopIntake();
+    indexer.stopIndexer();
+    Leds.getInstance().intaking = false;
   }
 
   // Returns true when the command should end.

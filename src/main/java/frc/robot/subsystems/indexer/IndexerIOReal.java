@@ -7,30 +7,32 @@ package frc.robot.subsystems.indexer;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkLimitSwitch;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 
 /** Add your docs here. */
 public class IndexerIOReal implements IndexerIO {
 
     private final CANSparkMax m_indexer = new CANSparkMax(Constants.INDEXER, MotorType.kBrushless);
-    private final SparkLimitSwitch m_limitSwitch = m_indexer.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+    private final DigitalInput m_limitSwitch = new DigitalInput(1);
 
     public IndexerIOReal(){
         m_indexer.restoreFactoryDefaults();
         //set inverted here
-        m_indexer.setSmartCurrentLimit(60, 35);
+        m_indexer.setSmartCurrentLimit(60, 25);
         m_indexer.setIdleMode(IdleMode.kBrake);
         
         m_indexer.burnFlash();
-        m_limitSwitch.enableLimitSwitch(false);
     }
 
      public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerAppliedVolts = m_indexer.getAppliedOutput();
-        inputs.indexerState = m_limitSwitch.isPressed();
+        inputs.indexerState = !m_limitSwitch.get();
         inputs.indexerCurrentAmps = m_indexer.getOutputCurrent();
+
+        Leds.getInstance().noteInIndexer = !m_limitSwitch.get();
 
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
     }
@@ -44,6 +46,6 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     public boolean getIndexerState(){
-        return m_limitSwitch.isPressed();
+        return !m_limitSwitch.get();
     }
 }

@@ -28,7 +28,7 @@ public class NoteAlign extends Command {
     this.indexer = indexer;
     this.intake = intake;
 
-    addRequirements(drive, intake);
+    addRequirements(drive, indexer, intake);
   }
 
   // Called when the command is initially scheduled.

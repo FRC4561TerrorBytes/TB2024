@@ -5,7 +5,7 @@
       "x": 0.6751948895821795,
       "y": 6.600586312811581
     },
-    "rotation": -120.0
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmShootSetPoint"
+            "name": "ArmSubwoofer"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "ShootSubwoofer"
                 }
               },
               {

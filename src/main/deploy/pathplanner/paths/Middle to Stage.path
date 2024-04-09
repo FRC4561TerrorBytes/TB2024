@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.284824945869945,
+        "y": 4.115574513314067
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.835268612861981,
+        "y": 4.4215110258082095
+      },
+      "isLocked": false,
+      "linkedName": "5 Note Middle"
+    },
+    {
+      "anchor": {
+        "x": 4.35,
+        "y": 4.90226840258472
+      },
+      "prevControl": {
+        "x": 4.546673472317663,
+        "y": 4.057300891886611
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Stage Shoot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -12.8477048587176,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "5 Note",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

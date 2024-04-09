@@ -24,6 +24,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Leds;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -134,7 +137,11 @@ public class Robot extends LoggedRobot {
     m_elevator.setLength(robotContainer.getElevatorPositionMeters());
     m_arm.setAngle(robotContainer.getArmAngleDegrees());
 
-    robotContainer.flywheelSpinup();
+    if (!DriverStation.isAutonomousEnabled()) {
+      Leds.getInstance().autoFinished = true;
+      Leds.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
+    }
+
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled commands, running already-scheduled commands, removing
     // finished or interrupted commands, and running subsystem periodic() methods.
@@ -170,7 +177,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
+   // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.

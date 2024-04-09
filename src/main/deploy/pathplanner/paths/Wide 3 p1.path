@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7675277817281454,
+        "y": 4.567195079376849
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8409378998852783,
+        "y": 1.2158318155498848
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 9.1,
+        "y": 2.7
+      },
+      "prevControl": {
+        "x": 4.605608331216662,
+        "y": 0.7216478892290321
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Sternpops note 1"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 8.763129733695834,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 9.462322208025617,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Wide Auto",
+  "previewStartingState": {
+    "rotation": -60.10906845477318,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,17 +3,29 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
-    "Alex Flip",
-    "Cool 8 Note",
+    "5 Note",
     "78 Note",
-    "New New New New Folder",
-    "Other"
+    "Alex Flip",
+    "Center Paths",
+    "Close4",
+    "Cool 8 Note",
+    "Leave",
+    "Left Paths",
+    "Misc",
+    "Tee Hee",
+    "No Turn Paths",
+    "OP AUTO",
+    "Right Paths",
+    "Square",
+    "Wide Auto"
   ],
   "autoFolders": [
-    "New Folder"
+    "AMP Side",
+    "Center",
+    "Source Side"
   ],
-  "defaultMaxVel": 1.0,
-  "defaultMaxAccel": 1.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

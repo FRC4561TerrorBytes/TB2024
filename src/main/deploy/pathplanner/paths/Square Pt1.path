@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.5,
+        "y": 5.55472336015897
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.499999999999999,
+        "y": 5.55472336015897
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 5.55472336015897
+      },
+      "prevControl": {
+        "x": 2.3061392227058515,
+        "y": 5.55472336015897
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SquareEnd1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -0.807206716050455,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Square",
+  "previewStartingState": {
+    "rotation": -0.5717698268998708,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
