@@ -49,7 +49,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOReal;
+import frc.robot.subsystems.indexer.IndexerIOReal;  
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -91,15 +91,17 @@ public class RobotContainer {
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
   private boolean autoShootToggle = false;
 
+  public static boolean lobbing = false;
+
   public enum shootPositions{
     SUBWOOFER(-4.7, 25.0),    
-    PODIUM(-8.5, 25.0),
+    PODIUM(-8, 25.0),
     AMP(7.3, 0.0),
-    STAGE(-9.4, 30.0),
-    WING(-10.125, 35.0),
-    CENTER_AUTO_NOTE(-8.5, 25.0),
-    LOB(-9, 10.0),
-    SOURCE_SIDE_AUTO(-9.875, 30);
+    STAGE(-8.9, 30.0),
+    WING(-9.825, 35.0),
+    CENTER_AUTO_NOTE(-8, 25.0),
+    LOB(-9, 5.0),
+    SOURCE_SIDE_AUTO(-9.375, 30);
 
     private double shootSpeed;
     private double shootAngle;
@@ -117,7 +119,7 @@ public class RobotContainer {
     }
 }
 
-  private shootPositions shootEnum = shootPositions.SUBWOOFER;
+  public static shootPositions shootEnum = shootPositions.SUBWOOFER;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -183,9 +185,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
     NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
     NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
-    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 0.5)));
-    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.25)));
-    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.25)));
+    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 1.0)));
+    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.75)));
+    NamedCommands.registerCommand("ArmWideAutoStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() + 1)));
+    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.75)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -255,7 +258,7 @@ public class RobotContainer {
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
     driverController.rightTrigger().onTrue(new InstantCommand(() -> shootEnum = shootPositions.LOB)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))).andThen(new InstantCommand(() -> lobbing = true))).onFalse(new InstantCommand(() -> lobbing = false));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
@@ -298,6 +301,8 @@ public class RobotContainer {
     //Outtake, out-index
     operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
     operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+
+    operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);

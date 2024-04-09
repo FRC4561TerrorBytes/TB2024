@@ -108,7 +108,7 @@ public final class Constants {
 
     public static final double ARM_CURRENT_LIMIT = 40.0;
 
-    public static final double DRIVE_CURRENT_LIMIT = 40.0;
+    public static final double DRIVE_CURRENT_LIMIT = 50.0;
     public static final int TURN_CURRENT_LIMIT = 20;
     public static final double DRIVE_STATOR_CURRENT_LIMIT = 125;
     public static final double DRIVE_CURRENT_THRESHOLD = 120.0;
@@ -235,7 +235,7 @@ public final class Constants {
 
   public static final int FRONT_INTAKE_MOTOR = 15;
 
-  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = 0.0478 - 0.0025;
+  public static final double ARM_ABSOLUTE_ENCODER_OFFSET = -0.34;
   public static final double ARM_ABSOLUTE_CONVERSION_FACTOR = 49.87;
 
   public static String VISION_LIMELIGHT = "limelight-vanap";

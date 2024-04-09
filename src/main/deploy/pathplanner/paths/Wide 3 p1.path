@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.1480420763979895,
-        "y": 2.09
+        "x": 0.7675277817281454,
+        "y": 4.567195079376849
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.645905234938433,
-        "y": 1.0310253795863025
+        "x": 1.8409378998852783,
+        "y": 1.2158318155498848
       },
       "isLocked": false,
-      "linkedName": "Wide Auto Shot"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.88,
-        "y": 4.7
+        "x": 9.1,
+        "y": 2.7
       },
       "prevControl": {
-        "x": 7.7936504688175265,
-        "y": 2.6748299942097504
+        "x": 4.605608331216662,
+        "y": 0.7216478892290321
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wide Auto 3"
+      "linkedName": "Sternpops note 1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.35,
-      "rotationDegrees": 42.50540653044737,
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 8.763129733695834,
       "rotateFast": false
     }
   ],
@@ -45,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.21251286705225,
+    "rotation": 9.462322208025617,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Wide Auto",
   "previewStartingState": {
-    "rotation": -38.659808254090095,
+    "rotation": -60.10906845477318,
     "velocity": 0
   },
   "useDefaultConstraints": true
