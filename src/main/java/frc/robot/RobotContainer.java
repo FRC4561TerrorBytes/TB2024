@@ -95,13 +95,13 @@ public class RobotContainer {
 
   public enum shootPositions{
     SUBWOOFER(-4.7, 25.0),    
-    PODIUM(-8.5, 25.0),
+    PODIUM(-8, 25.0),
     AMP(7.3, 0.0),
-    STAGE(-9.4, 30.0),
-    WING(-10.125, 35.0),
-    CENTER_AUTO_NOTE(-8.5, 25.0),
+    STAGE(-8.9, 30.0),
+    WING(-9.825, 35.0),
+    CENTER_AUTO_NOTE(-8, 25.0),
     LOB(-9, 5.0),
-    SOURCE_SIDE_AUTO(-9.875, 30);
+    SOURCE_SIDE_AUTO(-9.375, 30);
 
     private double shootSpeed;
     private double shootAngle;
@@ -185,10 +185,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
     NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
     NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
-    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 0.5)));
-    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.25)));
-    NamedCommands.registerCommand("ArmWideAutoStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() + 0.5)));
-    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.25)));
+    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 1.0)));
+    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.75)));
+    NamedCommands.registerCommand("ArmWideAutoStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() + 1)));
+    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.75)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

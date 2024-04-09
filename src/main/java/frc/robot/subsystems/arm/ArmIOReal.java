@@ -75,7 +75,7 @@ public class ArmIOReal implements ArmIO {
 
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armSetpoint = armSetPoint;
-        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23;
+        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23 + 2.6243381847134515;
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
@@ -108,7 +108,7 @@ public class ArmIOReal implements ArmIO {
 
     @AutoLogOutput(key = "ArmAbsoluteRotations")
     public double getAbsoluteRotations() {
-        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23;
+        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23 + 2.6243381847134515;
     }
 
     public void nudge(double degrees) {

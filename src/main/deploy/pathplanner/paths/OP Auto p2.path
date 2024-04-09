@@ -3,68 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.58651421828132,
-        "y": 7.218644854326088
+        "x": 7.982115652889571,
+        "y": 7.366157830907212
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.489755350406885,
-        "y": 7.320623691824136
+        "x": 8.885356785015135,
+        "y": 7.4681366684052595
       },
       "isLocked": false,
-      "linkedName": "OPAUTO1"
+      "linkedName": "opskip1"
     },
     {
       "anchor": {
-        "x": 8.641750877113111,
-        "y": 7.764960055208487
+        "x": 0.732099284103781,
+        "y": 6.711391621835377
       },
       "prevControl": {
-        "x": 8.404051500900282,
-        "y": 8.019637958293659
-      },
-      "nextControl": {
-        "x": 8.845708552109206,
-        "y": 7.546433974855528
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.577165782548069,
-        "y": 6.016751412384813
-      },
-      "prevControl": {
-        "x": 5.465921520173505,
-        "y": 6.461129281197531
+        "x": 0.494399907890952,
+        "y": 6.966069524920549
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OPAUTOSHOOT"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.65,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 5.0,
@@ -73,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 12.171458208587486,
+    "rotation": 57.26477372789237,
     "rotateFast": false
   },
   "reversed": false,

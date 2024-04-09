@@ -5,7 +5,7 @@
       "x": 0.7675277817281454,
       "y": 4.567195079376849
     },
-    "rotation": -61.69924423399364
+    "rotation": -60.40161482217414
   },
   "command": {
     "type": "sequential",
@@ -43,19 +43,19 @@
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "path",
                 "data": {
                   "pathName": "Wide 3 p1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
@@ -68,13 +68,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Wide Auto 4"
+                  "pathName": "Wide 3 p2"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
                 }
               }
             ]
@@ -89,7 +95,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.7
           }
         },
         {
@@ -105,7 +111,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -137,13 +143,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Wide Auto 6"
+                  "pathName": "Wide 3 p3"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Spin Flywheels"
                 }
               }
             ]
@@ -152,13 +164,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmWing"
+            "name": "ArmWideAutoStage"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.7
           }
         },
         {

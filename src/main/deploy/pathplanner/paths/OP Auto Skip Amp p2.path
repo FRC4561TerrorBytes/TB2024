@@ -3,52 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.405130998549618,
-        "y": 7.427464402742001
+        "x": 7.982115652889571,
+        "y": 7.366157830907212
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.804716419063542,
-        "y": 6.510768438033582
+        "x": 6.480552108023648,
+        "y": 7.567337219982496
       },
       "isLocked": false,
-      "linkedName": "SkipAmp"
+      "linkedName": "opskip1"
     },
     {
       "anchor": {
-        "x": 4.577165782548069,
-        "y": 6.016751412384813
+        "x": 0.7158327706968803,
+        "y": 6.5136440244390466
       },
       "prevControl": {
-        "x": 5.465921520173505,
-        "y": 6.461129281197531
+        "x": 1.8312112453608795,
+        "y": 7.761870310470479
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "OPAUTOSHOOT"
+      "linkedName": "OP Start"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -57,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 7.125016348901798,
+    "rotation": 60.0,
     "rotateFast": false
   },
   "reversed": false,
