@@ -50,7 +50,7 @@ public class AutoShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
+    NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.VISION_LIMELIGHT);
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 

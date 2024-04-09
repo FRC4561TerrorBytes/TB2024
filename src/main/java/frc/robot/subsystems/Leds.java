@@ -43,6 +43,7 @@ public class Leds extends SubsystemBase {
   public boolean autoDrive = false;
   public double autoFinishedTime = 0.0;
   public boolean autoShootCommand = false;
+  public boolean autoNoteAlign = false;
 
   private Optional<Alliance> alliance = Optional.empty();
   private Color allianceColor = Color.kBlack;
@@ -173,7 +174,9 @@ public class Leds extends SubsystemBase {
           solid((Timer.getFPGATimestamp() - autoFinishedTime) / fullTime, Color.kGreen);
         }
       } else { // Enabled
-        if (intaking) {
+        if (autoNoteAlign) {
+          strobe(Color.kDarkOrange, strobeSlowDuration);
+        } else if (intaking) {
           strobe(Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
           solid(1.0 - (txAngle / length), Color.kPurple);
@@ -182,7 +185,7 @@ public class Leds extends SubsystemBase {
         } else if (autoShoot && id == 0.0) {
           strobe(Color.kRed, strobeSlowDuration);
         }else if (noteInIndexer) {
-          solid(Color.kDarkOrange);
+          solid(Color.kOrangeRed);
         } else if (noteInIntake) {
           solid(Color.kLawnGreen);
         }

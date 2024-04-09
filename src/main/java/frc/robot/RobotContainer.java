@@ -32,8 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.GameMode.Mode;
-import frc.robot.commands.AmpDrive;
+import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
@@ -51,7 +50,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOReal;  
+import frc.robot.subsystems.indexer.IndexerIOReal;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -233,9 +232,11 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-  //PANAV CONTROLS9
+  //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
+    driverController.leftBumper()
+      .whileTrue(new AutoNoteAlignSequential(drive, intake, indexer))
+      .onFalse(new IntakeCommand(intake, indexer, arm));
 
     // Toggle slow mode (default normal)
     driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
