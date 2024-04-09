@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8998008477855355,
-        "y": 6.949273142430644
+        "x": 8.88,
+        "y": 4.7
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.121207385483711,
-        "y": 6.5998256829723445
+        "x": 7.333461930620544,
+        "y": 2.2702511234406337
       },
       "isLocked": false,
-      "linkedName": "Far Right Note"
+      "linkedName": "Wide Auto 3"
     },
     {
       "anchor": {
-        "x": 3.0224139914551142,
-        "y": 5.520830018680052
+        "x": 4.1480420763979895,
+        "y": 2.09
       },
       "prevControl": {
-        "x": 1.3487445803653653,
-        "y": 5.355302274726122
+        "x": 7.297591088073172,
+        "y": 0.9240321798179121
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "center from right"
+      "linkedName": "Wide Auto Shot"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.09107286529601324,
+    "rotation": -32.271311463602274,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Center Paths",
+  "folder": "Wide Auto",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 38.65523192079049,
     "velocity": 0
   },
   "useDefaultConstraints": true

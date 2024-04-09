@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7167669684840067,
-      "y": 4.543804579763226
+      "x": 0.7675277817281454,
+      "y": 4.567195079376849
     },
     "rotation": -61.69924423399364
   },
@@ -36,7 +36,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 1.2
                 }
               }
             ]
@@ -80,7 +80,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootWing"
+                  "name": "ShootStage"
                 }
               },
               {
@@ -149,7 +149,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootWing"
+                  "name": "ShootStage"
                 }
               },
               {
@@ -214,12 +214,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootWing"
+            "name": "ShootStage"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Source Side",
   "choreoAuto": false
 }

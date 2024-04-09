@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8998008477855355,
-        "y": 6.949273142430644
+        "x": 0.7675277817281454,
+        "y": 4.567195079376849
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.121207385483711,
-        "y": 6.5998256829723445
+        "x": 1.8409378998852783,
+        "y": 1.2158318155498848
       },
       "isLocked": false,
-      "linkedName": "Far Right Note"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0224139914551142,
-        "y": 5.520830018680052
+        "x": 9.1,
+        "y": 2.7
       },
       "prevControl": {
-        "x": 1.3487445803653653,
-        "y": 5.355302274726122
+        "x": 4.605608331216662,
+        "y": 0.7216478892290321
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "center from right"
+      "linkedName": "Sternpops note 1"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 8.763129733695834,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.09107286529601324,
+    "rotation": 9.462322208025617,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Center Paths",
+  "folder": "Wide Auto",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -60.10906845477318,
     "velocity": 0
   },
   "useDefaultConstraints": true

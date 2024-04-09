@@ -3,6 +3,7 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
+    "5 Note",
     "78 Note",
     "Alex Flip",
     "Center Paths",
@@ -11,7 +12,7 @@
     "Leave",
     "Left Paths",
     "Misc",
-    "5 Note",
+    "Tee Hee",
     "No Turn Paths",
     "OP AUTO",
     "Right Paths",
@@ -19,10 +20,9 @@
     "Wide Auto"
   ],
   "autoFolders": [
-    "Drive No Turn",
-    "New Folder",
-    "Drive Turn",
-    "Test Autos"
+    "AMP Side",
+    "Center",
+    "Source Side"
   ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 5.0,
