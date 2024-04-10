@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0911884361479456,
-        "y": 3.9189010409964036
+        "x": 2.5503533883272365,
+        "y": 3.9513817797094455
       },
       "isLocked": false,
       "linkedName": "5 Note Start"
     },
     {
       "anchor": {
-        "x": 5.0870599700383075,
-        "y": 4.446095209847917
+        "x": 4.959701661434457,
+        "y": 4.331482525085139
       },
       "prevControl": {
-        "x": 4.191103040591174,
-        "y": 5.215489117757295
+        "x": 4.041505759058652,
+        "y": 5.744091605663304
       },
       "nextControl": {
-        "x": 5.667599161222581,
-        "y": 3.9475630792069505
+        "x": 5.278495834975361,
+        "y": 3.8410299504068246
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 4.115574513314067
       },
       "prevControl": {
-        "x": 7.257752368211036,
-        "y": 3.8169222034983554
+        "x": 7.941219279170397,
+        "y": 3.3079267128158634
       },
       "nextControl": {
-        "x": 9.311897523528852,
-        "y": 4.414226823129779
+        "x": 8.913975544778369,
+        "y": 5.5943979048817996
       },
       "isLocked": false,
       "linkedName": "5 Note Middle"
@@ -60,7 +60,18 @@
       "linkedName": "Stage Shoot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.85,
+      "rotationDegrees": 37.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {

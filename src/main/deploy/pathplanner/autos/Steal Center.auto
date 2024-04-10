@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7529593763712814,
+      "y": 4.559910876698417
+    },
+    "rotation": -60.22643955323642
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Sabbotage"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SabotageIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SabotageIndexer"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SabotageShooter"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

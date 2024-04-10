@@ -178,6 +178,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
 
+    NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3)));
+    NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4)));
+    NamedCommands.registerCommand("SabotageShooter", new RunCommand(() -> shooter.setFlywheelSpeed(5)));
+
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 

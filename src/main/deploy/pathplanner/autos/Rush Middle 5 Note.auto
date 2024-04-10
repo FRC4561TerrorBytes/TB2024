@@ -14,32 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootSubwoofer"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.2
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -64,32 +39,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmOPAUTOStage"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.7
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootStage"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -120,32 +70,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmPodium"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCenter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -176,32 +101,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmCenter"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCenter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -232,26 +132,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmPodium"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCenter"
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         }
       ]

@@ -4,16 +4,15 @@
   "holonomicMode": true,
   "pathFolders": [
     "5 Note",
-    "Center Paths",
+    "Close Paths",
     "Close4",
-    "Left Paths",
     "OP AUTO",
-    "Right Paths",
     "Wide Auto"
   ],
   "autoFolders": [
-    "Center",
     "AMP Side",
+    "Center",
+    "Shoot",
     "Source Side"
   ],
   "defaultMaxVel": 4.0,
