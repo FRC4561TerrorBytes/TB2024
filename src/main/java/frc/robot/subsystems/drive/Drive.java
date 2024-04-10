@@ -94,7 +94,7 @@ public class Drive extends SubsystemBase {
 
     // Take tags that are out of tolerance out of this list
     int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.DRIVER_LIMELIGHT, validIds);
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIds);
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
@@ -170,13 +170,13 @@ public class Drive extends SubsystemBase {
 
     // Set robot orientation from gyro not megatag2
     LimelightHelpers.SetRobotOrientation(
-      Constants.DRIVER_LIMELIGHT,
-      m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(),
-      Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec),
-      0, 0, 0, 0);
+      Constants.VISION_LIMELIGHT,
+      gyroInputs.yawPosition.getDegrees(),
+      0, 0, 0, 0, 0);
 
-    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.DRIVER_LIMELIGHT);
-    Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.DRIVER_LIMELIGHT).targetingResults.botpose_wpiblue);
+    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
+    Logger.recordOutput("Vision/Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
+    Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
 
     // Only run in teleop
     if (!DriverStation.isAutonomous()) {
