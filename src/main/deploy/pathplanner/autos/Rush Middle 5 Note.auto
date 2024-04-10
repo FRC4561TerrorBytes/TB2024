@@ -30,6 +30,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "Spin Flywheels"
                 }
               }
@@ -46,12 +52,6 @@
           "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -61,6 +61,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "Spin Flywheels"
                 }
               }
@@ -77,12 +83,6 @@
           "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -92,6 +92,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "Spin Flywheels"
                 }
               }
@@ -109,15 +115,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "Right from center"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               },
               {
