@@ -13,6 +13,9 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -23,6 +26,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -174,9 +179,18 @@ public class Drive extends SubsystemBase {
       gyroInputs.yawPosition.getDegrees(),
       0, 0, 0, 0, 0);
 
+    LimelightHelpers.Results results = LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults;
     LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
-    Logger.recordOutput("Vision/Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
+    
+    Logger.recordOutput("Vision/Limelight Pose", results.botpose_wpiblue);
     Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
+
+    List<Pose3d> tagPoses = new ArrayList<>();
+    for (LimelightTarget_Fiducial tag : results.targets_Fiducials) {
+      tagPoses.add(AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo).getTagPose((int) tag.fiducialID).get());
+    }
+
+    Logger.recordOutput("Vision/Tags", tagPoses.toArray(Pose3d[]::new));
 
     // Only run in teleop
     if (!DriverStation.isAutonomous()) {
