@@ -137,9 +137,11 @@ public class Robot extends LoggedRobot {
     m_elevator.setLength(robotContainer.getElevatorPositionMeters());
     m_arm.setAngle(robotContainer.getArmAngleDegrees());
 
-    if (!DriverStation.isAutonomousEnabled()) {
-      Leds.getInstance().autoFinished = true;
-      Leds.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
+    if (autonomousCommand != null) {
+      if (!autonomousCommand.isScheduled()) {
+        Leds.getInstance().autoFinished = true;
+        Leds.getInstance().autoFinishedTime = Timer.getFPGATimestamp();
+      }
     }
 
     // Runs the Scheduler. This is responsible for polling buttons, adding

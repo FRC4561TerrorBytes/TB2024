@@ -14,7 +14,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
@@ -44,7 +43,12 @@ public class AutoShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.VISION_LIMELIGHT);
+    NetworkTableEntry tx = chair.getEntry("tx");
+    double txAngle = tx.getDouble(0.0);
+
     Leds.getInstance().autoShootCommand = true;
+    Leds.getInstance().autoShootStartAngle = txAngle;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,14 +58,14 @@ public class AutoShootCommand extends Command {
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 
-    if (chair.getEntry("tid").getDouble(0.0) == 0.0) {
+    if (chair.getEntry("tid").getDouble(0.0) != 7.0 || chair.getEntry("tid").getDouble(0.0) != 4.0) {
       return;
     }
 
-    if (txAngle > 5) {
+    if (txAngle > 2) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
       Logger.recordOutput("Auto Rotate/Rotating", true);
-    } else if (txAngle < -5) {
+    } else if (txAngle < -2) {
       drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
       Logger.recordOutput("Auto Rotate/Rotating", true);
     } else {
@@ -77,7 +81,7 @@ public class AutoShootCommand extends Command {
       targetMPS = 5;
     }
 
-    if (txAngle < 3.5 && txAngle > -3.5) {
+    if (txAngle < 2 && txAngle > -2) {
       shooter.setFlywheelSpeed(targetMPS);
 
       if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
