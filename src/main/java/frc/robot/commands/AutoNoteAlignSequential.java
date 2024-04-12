@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -17,12 +18,14 @@ public class AutoNoteAlignSequential extends SequentialCommandGroup {
   private Drive drive;
   private Intake intake;
   private Indexer indexer;
+  private Arm arm;
 
-  public AutoNoteAlignSequential(Drive drive, Intake intake, Indexer indexer) {
+  public AutoNoteAlignSequential(Drive drive, Intake intake, Indexer indexer, Arm arm) {
     this.drive = drive;
     this.intake = intake;
     this.indexer = indexer;
+    this.arm = arm;
 
-    addCommands(new AutoNoteAlignCommand(drive, intake, indexer).andThen(new IntakeCommand(intake, indexer, null)));
+    addCommands(new AutoNoteAlignCommand(drive, intake, indexer).andThen(new IntakeCommand(intake, indexer, arm)));
   }
 }

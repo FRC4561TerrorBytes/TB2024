@@ -37,7 +37,7 @@ public class AutoShootCommand extends Command {
     this.intake = intake;
     this.drive = drive;
 
-    addRequirements(shooter, indexer, intake);
+    addRequirements(shooter, indexer, intake, drive);
   }
 
   // Called when the command is initially scheduled.
@@ -58,14 +58,14 @@ public class AutoShootCommand extends Command {
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 
-    if (chair.getEntry("tid").getDouble(0.0) != 7.0 || chair.getEntry("tid").getDouble(0.0) != 4.0) {
-      return;
-    }
+    // if (chair.getEntry("tid").getDouble(0.0) == 0.0) {
+    //   return;
+    // }
 
-    if (txAngle > 2) {
+    if (txAngle > 3.5) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
       Logger.recordOutput("Auto Rotate/Rotating", true);
-    } else if (txAngle < -2) {
+    } else if (txAngle < -3.5) {
       drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
       Logger.recordOutput("Auto Rotate/Rotating", true);
     } else {
@@ -81,7 +81,7 @@ public class AutoShootCommand extends Command {
       targetMPS = 5;
     }
 
-    if (txAngle < 2 && txAngle > -2) {
+    if (txAngle < 3.5 && txAngle > -3.5) {
       shooter.setFlywheelSpeed(targetMPS);
 
       if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
