@@ -31,7 +31,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
-    arm.setArmSetpoint(Constants.ARM_STOW);
+    // arm.setArmSetpoint(Constants.ARM_STOW);
     Leds.getInstance().intaking = true;
   }
 

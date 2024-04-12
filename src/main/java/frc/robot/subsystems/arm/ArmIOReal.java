@@ -40,7 +40,7 @@ public class ArmIOReal implements ArmIO {
         armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.75;
 
         armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -13.2;
+        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -12.5;
 
         // armConfig.Feedback.SensorToMechanismRatio = 50;
 
@@ -75,7 +75,7 @@ public class ArmIOReal implements ArmIO {
 
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armSetpoint = armSetPoint;
-        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23 + 2.6243381847134515;
+        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());

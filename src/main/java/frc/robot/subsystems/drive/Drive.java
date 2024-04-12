@@ -65,6 +65,8 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
+  private final AprilTagFieldLayout aprilTagMap = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -179,28 +181,25 @@ public class Drive extends SubsystemBase {
       gyroInputs.yawPosition.getDegrees(),
       0, 0, 0, 0, 0);
 
-    LimelightHelpers.Results results = LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults;
+    // LimelightHelpers.Results results = LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults;
     LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
     
-    Logger.recordOutput("Vision/Limelight Pose", results.botpose_wpiblue);
+    // Logger.recordOutput("Vision/Limelight Pose", results.botpose_wpiblue);
     Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
 
-    List<Pose3d> tagPoses = new ArrayList<>();
-    for (LimelightTarget_Fiducial tag : results.targets_Fiducials) {
-      tagPoses.add(AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo).getTagPose((int) tag.fiducialID).get());
-    }
+    // List<Pose3d> tagPoses = new ArrayList<>();
+    // for (LimelightTarget_Fiducial tag : results.targets_Fiducials) {
+    //   tagPoses.add(aprilTagMap.getTagPose((int) tag.fiducialID).get());
+    // }
 
-    Logger.recordOutput("Vision/Tags", tagPoses.toArray(Pose3d[]::new));
+    // Logger.recordOutput("Vision/Tags", tagPoses.toArray(Pose3d[]::new));
 
-    // Only run in teleop
-    if (!DriverStation.isAutonomous()) {
       // Only update if yaw velocity is less than 720 degrees / sec
-      if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
-        m_poseEstimator.addVisionMeasurement(
-            mt2Pose.pose,
-            mt2Pose.timestampSeconds);
-      }
+    if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
+      m_poseEstimator.addVisionMeasurement(
+          mt2Pose.pose,
+          mt2Pose.timestampSeconds);
     }
   }
 

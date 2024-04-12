@@ -38,7 +38,7 @@ public class AutoShootCommand extends Command {
     this.intake = intake;
     this.drive = drive;
 
-    addRequirements(shooter, indexer, intake);
+    addRequirements(shooter, indexer, intake, arm);
   }
 
   // Called when the command is initially scheduled.
