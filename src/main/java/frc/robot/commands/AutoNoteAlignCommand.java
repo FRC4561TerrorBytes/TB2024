@@ -59,7 +59,7 @@ public class AutoNoteAlignCommand extends Command {
     if (txAngle < 3.5 && txAngle > -3.5) {
       intake.setIntakeSpeed(Constants.INTAKE_SPEED);
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-      drive.runVelocity(new ChassisSpeeds(-0.5, 0, 0));
+      drive.runVelocity(new ChassisSpeeds(0.5, 0, 0));
     }
   }
 
