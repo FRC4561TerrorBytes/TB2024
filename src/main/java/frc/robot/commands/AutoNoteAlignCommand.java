@@ -14,7 +14,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.Leds;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -24,12 +26,14 @@ public class AutoNoteAlignCommand extends Command {
   private final Drive drive;
   private final Intake intake;
   private final Indexer indexer;
+  private final Arm arm;
   private boolean inRotTol;
 
-  public AutoNoteAlignCommand(Drive drive, Intake intake, Indexer indexer) {
+  public AutoNoteAlignCommand(Drive drive, Intake intake, Indexer indexer, Arm arm) {
     this.drive = drive;
     this.intake = intake;
     this.indexer = indexer;
+    this.arm = arm;
 
     addRequirements(intake, indexer);
   }
@@ -38,6 +42,7 @@ public class AutoNoteAlignCommand extends Command {
   @Override
   public void initialize() {
     LimelightHelpers.setLEDMode_ForceOn(Constants.DRIVER_LIMELIGHT);
+    arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
     Leds.getInstance().autoNoteAlign = true;
     inRotTol = false;
   }
@@ -53,10 +58,10 @@ public class AutoNoteAlignCommand extends Command {
       return;
     }
 
-    if (txAngle > 1) {
+    if (txAngle > 0.4) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
       Logger.recordOutput("Note ALign/Rotating", true);
-    } else if (txAngle < -1) {
+    } else if (txAngle < -0.4) {
       drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
       Logger.recordOutput("Note ALign/Rotating", true);
     } else {
@@ -82,6 +87,6 @@ public class AutoNoteAlignCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.getIntakeBreak();
+    return indexer.noteInIndexer();
   }
 }

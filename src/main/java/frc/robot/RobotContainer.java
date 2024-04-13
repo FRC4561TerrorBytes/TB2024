@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
@@ -231,7 +232,7 @@ public class RobotContainer {
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
-      .whileTrue(new AutoNoteAlignSequential(drive, intake, indexer, arm))
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
