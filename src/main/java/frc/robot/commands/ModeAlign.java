@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.GameMode;
 import frc.robot.Constants.rgbValues;
 import frc.robot.GameMode.Mode;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -18,14 +17,12 @@ public class ModeAlign extends Command {
   private Drive drive;
   private Indexer indexer;
   private Intake intake;
-  private Arm arm;
 
   /** Creates a new ModeAlign. */
-  public ModeAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
+  public ModeAlign(Drive drive, Indexer indexer, Intake intake) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
-    this.arm = arm;
 
     addRequirements(drive);
   }
@@ -41,11 +38,11 @@ public class ModeAlign extends Command {
       if (GameMode.getInstance().getCurrentMode().equals(Mode.SPEAKER)) {
         new FaceSpeaker(drive);
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.AMP)) {
-
+        new AmpDrive(drive);
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.TRAP)) {
 
       } else if (GameMode.getInstance().getCurrentMode().equals(Mode.INTAKING)) {
-        new NoteAlign(drive, indexer, intake, arm);
+        new NoteAlign(drive, indexer, intake);
       } else {
 
       }

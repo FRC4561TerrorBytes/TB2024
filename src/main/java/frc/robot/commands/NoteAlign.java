@@ -4,11 +4,14 @@
 
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.LimelightHelpers.LimelightTarget_Detector;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
@@ -18,14 +21,12 @@ public class NoteAlign extends Command {
   private Drive drive;
   private Indexer indexer;
   private Intake intake;
-  private Arm arm;
 
   /** Creates a new NoteAlign. */
-  public NoteAlign(Drive drive, Indexer indexer, Intake intake, Arm arm) {
+  public NoteAlign(Drive drive, Indexer indexer, Intake intake) {
     this.drive = drive;
     this.indexer = indexer;
     this.intake = intake;
-    this.arm = arm;
 
     addRequirements(drive, indexer, intake);
   }
@@ -33,16 +34,18 @@ public class NoteAlign extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    LimelightHelpers.setPipelineIndex("limelight-test", 1);
+    LimelightHelpers.setPipelineIndex("limelight-driver", 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LimelightResults results = LimelightHelpers.getLatestResults("limelight-test");
+    LimelightResults results = LimelightHelpers.getLatestResults("limelight-driver");
 
     LimelightTarget_Detector[] notes = results.targetingResults.targets_Detector;
     LimelightTarget_Detector closestNote = getClosestNote(notes);
+
+    Logger.recordOutput("NoteAlign/Note Count", notes.length);
 
     double xRequest;
     double yRequest;
@@ -50,37 +53,51 @@ public class NoteAlign extends Command {
     boolean inXTol = false;
     boolean inYTol = false;
 
-    if (closestNote.tx < -0.1) {
-      xRequest = 0.2;
-    } else {
-      xRequest = 0.0;
-      inXTol = true;
+    if (closestNote == null) {
+      System.out.println("\n\n note null :(\n\n");
+      return;
     }
 
-    if (closestNote.ty < -0.1) {
+    if (closestNote.ty > -25) {
       yRequest = 0.2;
-    } else if (closestNote.ty > 0.1) {
-      yRequest = -0.2;
     } else {
       yRequest = 0.0;
       inYTol = true;
     }
 
-    DriveCommands.joystickDrive(drive, () -> xRequest, () -> yRequest, () -> 0.0);
+    Logger.recordOutput("NoteAlign/yRequest", yRequest);
+    Logger.recordOutput("NoteAlign/inYTol", inYTol);
+
+    if (closestNote.tx < -1) {
+      xRequest = 0.2;
+    } else if (closestNote.tx > 1) {
+      xRequest = -0.2;
+    } else {
+      xRequest = 0.0;
+      inXTol = true;
+    }
+
+    Logger.recordOutput("NoteAlign/xRequest", xRequest);
+    Logger.recordOutput("NoteAlign/inXTol", inXTol);
+
+    drive.runVelocity(new ChassisSpeeds(yRequest, xRequest, 0.0));
 
     if (inXTol && inYTol) {
-      new IntakeCommand(intake, indexer, arm);
-      DriveCommands.joystickDrive(drive, () -> 0.2, () -> 0.0, () -> 0.0);
+      intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      drive.runVelocity(new ChassisSpeeds(0.2, 0, 0));
     }
   }
 
   private LimelightTarget_Detector getClosestNote(LimelightTarget_Detector[] noteArray) {
     LimelightTarget_Detector closestNote = null;
+    double closest = -999;
 
     for (LimelightTarget_Detector note : noteArray) {
-      double distance = note.tx;
-      if (distance < closestNote.tx) {
+      double distance = note.ty;
+      if (distance > closest) {
         closestNote = note;
+        closest = note.ty;
       }
     }
     return closestNote;
@@ -90,7 +107,9 @@ public class NoteAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     drive.stop();
-    LimelightHelpers.setPipelineIndex("limelight-test", 0);
+    indexer.stopIndexer();
+    intake.stopIntake();
+    LimelightHelpers.setPipelineIndex("limelight-driver", 1);
   }
 
   // Returns true when the command should end.

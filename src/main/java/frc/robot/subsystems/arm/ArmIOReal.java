@@ -51,12 +51,12 @@ public class ArmIOReal implements ArmIO {
         slot0Configs.kV = 0.3;// 2.82; // A velocity target of 1 rps results in 0.12 V output
         slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
         slot0Configs.kP = 1.8;// 0.0004; // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kI = 0.002;// 0.0005; // no output for integrated error
-        slot0Configs.kD = 0.008;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
+        slot0Configs.kI = 0.015;// 0.0005; // no output for integrated error
+        slot0Configs.kD = 0.02;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
 
         // set Motion Magic settings
         var motionMagicConfigs = armConfig.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 25; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicCruiseVelocity = 40; // Target cruise velocity of 80 rps
         motionMagicConfigs.MotionMagicAcceleration = 60; // Target acceleration of 160 rps/s (0.5 seconds)
 
         m_armMotorLeft.getConfigurator().apply(armConfig);
@@ -75,7 +75,7 @@ public class ArmIOReal implements ArmIO {
 
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armSetpoint = armSetPoint;
-        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23 + 2.6243381847134515;
+        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
@@ -108,7 +108,7 @@ public class ArmIOReal implements ArmIO {
 
     @AutoLogOutput(key = "ArmAbsoluteRotations")
     public double getAbsoluteRotations() {
-        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR + 34.23 + 2.6243381847134515;
+        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
     }
 
     public void nudge(double degrees) {
