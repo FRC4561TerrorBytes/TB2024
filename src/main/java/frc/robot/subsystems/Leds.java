@@ -80,7 +80,7 @@ public class Leds extends SubsystemBase {
 
 
   public Leds() {
-    leds = new AddressableLED(4);
+    leds = new AddressableLED(9);
     buffer = new AddressableLEDBuffer(length);
     leds.setLength(length);
     leds.setData(buffer);
