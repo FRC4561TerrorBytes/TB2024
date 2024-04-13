@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.GameMode;
 import frc.robot.GameMode.Mode;
+import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.indexer.Indexer;
@@ -31,7 +32,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     GameMode.getInstance().setCurrentMode(Mode.INTAKING);
-    arm.setArmSetpoint(Constants.ARM_STOW);
+    arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
     Leds.getInstance().intaking = true;
   }
 

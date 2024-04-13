@@ -79,27 +79,22 @@ public class Shooter extends SubsystemBase {
     private double armOffset = 1.3;
 
     private void setAngleMap() {
-      angleMap.put(Units.inchesToMeters(31), -4.7 + armOffset);
-      angleMap.put(Units.inchesToMeters(39), -5.0 + armOffset);
-      angleMap.put(Units.inchesToMeters(47), -5.7 + armOffset);
-      angleMap.put(Units.inchesToMeters(55), -6.2 + armOffset);
-      angleMap.put(Units.inchesToMeters(62), -7.2 + armOffset);
-      angleMap.put(Units.inchesToMeters(67), -7.3 + armOffset);
-      angleMap.put(Units.inchesToMeters(68), -7.4 + armOffset);
-      angleMap.put(Units.inchesToMeters(70), -7.75 + armOffset);
-      angleMap.put(Units.inchesToMeters(71), -7.8 + armOffset);
-      angleMap.put(Units.inchesToMeters(73), -7.9 + armOffset);
-      angleMap.put(Units.inchesToMeters(78), -8.125 + armOffset);
-      // angleMap.put(Units.inchesToMeters(79), -8.5);
-      angleMap.put(Units.inchesToMeters(80), -8.25 + armOffset);
-      angleMap.put(Units.inchesToMeters(88), -8.75 + armOffset);
-      angleMap.put(Units.inchesToMeters(94), -9.0 + armOffset);
-      angleMap.put(Units.inchesToMeters(98), -9.25 + armOffset);
-      angleMap.put(Units.inchesToMeters(104), -9.35 + armOffset);
-      angleMap.put(Units.inchesToMeters(110), -9.4 + armOffset);
-      angleMap.put(Units.inchesToMeters(112), -9.45 + armOffset);
-      angleMap.put(Units.inchesToMeters(114), -9.6 + armOffset);
-      angleMap.put(Units.inchesToMeters(123), -9.8 + armOffset);
+      angleMap.put(Units.inchesToMeters(41), -3.7);
+      angleMap.put(Units.inchesToMeters(57), -5.1);
+      angleMap.put(Units.inchesToMeters(70), -5.2);
+      angleMap.put(Units.inchesToMeters(83), -6.3);
+      angleMap.put(Units.inchesToMeters(94), -7.0);
+      angleMap.put(Units.inchesToMeters(107), -7.4);
+      angleMap.put(Units.inchesToMeters(119), -7.75);
+      angleMap.put(Units.inchesToMeters(139), -8.0);
+      angleMap.put(Units.inchesToMeters(155), -8.4);
+      angleMap.put(Units.inchesToMeters(170), -8.5);
+      angleMap.put(Units.inchesToMeters(186), -8.8);
+      angleMap.put(Units.inchesToMeters(200), -9.0);
+      angleMap.put(Units.inchesToMeters(222), -9.1);
+      angleMap.put(Units.inchesToMeters(237), -9.2);
+      angleMap.put(Units.inchesToMeters(247), -9.3);
+      angleMap.put(Units.inchesToMeters(285), -9.5);
     }
 
     public double interpolateArmAngle(double distanceMeters) {
@@ -220,8 +215,8 @@ public class Shooter extends SubsystemBase {
     return false;
   }
 
-  public void idleFlywheels() {
-    if (indexer.noteInIndexer()) {
+  public void idleFlywheels(shootPositions armPosition) {
+    if (indexer.noteInIndexer() && !armPosition.equals(shootPositions.AMP)) {
       setFlywheelSpeed(10);
     } else {
       stopFlywheel();

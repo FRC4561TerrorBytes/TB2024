@@ -49,10 +49,10 @@ public class AutoNoteAlignCommand extends Command {
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 
-    if (txAngle > 3.5) {
+    if (txAngle > 1) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
       Logger.recordOutput("Note ALign/Rotating", true);
-    } else if (txAngle < -3.5) {
+    } else if (txAngle < -1) {
       drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
       Logger.recordOutput("Note ALign/Rotating", true);
     } else {

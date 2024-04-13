@@ -96,6 +96,7 @@ public class RobotContainer {
   public static boolean lobbing = false;
 
   public enum shootPositions{
+    STOW(-12, 0.0),
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8, 25.0),
     AMP(7.3, 0.0),
@@ -228,7 +229,7 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
@@ -272,9 +273,8 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
 
     // Stow arm
-    operatorController.povRight().onTrue(new InstantCommand(
-      () -> arm.setArmSetpoint(
-      Constants.ARM_STOW),arm));
+    operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
     
     //Nudge arm up/down
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
