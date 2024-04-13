@@ -176,16 +176,16 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
     // Set robot orientation from gyro not megatag2
-    LimelightHelpers.SetRobotOrientation(
-      Constants.VISION_LIMELIGHT,
-      gyroInputs.yawPosition.getDegrees(),
-      0, 0, 0, 0, 0);
+    // LimelightHelpers.SetRobotOrientation(
+    //   Constants.VISION_LIMELIGHT,
+    //   gyroInputs.yawPosition.getDegrees(),
+    //   0, 0, 0, 0, 0);
 
     // LimelightHelpers.Results results = LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults;
-    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
+    //LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
     
     // Logger.recordOutput("Vision/Limelight Pose", results.botpose_wpiblue);
-    Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
+    //Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
 
     // List<Pose3d> tagPoses = new ArrayList<>();
     // for (LimelightTarget_Fiducial tag : results.targets_Fiducials) {
@@ -195,12 +195,12 @@ public class Drive extends SubsystemBase {
     // Logger.recordOutput("Vision/Tags", tagPoses.toArray(Pose3d[]::new));
 
       // Only update if yaw velocity is less than 720 degrees / sec
-    if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
-      m_poseEstimator.addVisionMeasurement(
-          mt2Pose.pose,
-          mt2Pose.timestampSeconds);
-    }
+    // if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
+    //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
+    //   m_poseEstimator.addVisionMeasurement(
+    //       mt2Pose.pose,
+    //       mt2Pose.timestampSeconds);
+    // }
   }
 
   /**
