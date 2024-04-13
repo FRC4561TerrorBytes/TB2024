@@ -118,6 +118,9 @@ public class Drive extends SubsystemBase {
         });
 
         //m_orchestra.addInstrument(modules[1].getDriveTalon());
+
+    int[] validIDs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIDs);
   }
 
   public void periodic() {
@@ -164,16 +167,16 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
-    // LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.VISION_LIMELIGHT);
-    // Logger.recordOutput("Limelight Pose", LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults.botpose_wpiblue);
-    // // if(limelightMeasurement.tagCount >= 2)
-    // {
-    //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,Units.degreesToRadians(5)));
-    //   m_poseEstimator.addVisionMeasurement(
-    //       limelightMeasurement.pose,
-    //       limelightMeasurement.timestampSeconds);
-    // }
+    LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
+
+    Logger.recordOutput("Vision/mt2 Pose", mt2Pose.pose);
+
+    if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && mt2Pose.tagCount > 0){
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
+      m_poseEstimator.addVisionMeasurement(mt2Pose.pose, mt2Pose.timestampSeconds);
     }
+  }
 
   /**
    * Runs the drive at the desired velocity.
