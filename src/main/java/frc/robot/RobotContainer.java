@@ -32,9 +32,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
@@ -49,7 +51,7 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOReal;  
+import frc.robot.subsystems.indexer.IndexerIOReal;
 import frc.robot.subsystems.indexer.IndexerIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -94,6 +96,7 @@ public class RobotContainer {
   public static boolean lobbing = false;
 
   public enum shootPositions{
+    STOW(-12, 0.0),
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8, 25.0),
     AMP(7.3, 0.0),
@@ -219,17 +222,16 @@ public class RobotContainer {
             () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
-    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(), shooter));
+    shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-  //PANAV CONTROLS9
+  //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper().toggleOnTrue(new IntakeCommand(intake, indexer, arm));
-
-    // Toggle slow mode (default normal)
-    driverController.leftTrigger().onTrue(new InstantCommand(() -> adjustDriveRatio()));
+    driverController.leftBumper()
+      .whileTrue(new AutoNoteAlignSequential(drive, intake, indexer, arm))
+      .toggleOnFalse(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
@@ -246,12 +248,11 @@ public class RobotContainer {
 
     // Auto shoot toggle
     driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
-      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = autoShootToggle)));
+      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    driverController.rightTrigger().onTrue(new InstantCommand(() -> shootEnum = shootPositions.LOB)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))).andThen(new InstantCommand(() -> lobbing = true))).onFalse(new InstantCommand(() -> lobbing = false));
+    driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
@@ -265,13 +266,12 @@ public class RobotContainer {
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
 
     // Stow arm
-    operatorController.povRight().onTrue(new InstantCommand(
-      () -> arm.setArmSetpoint(
-      Constants.ARM_STOW),arm));
+    operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
     
     //Nudge arm up/down
-    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() + 0.25), arm));
-    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getAbsoluteRotations() - 0.25), arm));
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
 
     //Amp angle
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
@@ -302,7 +302,7 @@ public class RobotContainer {
   }
 
   public double getArmAngleDegrees() {
-    Logger.recordOutput("Auto Shoot", autoShootToggle);
+    Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
     return arm.getArmAngleDegrees();
   }
