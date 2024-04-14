@@ -54,6 +54,12 @@ public class AutoNoteAlignCommand extends Command {
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
 
+    if (intake.getIntakeBreak()) {
+      intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      drive.runVelocity(new ChassisSpeeds(2.0, 0, 0));
+    }
+
     if(chair.getEntry("tv").getDouble(0.0) != 1){
       return;
     }
