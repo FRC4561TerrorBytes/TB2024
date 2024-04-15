@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7856981070087494,
-        "y": 4.092954054853979
+        "x": 2.6905572888341873,
+        "y": 4.217553350812114
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8386506205473647,
-        "y": 3.918491059108649
+        "x": 1.0443274835085605,
+        "y": 4.661889714196465
       },
       "isLocked": false,
       "linkedName": "Far Left / Podium"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 5.502078857064002
+        "y": 5.53
       },
       "prevControl": {
-        "x": 2.0,
-        "y": 5.502078857064002
+        "x": 1.6343479004615507,
+        "y": 5.658609813363915
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Center Paths",
+  "folder": "Close Paths",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

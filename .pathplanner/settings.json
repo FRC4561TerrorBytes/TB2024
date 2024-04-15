@@ -4,26 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "5 Note",
-    "78 Note",
-    "Alex Flip",
-    "Center Paths",
-    "Close4",
-    "Cool 8 Note",
-    "Leave",
-    "Left Paths",
-    "Misc",
-    "Tee Hee",
-    "No Turn Paths",
+    "Close Paths",
     "OP AUTO",
-    "Right Paths",
-    "Square",
     "Wide Auto"
   ],
-  "autoFolders": [
-    "AMP Side",
-    "Center",
-    "Source Side"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,

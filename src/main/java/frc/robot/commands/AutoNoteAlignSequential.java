@@ -26,6 +26,6 @@ public class AutoNoteAlignSequential extends SequentialCommandGroup {
     this.indexer = indexer;
     this.arm = arm;
 
-    addCommands(new AutoNoteAlignCommand(drive, intake, indexer).andThen(new IntakeCommand(intake, indexer, arm)));
+    addCommands(new AutoNoteAlignCommand(drive, intake, indexer, arm).andThen(new IntakeCommand(intake, indexer, arm)));
   }
 }

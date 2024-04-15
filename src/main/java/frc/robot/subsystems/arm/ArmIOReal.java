@@ -40,7 +40,7 @@ public class ArmIOReal implements ArmIO {
         armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.75;
 
         armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -13.2;
+        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -12.5;
 
         // armConfig.Feedback.SensorToMechanismRatio = 50;
 

@@ -8,27 +8,38 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6999057245674383,
-        "y": 4.916836807941584
+        "x": 2.8446249331342255,
+        "y": 5.152990587671317
       },
       "isLocked": false,
       "linkedName": "Stage Shoot"
     },
     {
       "anchor": {
-        "x": 2.7856981070087494,
-        "y": 4.092954054853979
+        "x": 2.6905572888341873,
+        "y": 4.217553350812114
       },
       "prevControl": {
-        "x": 1.7800319540301899,
-        "y": 4.603616092769009
+        "x": 1.5846592500986658,
+        "y": 5.0446249106572525
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Far Left / Podium"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": -23.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
