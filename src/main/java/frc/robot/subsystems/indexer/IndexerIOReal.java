@@ -6,6 +6,9 @@ package frc.robot.subsystems.indexer;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -34,6 +37,8 @@ public class IndexerIOReal implements IndexerIO {
         inputs.indexerCurrentAmps = m_indexer.getOutputCurrent();
 
         Leds.getInstance().noteInIndexer = !m_rightLimitSwitch.get() || !m_leftLimitSwitch.get();
+        Logger.recordOutput("LeftLimit",!m_leftLimitSwitch.get());
+        Logger.recordOutput("RightLimit",!m_rightLimitSwitch.get());
 
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
     }

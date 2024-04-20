@@ -275,7 +275,7 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
 
-    //Amp angle
+    //
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
