@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase {
     }
     
     public double getArmAngleDegrees() {
-        return inputs.armRelativeAngleRotations;
+        return (inputs.armRelativeAngleRotations + 12.25) / Constants.ARM_ABSOLUTE_CONVERSION_FACTOR * 360.0;
     }
 
     public void incrementArmAngle(double inc) {

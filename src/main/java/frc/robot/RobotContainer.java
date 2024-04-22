@@ -306,6 +306,7 @@ public class RobotContainer {
   public double getArmAngleDegrees() {
     Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
+    Logger.recordOutput("Test/arm", arm.getArmAngleDegrees());
     return arm.getArmAngleDegrees();
   }
 
