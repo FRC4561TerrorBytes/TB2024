@@ -19,6 +19,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -32,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
@@ -233,7 +237,8 @@ public class RobotContainer {
     // Intake command
     driverController.leftBumper()
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
-      .toggleOnFalse(new IntakeCommand(intake, indexer, arm));
+      .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
+      .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
@@ -253,6 +258,8 @@ public class RobotContainer {
       .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 

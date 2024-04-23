@@ -6,7 +6,11 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -27,7 +31,19 @@ public class AutoNoteAlignCommand extends Command {
   private final Intake intake;
   private final Indexer indexer;
   private final Arm arm;
-  private boolean inRotTol;
+
+  private Command pathfindCommand;
+
+  double camMountHeightMeters = 20.0;
+  double camMountAngleRad = Units.degreesToRadians(10);
+
+  double camVerticalPOVRad = Units.degreesToRadians(48.9);
+  double camHeightPixels = 480.0;
+  double verticalAnglePerPixel = camVerticalPOVRad / camHeightPixels;
+
+  double camHorizontalPOVRad = Units.degreesToRadians(48.9);
+  double camWidthPixels = 480.0;
+  double horizontalAnglePerPixel = camHorizontalPOVRad / camWidthPixels;
 
   public AutoNoteAlignCommand(Drive drive, Intake intake, Indexer indexer, Arm arm) {
     this.drive = drive;
@@ -41,46 +57,46 @@ public class AutoNoteAlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.stop();
     LimelightHelpers.setLEDMode_ForceOn(Constants.DRIVER_LIMELIGHT);
     arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
     Leds.getInstance().autoNoteAlign = true;
-    inRotTol = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
-    NetworkTableEntry tx = chair.getEntry("tx");
-    double txAngle = tx.getDouble(0.0);
+    NetworkTableEntry txp = chair.getEntry("txp");
+    NetworkTableEntry typ = chair.getEntry("typ");
 
-    if (intake.getIntakeBreak()) {
-      intake.setIntakeSpeed(Constants.INTAKE_SPEED);
-      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-      drive.runVelocity(new ChassisSpeeds(2.0, 0, 0));
-    }
+    double txPixels = txp.getDouble(0.0);
+    double tyPixels = typ.getDouble(0.0);
 
-    if(chair.getEntry("tv").getDouble(0.0) != 1){
+    double yDistanceMeters = -camMountHeightMeters / Math.tan(tyPixels * verticalAnglePerPixel - (camHorizontalPOVRad/2) - camMountAngleRad);
+    double rayToGround = Math.sqrt(Math.pow(camMountHeightMeters, 2) + Math.pow(yDistanceMeters, 2));
+    double xDistanceMeters = rayToGround * Math.tan(txPixels * horizontalAnglePerPixel - (camHorizontalPOVRad / 2));
+
+    Logger.recordOutput("Note Align", xDistanceMeters);
+    Logger.recordOutput("Note Align", yDistanceMeters);
+
+    Translation2d robotTranslation = drive.getPose().getTranslation();
+    Translation2d noteTranslation = robotTranslation.plus(new Translation2d(xDistanceMeters + 0.25, yDistanceMeters));
+
+    Pose2d notePose = new Pose2d(noteTranslation, drive.getRotation());
+
+    pathfindCommand = AutoBuilder.pathfindToPose(
+      notePose, 
+      new PathConstraints(1.5, 2.0, 540, 540));
+
+    if (chair.getEntry("tv").getDouble(0.0) != 1.0) {
       return;
     }
 
-    if (txAngle > 0.4) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
-      Logger.recordOutput("Note ALign/Rotating", true);
-    } else if (txAngle < -0.4) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
-      Logger.recordOutput("Note ALign/Rotating", true);
-    } else {
-      inRotTol = true;
-      Logger.recordOutput("Note ALign/Rotating", false);
-      drive.stop();
-    }
+    intake.setIntakeSpeed(Constants.INTAKE_SPEED);
+    indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
 
-    if (inRotTol) {
-      intake.setIntakeSpeed(Constants.INTAKE_SPEED);
-      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-      drive.runVelocity(new ChassisSpeeds(2.0, 0, 0));
-    }
+    pathfindCommand.schedule();
   }
 
   // Called once the command ends or is interrupted.
@@ -88,11 +104,15 @@ public class AutoNoteAlignCommand extends Command {
   public void end(boolean interrupted) {
     Leds.getInstance().autoNoteAlign = false;
     LimelightHelpers.setLEDMode_ForceOff(Constants.DRIVER_LIMELIGHT);
+
+    intake.stopIntake();
+    indexer.stopIndexer();
+    drive.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return indexer.noteInIndexer();
+    return pathfindCommand.isFinished();
   }
 }
