@@ -76,7 +76,7 @@ public class Shooter extends SubsystemBase {
             SignalLogger.start();
     }
 
-    private double armOffset = 1.3;
+    private double armOffset = 0.35;
 
     private void setAngleMap() {
       angleMap.put(Units.inchesToMeters(41), -3.7);
@@ -98,7 +98,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double interpolateArmAngle(double distanceMeters) {
-      return angleMap.get(distanceMeters);
+      return angleMap.get(distanceMeters) + armOffset;
     }
 
     @Override

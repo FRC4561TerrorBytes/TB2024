@@ -46,6 +46,7 @@ public class AutoShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //drive.stop();
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.VISION_LIMELIGHT);
     NetworkTableEntry tx = chair.getEntry("tx");
     double txAngle = tx.getDouble(0.0);
@@ -73,16 +74,13 @@ public class AutoShootCommand extends Command {
       Logger.recordOutput("Auto Rotate/Rotating", true);
     } else {
       Logger.recordOutput("Auto Rotate/Rotating", false);
-      drive.stop();
+      drive.stopWithX();
     }
 
     double distanceMeters = Units.inchesToMeters(shooter.findFlatDistanceWithVision());
     double armAngleInterpolated = shooter.interpolateArmAngle(distanceMeters);
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
-    if(RobotContainer.lobbing){
-      targetMPS = 5;
-    }
 
     if (txAngle < 3.5 && txAngle > -3.5) {
       shooter.setFlywheelSpeed(targetMPS);
@@ -102,7 +100,9 @@ public class AutoShootCommand extends Command {
     shooter.stopFlywheel();
     indexer.stopIndexer();
     intake.stopIntake();
-    arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
+    if(!interrupted){
+      arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
+    }
     Leds.getInstance().autoShootCommand = false;
     Logger.recordOutput("Auto Rotate/Rotating", false);
   }
