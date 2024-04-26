@@ -41,8 +41,8 @@ public class AutoNoteAlignCommand extends Command {
   double camHeightPixels = 480.0;
   double verticalAnglePerPixel = camVerticalPOVRad / camHeightPixels;
 
-  double camHorizontalPOVRad = Units.degreesToRadians(48.9);
-  double camWidthPixels = 480.0;
+  double camHorizontalPOVRad = Units.degreesToRadians(62.5);
+  double camWidthPixels = 640.0;
   double horizontalAnglePerPixel = camHorizontalPOVRad / camWidthPixels;
 
   public AutoNoteAlignCommand(Drive drive, Intake intake, Indexer indexer, Arm arm) {
@@ -77,8 +77,8 @@ public class AutoNoteAlignCommand extends Command {
     double rayToGround = Math.sqrt(Math.pow(camMountHeightMeters, 2) + Math.pow(yDistanceMeters, 2));
     double xDistanceMeters = rayToGround * Math.tan(txPixels * horizontalAnglePerPixel - (camHorizontalPOVRad / 2));
 
-    Logger.recordOutput("Note Align", xDistanceMeters);
-    Logger.recordOutput("Note Align", yDistanceMeters);
+    Logger.recordOutput("Note Align/X Distance", xDistanceMeters);
+    Logger.recordOutput("Note Align/Y Distance", yDistanceMeters);
 
     Translation2d robotTranslation = drive.getPose().getTranslation();
     Translation2d noteTranslation = robotTranslation.plus(new Translation2d(xDistanceMeters + 0.25, yDistanceMeters));
