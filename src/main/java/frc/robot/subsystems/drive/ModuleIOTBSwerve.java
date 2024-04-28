@@ -167,8 +167,11 @@ public class ModuleIOTBSwerve implements ModuleIO{
             driveAppliedVolts,
             driveCurrent,
             turnAbsolutePosition);
-        reportStatusCodeFault(statusCode, errorLabel); //Report status code to AdvantageAlerts
-    
+            
+        //Report status code to AdvantageAlerts
+        reportStatusCodeFault(statusCode, errorLabel); 
+        reportSparkMaxFault(errorLabel, turnSparkMax);
+
         inputs.drivePositionRad =
             Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
         inputs.driveVelocityRadPerSec =
@@ -188,7 +191,6 @@ public class ModuleIOTBSwerve implements ModuleIO{
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
         inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
 
-        turnSparkMax.getFault(FaultID.kCANRX);
     }
 
     public void setDriveVoltage(double volts) {
