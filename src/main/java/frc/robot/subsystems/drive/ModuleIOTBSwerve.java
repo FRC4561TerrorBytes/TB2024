@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.FaultID;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -25,19 +27,19 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
-import frc.robot.subsystems.SelfCheck.SelfCheckingPhoenixMotor;
+import frc.robot.util.Alert;
+import frc.robot.util.Alert.AlertType;
 
-/** Add your docs here. */
+/** IO Layer implementation for TalonFX drive/ NEO turn on SDS MK4i L2 swerve modules */
 public class ModuleIOTBSwerve implements ModuleIO{
 
-    private static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
+    private static final double DRIVE_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); //L2 gearing
     private static final double TURN_GEAR_RATIO = 150.0 / 7.0;
 
     private final TalonFX driveTalon;
     private final CANSparkMax turnSparkMax;
     private final CANcoder cancoder;
 
-    private final SelfCheckingPhoenixMotor driveTrainSelfCheck;
     private final String errorLabel;
 
     private final StatusSignal<Double> drivePosition;
@@ -45,6 +47,12 @@ public class ModuleIOTBSwerve implements ModuleIO{
     private final StatusSignal<Double> driveAppliedVolts;
     private final StatusSignal<Double> driveCurrent;
     private final StatusSignal<Double> turnAbsolutePosition;
+
+    private Alert driveMotorDisconnectAlert;
+    private Alert driveMotorFirmwareAlert;
+    private Alert turnMotorDisconnectAlert;
+    private Alert turnMotorBrownoutAlert;
+    private Alert turnMotorCurrentAlert;
 
     private final RelativeEncoder turnRelativeEncoder;
 
@@ -137,14 +145,7 @@ public class ModuleIOTBSwerve implements ModuleIO{
         turnRelativeEncoder.setMeasurementPeriod(10);
         turnRelativeEncoder.setAverageDepth(2);
 
-        //initialize and Log Self Check
-        driveTrainSelfCheck = new SelfCheckingPhoenixMotor(errorLabel, driveTalon);
-        driveTrainSelfCheck.checkForFaults();
-        // driveTrainSelfCheck.faultsInArray();
-        // Logger.recordOutput(errorLabel, driveTrainSelfCheck.faultsInArray());
-
         turnSparkMax.setCANTimeout(0);
-
         turnSparkMax.burnFlash();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -160,12 +161,13 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
     @Override
     public void updateInputs(ModuleIOInputs inputs) {
-        BaseStatusSignal.refreshAll(
+        StatusCode statusCode = BaseStatusSignal.refreshAll(
             drivePosition,
             driveVelocity,
             driveAppliedVolts,
             driveCurrent,
             turnAbsolutePosition);
+        reportStatusCodeFault(statusCode, errorLabel); //Report status code to AdvantageAlerts
     
         inputs.drivePositionRad =
             Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
@@ -182,8 +184,11 @@ public class ModuleIOTBSwerve implements ModuleIO{
         inputs.turnVelocityRadPerSec =
             Units.rotationsPerMinuteToRadiansPerSecond(turnRelativeEncoder.getVelocity())
                 / TURN_GEAR_RATIO;
+
         inputs.turnAppliedVolts = turnSparkMax.getAppliedOutput() * turnSparkMax.getBusVoltage();
         inputs.turnCurrentAmps = turnSparkMax.getOutputCurrent();
+
+        turnSparkMax.getFault(FaultID.kCANRX);
     }
 
     public void setDriveVoltage(double volts) {
@@ -207,5 +212,67 @@ public class ModuleIOTBSwerve implements ModuleIO{
 
     public TalonFX getDriveTalon() {
         return driveTalon;
+    }
+
+    /**
+     * Report faults to AdvantageAlerts plugin, only report issues with CAN connection, configs, firmware
+     * @param statusCode
+     * @param moduleLabel
+     */
+    public void reportStatusCodeFault(StatusCode statusCode, String moduleLabel) {
+        
+        switch (statusCode){
+            case EcuIsNotPresent: case CouldNotRetrieveV6Firmware: case InvalidParamValue: 
+                driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": is not present on CAN", AlertType.ERROR);
+                driveMotorDisconnectAlert.set(true);
+                break;
+            case NoConfigs : 
+                driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": Does not have valid config", AlertType.ERROR);
+                driveMotorDisconnectAlert.set(true);
+                break;
+            case RxTimeout:
+                driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": CAN frame not recieved/too stale", AlertType.ERROR);
+                driveMotorDisconnectAlert.set(true);
+            case ApiTooOld: case AppTooOld: case FirmwareTooNew: case FirmwareVersNotCompatible: case FirmVersionCouldNotBeRetrieved: 
+                driveMotorFirmwareAlert = new Alert("Drive Motors", moduleLabel + ": has incorrect firmware", AlertType.WARNING);
+                driveMotorFirmwareAlert.set(true);
+                break;
+            case OK:
+                driveMotorFirmwareAlert.set(false);
+                driveMotorDisconnectAlert.set(false);
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    /**
+     * Report faults with SparkMax API
+     * @param moduleLabel
+     * @param turnSparkMax
+     */
+    public void reportSparkMaxFault(String moduleLabel, CANSparkMax turnSparkMax){
+        // you should probably just call getFaults and do a bit mask to not repeatedly call the spark max API
+        boolean CANfault = turnSparkMax.getFault(FaultID.kCANRX) || turnSparkMax.getFault(FaultID.kCANTX);
+        boolean brownout = turnSparkMax.getFault(FaultID.kBrownout);
+        boolean motorFault = turnSparkMax.getFault(FaultID.kMotorFault) || turnSparkMax.getFault(FaultID.kOvercurrent);
+
+        if (CANfault){
+            turnMotorDisconnectAlert = new Alert("Turn Motors", moduleLabel +": has CAN Rx/Tx fault", AlertType.ERROR);
+            turnMotorDisconnectAlert.set(true);
+        } else if (brownout){
+            turnMotorBrownoutAlert = new Alert("Turn Motors", moduleLabel +": has brownout fault", AlertType.WARNING);
+            turnMotorBrownoutAlert.set(true);
+        } else if (motorFault){
+            turnMotorCurrentAlert = new Alert("Turn Motors", moduleLabel +": has motor/overcurrent fault", AlertType.WARNING);
+            turnMotorCurrentAlert.set(true);
+        } else {
+            turnMotorDisconnectAlert.set(false);
+            turnMotorBrownoutAlert.set(false);
+            turnMotorCurrentAlert.set(false);
+        }
+
     }
 }
