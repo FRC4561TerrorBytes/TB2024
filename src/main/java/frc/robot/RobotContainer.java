@@ -49,6 +49,8 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
+import frc.robot.subsystems.drive.VisionIO;
+import frc.robot.subsystems.drive.VisionIOLimelight;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -133,6 +135,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
+                new VisionIOLimelight(),
                 new ModuleIOTBSwerve(0),
                 new ModuleIOTBSwerve(1),
                 new ModuleIOTBSwerve(2),
@@ -149,6 +152,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
@@ -164,6 +168,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},

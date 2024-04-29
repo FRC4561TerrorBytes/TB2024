@@ -16,7 +16,6 @@ package frc.robot.subsystems.drive;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.Orchestra;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -25,7 +24,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -47,9 +45,6 @@ import frc.robot.util.LocalADStarAK;
 
 
 public class Drive extends SubsystemBase {
-
-  private PIDController pidController = new PIDController(0.0000000001, 0.0, 0.0);
-
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
@@ -59,6 +54,10 @@ public class Drive extends SubsystemBase {
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
+  private final VisionIO visionIO;
+  private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
@@ -82,11 +81,13 @@ public class Drive extends SubsystemBase {
 
   public Drive(
       GyroIO gyroIO,
+      VisionIO visionIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
+    this.visionIO = visionIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -126,6 +127,10 @@ public class Drive extends SubsystemBase {
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+
+    visionIO.updateInputs(visionInputs);
+    Logger.processInputs("Vision/Limelight", visionInputs);
+
     for (var module : modules) {
       module.periodic();
     }
@@ -168,13 +173,10 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
 
-    Logger.recordOutput("Vision/mt2 Pose", mt2Pose.pose);
-
-    if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && mt2Pose.tagCount > 0){
+    if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
       m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
-      m_poseEstimator.addVisionMeasurement(mt2Pose.pose, mt2Pose.timestampSeconds);
+      m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
     }
   }
 
