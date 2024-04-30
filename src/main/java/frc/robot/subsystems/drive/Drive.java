@@ -172,6 +172,8 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
+    Logger.recordOutput("Vision/Tags", visionInputs.seenTags);
+
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
     if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
