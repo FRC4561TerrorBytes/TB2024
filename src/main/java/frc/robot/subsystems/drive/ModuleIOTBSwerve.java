@@ -28,6 +28,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.util.Alert;
+import frc.robot.util.AlertHandler;
 import frc.robot.util.Alert.AlertType;
 
 /**
@@ -132,14 +133,7 @@ public class ModuleIOTBSwerve implements ModuleIO {
         turnSparkMax.enableVoltageCompensation(12.0);
         turnSparkMax.setIdleMode(IdleMode.kBrake);
 
-        REVLibError turnCurrent = turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
-        boolean turnSparkMaxNoLongerGood;
-        if (turnCurrent != REVLibError.kOk) {
-            turnSparkMaxNoLongerGood = true;
-        } else {
-            turnSparkMaxNoLongerGood = false;
-        }
-        Logger.recordOutput("selfCheck/turnSparkMax{errorLabel}", !turnSparkMaxNoLongerGood);
+        turnSparkMax.setSmartCurrentLimit(Constants.TURN_CURRENT_LIMIT);
 
         // Return initial status signals for Phoenix6 devices
         drivePosition = driveTalon.getPosition();
@@ -179,8 +173,8 @@ public class ModuleIOTBSwerve implements ModuleIO {
                 turnAbsolutePosition);
 
         // Report status code to AdvantageAlerts
-        reportStatusCodeFault(drivePosition.getStatus(), moduleLabel);
-        reportSparkMaxFault(moduleLabel, turnSparkMax);
+        AlertHandler.reportStatusCodeFault(drivePosition.getStatus(), moduleLabel, driveMotorDisconnectAlert, driveMotorFirmwareAlert);
+        AlertHandler.reportSparkMaxFault(moduleLabel, turnSparkMax, turnMotorDisconnectAlert, turnMotorCurrentAlert);
 
         // Drive motor inputs
         inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
@@ -229,72 +223,4 @@ public class ModuleIOTBSwerve implements ModuleIO {
         return driveTalon;
     }
 
-    /**
-     * Report faults to AdvantageAlerts plugin, only report issues with CAN
-     * connection, configs, firmware
-     * 
-     * @param statusCode
-     * @param moduleLabel
-     */
-    public void reportStatusCodeFault(StatusCode statusCode, String moduleLabel) {
-        // TODO: Better examine status codes thrown from common errors
-
-
-        switch (statusCode) {
-            case EcuIsNotPresent:
-            case CouldNotRetrieveV6Firmware:
-            case InvalidParamValue:
-                // This case covers the TalonFX not existing, not sure it captures every
-                // disconnect
-                driveMotorDisconnectAlert.set(true);
-                break;
-            case NoConfigs:
-                // This case should trigger when the TalonFX reboots improperly when code does
-                // not reboot, such as brownouts
-
-                driveMotorDisconnectAlert.set(true);
-                break;
-            case RxTimeout:
-                // This should cover issues with CAN latency while connection is good, and catch
-                // disconnects
-                driveMotorDisconnectAlert.set(true);
-            case ApiTooOld:
-            case AppTooOld:
-            case FirmwareTooNew:
-            case FirmwareVersNotCompatible:
-            case FirmVersionCouldNotBeRetrieved:
-                // Old firmware and issues with firmware getting corrupted
-                driveMotorFirmwareAlert.set(true);
-                break;
-            case OK:
-                // This case covers the TalonFX reporting no issues
-                driveMotorFirmwareAlert.set(false);
-                driveMotorDisconnectAlert.set(false);
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    /**
-     * Report faults with SparkMax API
-     * 
-     * @param moduleLabel
-     * @param turnSparkMax
-     */
-    public void reportSparkMaxFault(String moduleLabel, CANSparkMax turnSparkMax) {
-        
-        boolean CANfault = turnSparkMax.getFault(FaultID.kCANRX) || turnSparkMax.getFault(FaultID.kCANTX) || turnSparkMax.getFault(FaultID.kBrownout); // may be                                                                                                  // wiring
-        boolean motorFault = turnSparkMax.getFault(FaultID.kMotorFault) || turnSparkMax.getFault(FaultID.kOvercurrent);
-
-        if (CANfault ) {
-            turnMotorDisconnectAlert.set(true);
-        }  else if (motorFault) {
-            turnMotorCurrentAlert.set(true);
-        } else {
-            turnMotorDisconnectAlert.set(false);
-            turnMotorCurrentAlert.set(false);
-        }
-    }
 }
