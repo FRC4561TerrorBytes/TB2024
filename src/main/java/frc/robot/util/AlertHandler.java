@@ -14,7 +14,6 @@ public class AlertHandler {
      * @param moduleLabel
      */
     public static void reportStatusCodeFault(StatusCode statusCode, String moduleLabel, Alert disconnectAlert, Alert firmwareAlert) {
-        // TODO: Better examine status codes thrown from common errors
 
         switch (statusCode) {
             case EcuIsNotPresent:
@@ -36,7 +35,7 @@ public class AlertHandler {
                 disconnectAlert.set(true);
                 break;
             case CanMessageStale: 
-                // 
+                // Catches most CAN disconnects while the TalonFX is booted up
                 disconnectAlert.set(true);
                 break;
             case ApiTooOld:
@@ -72,7 +71,6 @@ public class AlertHandler {
 
         if (CANfault || faults != 0) {
             disconnectAlert.set(true);
-            System.out.println("Error on: "+moduleLabel);
         }  else if (motorFault) {
             currentAlert.set(true);
         } else {
