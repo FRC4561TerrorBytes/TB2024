@@ -54,7 +54,6 @@ public class ModuleIOTBSwerve implements ModuleIO {
     private Alert driveMotorDisconnectAlert;
     private Alert driveMotorFirmwareAlert;
     private Alert turnMotorDisconnectAlert;
-    private Alert turnMotorBrownoutAlert;
     private Alert turnMotorCurrentAlert;
 
     private final RelativeEncoder turnRelativeEncoder;
@@ -65,6 +64,7 @@ public class ModuleIOTBSwerve implements ModuleIO {
 
     /**
      * Create swerve module object, using hardware specific constants
+     * 
      * @param index
      */
     public ModuleIOTBSwerve(int index) {
@@ -104,6 +104,12 @@ public class ModuleIOTBSwerve implements ModuleIO {
             default:
                 throw new RuntimeException("Invalid module index");
         }
+
+        //Declare alerts 
+        driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": is not present on CAN", AlertType.ERROR);
+        driveMotorFirmwareAlert = new Alert("Drive Motors", moduleLabel + ": has incorrect firmware",AlertType.WARNING);
+        turnMotorDisconnectAlert = new Alert("Turn Motors", moduleLabel + ": is not present on CAN", AlertType.ERROR);
+        turnMotorCurrentAlert = new Alert("Turn Motors", moduleLabel + ": has motor/overcurrent fault",AlertType.WARNING);
 
         cancoder.getConfigurator().apply(new CANcoderConfiguration());
 
@@ -150,7 +156,8 @@ public class ModuleIOTBSwerve implements ModuleIO {
         turnSparkMax.setCANTimeout(0);
         turnSparkMax.burnFlash();
 
-        // Set update frequencies for TalonFX status signals, position at 2x frequency of other data
+        // Set update frequencies for TalonFX status signals, position at 2x frequency
+        // of other data
         BaseStatusSignal.setUpdateFrequencyForAll(
                 100.0, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -175,13 +182,13 @@ public class ModuleIOTBSwerve implements ModuleIO {
         reportStatusCodeFault(drivePosition.getStatus(), moduleLabel);
         reportSparkMaxFault(moduleLabel, turnSparkMax);
 
-        //Drive motor inputs
+        // Drive motor inputs
         inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;
         inputs.driveVelocityRadPerSec = Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / DRIVE_GEAR_RATIO;
         inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
         inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
-        //Turn motor / CANcoder positions
+        // Turn motor / CANcoder positions
         inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
                 .minus(absoluteEncoderOffset);
         inputs.turnPosition = Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
@@ -232,28 +239,24 @@ public class ModuleIOTBSwerve implements ModuleIO {
     public void reportStatusCodeFault(StatusCode statusCode, String moduleLabel) {
         // TODO: Better examine status codes thrown from common errors
 
+
         switch (statusCode) {
             case EcuIsNotPresent:
             case CouldNotRetrieveV6Firmware:
             case InvalidParamValue:
                 // This case covers the TalonFX not existing, not sure it captures every
                 // disconnect
-                driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": is not present on CAN",
-                        AlertType.ERROR);
                 driveMotorDisconnectAlert.set(true);
                 break;
             case NoConfigs:
                 // This case should trigger when the TalonFX reboots improperly when code does
                 // not reboot, such as brownouts
-                driveMotorDisconnectAlert = new Alert("Drive Motors", moduleLabel + ": Does not have valid config",
-                        AlertType.ERROR);
+
                 driveMotorDisconnectAlert.set(true);
                 break;
             case RxTimeout:
                 // This should cover issues with CAN latency while connection is good, and catch
                 // disconnects
-                driveMotorDisconnectAlert = new Alert("Drive Motors",
-                        moduleLabel + ": CAN frame not recieved/too stale", AlertType.ERROR);
                 driveMotorDisconnectAlert.set(true);
             case ApiTooOld:
             case AppTooOld:
@@ -261,8 +264,6 @@ public class ModuleIOTBSwerve implements ModuleIO {
             case FirmwareVersNotCompatible:
             case FirmVersionCouldNotBeRetrieved:
                 // Old firmware and issues with firmware getting corrupted
-                driveMotorFirmwareAlert = new Alert("Drive Motors", moduleLabel + ": has incorrect firmware",
-                        AlertType.WARNING);
                 driveMotorFirmwareAlert.set(true);
                 break;
             case OK:
@@ -283,24 +284,16 @@ public class ModuleIOTBSwerve implements ModuleIO {
      * @param turnSparkMax
      */
     public void reportSparkMaxFault(String moduleLabel, CANSparkMax turnSparkMax) {
-        // you should probably just call getFaults and do a bit mask to not repeatedly call the spark max API
-        boolean CANfault = turnSparkMax.getFault(FaultID.kCANRX) || turnSparkMax.getFault(FaultID.kCANTX); // may be worthwhile to have separate Rx/Tx faults to help debug wiring
-        boolean brownout = turnSparkMax.getFault(FaultID.kBrownout);
+        
+        boolean CANfault = turnSparkMax.getFault(FaultID.kCANRX) || turnSparkMax.getFault(FaultID.kCANTX) || turnSparkMax.getFault(FaultID.kBrownout); // may be                                                                                                  // wiring
         boolean motorFault = turnSparkMax.getFault(FaultID.kMotorFault) || turnSparkMax.getFault(FaultID.kOvercurrent);
 
-        if (CANfault) {
-            turnMotorDisconnectAlert = new Alert("Turn Motors", moduleLabel + ": has CAN Rx/Tx fault", AlertType.ERROR);
+        if (CANfault ) {
             turnMotorDisconnectAlert.set(true);
-        } else if (brownout) {
-            turnMotorBrownoutAlert = new Alert("Turn Motors", moduleLabel + ": has brownout fault", AlertType.WARNING);
-            turnMotorBrownoutAlert.set(true);
-        } else if (motorFault) {
-            turnMotorCurrentAlert = new Alert("Turn Motors", moduleLabel + ": has motor/overcurrent fault",
-                    AlertType.WARNING);
+        }  else if (motorFault) {
             turnMotorCurrentAlert.set(true);
         } else {
             turnMotorDisconnectAlert.set(false);
-            turnMotorBrownoutAlert.set(false);
             turnMotorCurrentAlert.set(false);
         }
     }

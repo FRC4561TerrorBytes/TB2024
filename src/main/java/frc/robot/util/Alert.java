@@ -98,6 +98,10 @@ public class Alert {
     this.text = text;
   }
 
+  public boolean getState(){
+    return this.active;
+  }
+
   private static class SendableAlerts implements Sendable {
     public final List<Alert> alerts = new ArrayList<>();
 
