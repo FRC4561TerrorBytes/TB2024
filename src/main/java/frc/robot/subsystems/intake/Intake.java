@@ -39,6 +39,8 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
         Logger.processInputs("Intake/IO", inputs);
+
+      
     }
 
     public void setIntakeSpeed(double velocity){
