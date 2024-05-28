@@ -2,6 +2,9 @@ package frc.robot.util;
 
 import com.ctre.phoenix6.StatusCode;
 import com.revrobotics.CANSparkBase.FaultID;
+
+import frc.robot.subsystems.Leds;
+
 import com.revrobotics.CANSparkMax;
 
 public class AlertHandler {
@@ -33,10 +36,12 @@ public class AlertHandler {
                 // This should cover issues with CAN latency while connection is good, and catch
                 // disconnects
                 disconnectAlert.set(true);
+                Leds.getInstance().canDisconnect = true;
                 break;
             case CanMessageStale: 
                 // Catches most CAN disconnects while the TalonFX is booted up
                 disconnectAlert.set(true);
+                Leds.getInstance().canDisconnect = true;
                 break;
             case ApiTooOld:
             case AppTooOld:
@@ -48,6 +53,7 @@ public class AlertHandler {
                 break;
             case OK:
                 // This case covers the TalonFX reporting no issues
+                // Leds.getInstance().canDisconnect = false;
                 firmwareAlert.set(false);
                 disconnectAlert.set(false);
                 break;
@@ -71,9 +77,11 @@ public class AlertHandler {
 
         if (CANfault || faults != 0) {
             disconnectAlert.set(true);
+            Leds.getInstance().canDisconnect = true;
         }  else if (motorFault) {
             currentAlert.set(true);
         } else {
+            // Leds.getInstance().canDisconnect = false;
             disconnectAlert.set(false);
             currentAlert.set(false);
         }

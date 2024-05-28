@@ -45,6 +45,7 @@ public class Leds extends SubsystemBase {
   public boolean autoShootCommand = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
+  public boolean canDisconnect = false;
 
   private Optional<Alliance> alliance = Optional.empty();
   private Color allianceColor = Color.kBlack;
@@ -144,7 +145,9 @@ public class Leds extends SubsystemBase {
       if (lastEnabledAuto && Timer.getFPGATimestamp() - lastEnabledTime < autoFadeMaxTime) {
         // Auto fade
         solid(1.0 - ((Timer.getFPGATimestamp() - lastEnabledTime) / autoFadeTime), Color.kGreen);
-       } else if (prideLeds) {
+      } else if (canDisconnect) {
+        strobe(Color.kDarkRed, strobeSlowDuration);
+      }  else if (prideLeds) {
         // Pride stripes
         stripes(
             List.of(
