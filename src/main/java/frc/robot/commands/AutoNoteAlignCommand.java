@@ -33,7 +33,6 @@ public class AutoNoteAlignCommand extends Command {
 
   // TODO: refine deadzone
   double deadzone = 20;
-  double rotDeg = 20;
 
   boolean inRotTol;
 
@@ -61,7 +60,7 @@ public class AutoNoteAlignCommand extends Command {
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
 
-    if (chair.getEntry("tv").getDouble(0.0) != 1.0) {return;}
+    if (chair.getEntry("tv").getDouble(0.0) != 1.0 || intake.getIntakeBreak()) {return;}
     
     NetworkTableEntry tx = chair.getEntry("tx");
     double txDeg = tx.getDouble(0.0);
