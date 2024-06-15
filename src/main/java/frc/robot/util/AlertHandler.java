@@ -49,11 +49,12 @@ public class AlertHandler {
             case FirmwareVersNotCompatible:
             case FirmVersionCouldNotBeRetrieved:
                 // Old firmware and issues with firmware getting corrupted
+                Leds.getInstance().firmwareAlert = true;
                 firmwareAlert.set(true);
                 break;
             case OK:
                 // This case covers the TalonFX reporting no issues
-                // Leds.getInstance().canDisconnect = false;
+                Leds.getInstance().clearAlerts();
                 firmwareAlert.set(false);
                 disconnectAlert.set(false);
                 break;
@@ -79,9 +80,10 @@ public class AlertHandler {
             disconnectAlert.set(true);
             Leds.getInstance().canDisconnect = true;
         }  else if (motorFault) {
+            Leds.getInstance().currentAlert = true;
             currentAlert.set(true);
         } else {
-            // Leds.getInstance().canDisconnect = false;
+            Leds.getInstance().clearAlerts();
             disconnectAlert.set(false);
             currentAlert.set(false);
         }
