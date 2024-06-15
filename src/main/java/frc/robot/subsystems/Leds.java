@@ -163,7 +163,7 @@ public class Leds extends SubsystemBase {
         } else if (firmwareAlert) {
           strobe(Section.STATIC, Color.kBlue, strobeSlowDuration);
         } else if (currentAlert) {
-          strobe(Section.STATIC, Color.kLightYellow, strobeSlowDuration);
+          strobe(Section.STATIC, Color.kGold, strobeSlowDuration);
         }
       } else if (prideLeds) {
         // Pride stripes
