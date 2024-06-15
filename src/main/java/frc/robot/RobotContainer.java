@@ -25,13 +25,16 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
@@ -229,6 +232,10 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
+    Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
+
+    noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
+
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
@@ -358,5 +365,11 @@ public class RobotContainer {
       // .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     }
     return null;
+  }
+
+  private Command driverRumbleCommand() {
+    return Commands.startEnd(
+      () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);},
+      () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);});
   }
 }
