@@ -322,6 +322,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the maximum angular speed in radians per sec. */
+  @AutoLogOutput(key = "Drive/Max Angular Speed Rad per s")
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
   }

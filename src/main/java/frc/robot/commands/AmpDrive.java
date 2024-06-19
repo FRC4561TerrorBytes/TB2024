@@ -26,27 +26,26 @@ public class AmpDrive extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    Pose2d ampPose = new Pose2d(14.75, 7.70, Rotation2d.fromDegrees(90));
+  public void initialize() {
+    Pose2d ampPose = new Pose2d(14.75, 7.70, Rotation2d.fromDegrees(270));
 
     AllianceFlipUtil.apply(ampPose);
 
     pathCommand = AutoBuilder.pathfindToPose(
       ampPose, 
       new PathConstraints(2, 2, 540, 540));
+  }
 
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     pathCommand.schedule();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pathCommand.cancel();
-    drive.stop();
+    pathCommand.end(interrupted);
   }
 
   // Returns true when the command should end.
