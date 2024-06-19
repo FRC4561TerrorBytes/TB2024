@@ -101,6 +101,10 @@ public class Shooter extends SubsystemBase {
       return angleMap.get(distanceMeters) + armOffset;
     }
 
+    public double regressionArmAngle(double distanceMeters) {
+      return -3.0225 - 3.9907 * Math.log(distanceMeters);
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

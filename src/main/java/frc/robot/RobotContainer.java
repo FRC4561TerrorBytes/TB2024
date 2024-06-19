@@ -34,9 +34,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.AmpDrive;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
-import frc.robot.commands.AutoNoteAlignSequential;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
@@ -184,7 +184,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
-    NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignSequential(drive, intake, indexer, arm));
+    NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
 
     NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
     NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
@@ -240,7 +240,8 @@ public class RobotContainer {
     // Intake command
     driverController.leftBumper()
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
-      .toggleOnFalse(new IntakeCommand(intake, indexer, arm));
+      .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
+      .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
@@ -260,6 +261,8 @@ public class RobotContainer {
       .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
@@ -313,6 +316,7 @@ public class RobotContainer {
   public double getArmAngleDegrees() {
     Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
+    Logger.recordOutput("Test/arm", arm.getArmAngleDegrees());
     return arm.getArmAngleDegrees();
   }
 
