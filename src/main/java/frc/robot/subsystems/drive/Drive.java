@@ -35,6 +35,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,7 +59,13 @@ public class Drive extends SubsystemBase {
   private final VisionIO visionIO;
   private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
 
+  private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
+  private double prevXAccel = 0.0;
+  private double prevYAccel = 0.0;
+  private int collisions = 0;
 
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
@@ -169,15 +176,35 @@ public class Drive extends SubsystemBase {
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 
-    // Apply odometry update
-    m_poseEstimator.update(rawGyroRotation, modulePositions);
+    // Get current acceleration values
+    double XAccel = accelerometer.getX();
+    double YAccel = accelerometer.getY();
 
+    // Calculate jerk by subtracting current accel with previous and dividing by loop time
+    double xJerk = (XAccel - prevXAccel) / 0.2;
+    double yJerk = (YAccel - prevYAccel) / 0.2;
+
+    // Set Previous accel for next loop
+    prevXAccel = XAccel;
+    prevYAccel = YAccel;
+
+    // Discard data if collision is detected
+    if (xJerk > -2 && yJerk > -2) {
+      m_poseEstimator.update(rawGyroRotation, modulePositions);
+    } else {
+      collisions++;
+    }
+
+    Logger.recordOutput("Vision/Collisions Detected", collisions);
+    
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
     if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
       m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
       m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
     }
+
+    // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
   }
 
   /**
