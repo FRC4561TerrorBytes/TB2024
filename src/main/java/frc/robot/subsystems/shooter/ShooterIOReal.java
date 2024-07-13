@@ -84,7 +84,7 @@ public class ShooterIOReal implements ShooterIO {
         position = m_leftFlywheel.getPosition();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-                50.0, velocity);
+                100.0, velocity);
         BaseStatusSignal.setUpdateFrequencyForAll(50,
                 current,
                 voltage,
