@@ -13,6 +13,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants;
+import frc.robot.util.Alert;
+import frc.robot.util.Alert.AlertType;
+import frc.robot.util.AlertHandler;
 
 /** Add your docs here. */
 public class ShooterIOReal implements ShooterIO {
@@ -21,6 +24,9 @@ public class ShooterIOReal implements ShooterIO {
     private TalonFX m_rightFlywheel = new TalonFX(Constants.RIGHT_FLYWHEEL);
 
     private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
+    private Alert shooterDisconnectAlert;
+    private Alert shooterFirmwareAlert;
+
 
     public ShooterIOReal() {
         //constructor go brrrrrrr
@@ -61,6 +67,10 @@ public class ShooterIOReal implements ShooterIO {
         m_rightFlywheel.getConfigurator().apply(rightConfig);
 
         m_rightFlywheel.setControl(new Follower(Constants.LEFT_FLYWHEEL, true));
+
+        shooterDisconnectAlert = new Alert("Shooter Alert", "Shooter motor is not present on CAN", AlertType.ERROR);
+        shooterFirmwareAlert = new Alert("Shooter Alert", "Shooter motor has motor/overcurrent fault", AlertType.WARNING);
+
     }
 
     public void updateInputs(ShooterIOInputs inputs) {
@@ -68,6 +78,9 @@ public class ShooterIOReal implements ShooterIO {
         inputs.shooterCurrentAmps = m_leftFlywheel.getSupplyCurrent().getValueAsDouble();
         inputs.shooterVoltage = m_leftFlywheel.getMotorVoltage().getValueAsDouble();
         inputs.motorPosition = m_leftFlywheel.getPosition().getValueAsDouble();
+        
+        AlertHandler.reportStatusCodeFault(m_leftFlywheel.getPosition().getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
+
     }
 
     public void setVoltage(double volts){
