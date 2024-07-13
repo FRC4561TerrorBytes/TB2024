@@ -6,6 +6,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
@@ -26,6 +28,11 @@ public class ShooterIOReal implements ShooterIO {
     private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
     private Alert shooterDisconnectAlert;
     private Alert shooterFirmwareAlert;
+
+    private final StatusSignal<Double> position;
+    private final StatusSignal<Double> velocity;
+    private final StatusSignal<Double> voltage;
+    private final StatusSignal<Double> current;
 
 
     public ShooterIOReal() {
@@ -70,16 +77,34 @@ public class ShooterIOReal implements ShooterIO {
 
         shooterDisconnectAlert = new Alert("Shooter Alert", "Shooter motor is not present on CAN", AlertType.ERROR);
         shooterFirmwareAlert = new Alert("Shooter Alert", "Shooter motor has motor/overcurrent fault", AlertType.WARNING);
+        
+        velocity = m_leftFlywheel.getVelocity();
+        current = m_leftFlywheel.getSupplyCurrent();
+        voltage = m_leftFlywheel.getMotorVoltage();
+        position = m_leftFlywheel.getPosition();
 
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                50.0, velocity);
+        BaseStatusSignal.setUpdateFrequencyForAll(50,
+                current,
+                voltage,
+                position);
+        m_leftFlywheel.optimizeBusUtilization();
     }
 
     public void updateInputs(ShooterIOInputs inputs) {
+        BaseStatusSignal.refreshAll(
+                velocity,
+                current,
+                voltage,
+                position);
+
         inputs.shooterVelocityMPS = (m_leftFlywheel.getVelocity().getValueAsDouble())*Constants.FLYWHEEL_CIRCUMFERENCE;
         inputs.shooterCurrentAmps = m_leftFlywheel.getSupplyCurrent().getValueAsDouble();
         inputs.shooterVoltage = m_leftFlywheel.getMotorVoltage().getValueAsDouble();
         inputs.motorPosition = m_leftFlywheel.getPosition().getValueAsDouble();
-        
-        AlertHandler.reportStatusCodeFault(m_leftFlywheel.getPosition().getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
+
+        AlertHandler.reportStatusCodeFault(position.getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
 
     }
 
