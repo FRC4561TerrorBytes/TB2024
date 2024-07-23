@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -24,13 +26,13 @@ public class VisionIOLimelight implements VisionIO {
         inputs.mt2TagCount = mt2Pose.tagCount;
         inputs.mt2AvgDistance = mt2Pose.avgTagDist;
 
-        Pose3d[] tagPoses = {};
+        ArrayList<Pose3d> tagPoses = new ArrayList<Pose3d>();
         int i = 0;
         for (RawFiducial tag : mt2Pose.rawFiducials) {
-            tagPoses[i] = aprilTagMap.getTagPose(tag.id).get();
+            tagPoses.add(aprilTagMap.getTagPose(tag.id).get());
             i++;
         }
 
-        inputs.seenTags = tagPoses;
+        inputs.seenTags = tagPoses.toArray(Pose3d[]::new);
     } 
 }
