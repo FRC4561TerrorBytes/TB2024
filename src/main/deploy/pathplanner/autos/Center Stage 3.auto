@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7234175476497451,
-      "y": 6.532388453950674
+      "x": 1.2261314366957867,
+      "y": 5.55
     },
-    "rotation": 60.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,38 +14,51 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "ShootSubwoofer"
+                  "pathName": "Far Left Note"
                 }
               },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.2
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 6.0
+            "name": "AutoShoot"
           }
         },
         {
@@ -55,13 +68,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "OP Skip Amp"
+                  "pathName": "Center from left"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
+                  "name": "Intake"
                 }
               }
             ]
@@ -72,15 +85,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "OP Auto Skip Amp p2"
+                  "waitTime": 0.5
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
+                  "name": "Intake"
                 }
               }
             ]
@@ -89,24 +102,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
+            "name": "AutoShoot"
           }
         }
       ]
     }
   },
-  "folder": "AMP Side",
+  "folder": null,
   "choreoAuto": false
 }

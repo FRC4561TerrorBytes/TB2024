@@ -14,23 +14,23 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "ShootSubwoofer"
+                  "pathName": "Far Left Note"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.2
+                  "name": "Intake"
                 }
               }
             ]
@@ -41,21 +41,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Far Right Note"
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spin Flywheels"
                 }
               }
             ]
@@ -64,29 +58,23 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmPodium"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "ShootSubwoofer"
+                  "pathName": "Center from left"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 0.5
+                  "name": "Intake"
                 }
               }
             ]
@@ -97,21 +85,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Center from right"
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spin Flywheels"
                 }
               }
             ]
@@ -120,54 +102,42 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmCenter"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "ShootCenter"
+                  "pathName": "Right from center"
                 }
               },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Left from center"
+                  "waitTime": 1.0
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Spin Flywheels"
                 }
               }
             ]
@@ -176,31 +146,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmPodium"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootSubwoofer"
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         }
       ]
     }
   },
-  "folder": "Center",
+  "folder": null,
   "choreoAuto": false
 }

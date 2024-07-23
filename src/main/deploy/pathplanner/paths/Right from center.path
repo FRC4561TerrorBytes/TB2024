@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 5.502078857064002
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8545089614352266,
-        "y": 5.522967652022252
+        "x": 1.3794008067164314,
+        "y": 5.390436211502415
       },
       "isLocked": false,
       "linkedName": "CenterNote"
@@ -20,8 +20,8 @@
         "y": 6.85152474630649
       },
       "prevControl": {
-        "x": 2.3657792806679763,
-        "y": 6.72619197655698
+        "x": 1.81645296742235,
+        "y": 6.402814154341707
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Left Paths",
+  "folder": "Close Paths",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

@@ -5,8 +5,9 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** Add your docs here. */
@@ -16,17 +17,24 @@ public class ArmIOSim implements ArmIO {
     private double armAppliedVolts = 0.0;
     private double armSetpoint = 0.0;
 
-    private DCMotorSim armMotorSim = new DCMotorSim(DCMotor.getFalcon500(1), 50, 0.025);
+    private SimpleMotorFeedforward armFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+    private PIDController armFeedback = new PIDController(6.0, 0.0, 2.0);
+
+    private DCMotorSim armMotorSim = new DCMotorSim(DCMotor.getFalcon500(2), 1, 0.025);
 
     public void updateInputs(ArmIOInputs inputs) {
         armMotorSim.update(LOOP_PERIOD_SECS);
 
-        inputs.armAbsoluteAngleRotations = Units.radiansToDegrees(armMotorSim.getAngularPositionRad());
+        inputs.armRelativeAngleRotations = armMotorSim.getAngularPositionRotations();
         inputs.armVelocityRadPerSec = armMotorSim.getAngularVelocityRadPerSec();
         inputs.armAppliedVolts = armAppliedVolts;
         inputs.armCurrentAmps = Math.abs(armMotorSim.getCurrentDrawAmps());
 
         inputs.armSetpoint = armSetpoint;
+
+        setArmVoltage(
+            armFeedforward.calculate(inputs.armVelocityRadPerSec)
+              + armFeedback.calculate(inputs.armRelativeAngleRotations, inputs.armSetpoint));
     } 
 
     public void setArmVoltage(double volts) {
@@ -36,6 +44,10 @@ public class ArmIOSim implements ArmIO {
 
     public void setArmSetpoint(double setpoint) {
         armSetpoint = setpoint;
+    }
+
+    public double getArmEncoderRotation() {
+        return armMotorSim.getAngularPositionRotations();
     }
 
     public void incrementArmAngle(double inc) {

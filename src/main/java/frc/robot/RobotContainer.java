@@ -25,14 +25,18 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AutoNoteAlignSequential;
+import frc.robot.commands.AmpDrive;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
@@ -182,21 +186,15 @@ public class RobotContainer {
 
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
-    NamedCommands.registerCommand("Print Test", new InstantCommand(() -> System.out.println("Path is Completed")));
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
-    NamedCommands.registerCommand("ShootSubwoofer", new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER));
-    NamedCommands.registerCommand("ShootCenter", new ShootCommand(shooter, indexer, intake, arm, shootPositions.CENTER_AUTO_NOTE));
-    NamedCommands.registerCommand("ShootStage", new ShootCommand(shooter, indexer, intake, arm, shootPositions.STAGE));
-    NamedCommands.registerCommand("ArmSubwoofer", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SUBWOOFER.getShootAngle())));
-    NamedCommands.registerCommand("ArmCenter", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.CENTER_AUTO_NOTE.getShootAngle())));
-    NamedCommands.registerCommand("ArmWing", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.SOURCE_SIDE_AUTO.getShootAngle())));
-    NamedCommands.registerCommand("ArmStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle())));
-    NamedCommands.registerCommand("ArmPodium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle())));
-    NamedCommands.registerCommand("ArmOPAUTO", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() - 1.0)));
-    NamedCommands.registerCommand("ArmOPAUTOStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() - 0.75)));
-    NamedCommands.registerCommand("ArmWideAutoStage", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STAGE.getShootAngle() + 1)));
-    NamedCommands.registerCommand("ArmClose4Podium", new InstantCommand(() -> arm.setArmSetpoint(shootPositions.PODIUM.getShootAngle() + 0.75)));
+    NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
+    NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
+
+    NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
+    NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
+    NamedCommands.registerCommand("SabotageShooter", new RunCommand(() -> shooter.setFlywheelSpeed(5), shooter));
+
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -239,11 +237,16 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
+    Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
+
+    noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
+
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
-      .whileTrue(new AutoNoteAlignSequential(drive, intake, indexer, arm))
-      .toggleOnFalse(new IntakeCommand(intake, indexer, arm));
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
+      .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
+      .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
@@ -263,6 +266,8 @@ public class RobotContainer {
       .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
@@ -285,7 +290,7 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
 
-    //Amp angle
+    //
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
@@ -316,6 +321,7 @@ public class RobotContainer {
   public double getArmAngleDegrees() {
     Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
+    Logger.recordOutput("Test/arm", arm.getArmAngleDegrees());
     return arm.getArmAngleDegrees();
   }
 
@@ -368,5 +374,11 @@ public class RobotContainer {
       // .beforeStarting(new InstantCommand(() -> intake.setBarAngle(Constants.INTAKE_LOW_POSITION)));
     }
     return null;
+  }
+
+  private Command driverRumbleCommand() {
+    return Commands.startEnd(
+      () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);},
+      () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);});
   }
 }

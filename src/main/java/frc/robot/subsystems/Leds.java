@@ -45,6 +45,10 @@ public class Leds extends SubsystemBase {
   public boolean autoShootCommand = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
+  public boolean canDisconnect = false;
+  public boolean firmwareAlert = false;
+  public boolean currentAlert = false;
+  public boolean staticOn = false;
 
   private Optional<Alliance> alliance = Optional.empty();
   private Color allianceColor = Color.kBlack;
@@ -56,6 +60,7 @@ public class Leds extends SubsystemBase {
   //Led IO
   private final AddressableLED leds;
   private final AddressableLEDBuffer buffer;
+
   private final Notifier loadingNotifier;
 
   //Constants
@@ -80,16 +85,17 @@ public class Leds extends SubsystemBase {
 
 
   public Leds() {
-    leds = new AddressableLED(4);
+    leds = new AddressableLED(9);
     buffer = new AddressableLEDBuffer(length);
     leds.setLength(length);
     leds.setData(buffer);
     leds.start();
+
     loadingNotifier =
       new Notifier(
         () -> {
           synchronized (this) {
-            breath(Color.kWhite, Color.kBlack, System.currentTimeMillis() / 1000.0);
+            breath(Section.FULL, Color.kWhite, Color.kBlack, System.currentTimeMillis() / 1000.0);
             leds.setData(buffer);
           }
         });
@@ -136,17 +142,33 @@ public class Leds extends SubsystemBase {
     // Stop loading notifier if running
     loadingNotifier.stop();
 
+    if (canDisconnect || firmwareAlert || currentAlert) {
+      staticOn = true;
+    } else {
+      staticOn = false;
+    }
+
     // Select LED mode
-    solid(Color.kBlack); // Default off
+    solid(Section.FULL, Color.kBlack); // Default off
     if (estopped) {
-      solid(Color.kRed);
+      solid(Section.FULL, Color.kRed);
     } else if (DriverStation.isDisabled()) {
       if (lastEnabledAuto && Timer.getFPGATimestamp() - lastEnabledTime < autoFadeMaxTime) {
         // Auto fade
         solid(1.0 - ((Timer.getFPGATimestamp() - lastEnabledTime) / autoFadeTime), Color.kGreen);
-       } else if (prideLeds) {
+      } else if (staticOn) {
+        wave(Section.NONSTATIC, allianceColor, secondaryDisabledColor, waveAllianceCycleLength, waveAllianceDuration);
+        if (canDisconnect) {
+          strobe(Section.STATIC, Color.kDarkRed, strobeSlowDuration);
+        } else if (firmwareAlert) {
+          strobe(Section.STATIC, Color.kBlue, strobeSlowDuration);
+        } else if (currentAlert) {
+          strobe(Section.STATIC, Color.kGold, strobeSlowDuration);
+        }
+      } else if (prideLeds) {
         // Pride stripes
         stripes(
+          Section.FULL,
             List.of(
                 Color.kBlack,
                 Color.kRed,
@@ -166,38 +188,38 @@ public class Leds extends SubsystemBase {
         buffer.setLED(staticLength, allianceColor);
       } else {
         // Default pattern
-        wave(allianceColor, secondaryDisabledColor, waveAllianceCycleLength, waveAllianceDuration);
+        wave(Section.FULL, allianceColor, secondaryDisabledColor, waveAllianceCycleLength, waveAllianceDuration);
       }
     } else if (DriverStation.isAutonomous()) {
-        wave(Color.kDarkGreen, Color.kHotPink, waveSlowCycleLength, waveSlowDuration);
+        wave(Section.FULL, Color.kDarkGreen, Color.kHotPink, waveSlowCycleLength, waveSlowDuration);
         if (autoFinished) {
           double fullTime = (double) length / waveFastCycleLength * waveFastDuration;
           solid((Timer.getFPGATimestamp() - autoFinishedTime) / fullTime, Color.kGreen);
         }
       } else { // Enabled
         if (autoNoteAlign) {
-          strobe(Color.kDarkOrange, strobeSlowDuration);
+          strobe(Section.FULL, Color.kDarkOrange, strobeSlowDuration);
         } else if (intaking) {
-          strobe(Color.kDodgerBlue, strobeSlowDuration);
+          strobe(Section.FULL, Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
           solid(1.0 - (txAngle / autoShootStartAngle), Color.kPurple);
         } else if (autoShoot && (id == 7.0 || id == 4.0)) {
-          rainbow(rainbowCycleLength, rainbowDuration);
+          rainbow(Section.FULL, rainbowCycleLength, rainbowDuration);
         } else if (autoShoot && (id != 7.0 || id != 4.0)) {
-          strobe(Color.kRed, strobeSlowDuration);
+          strobe(Section.FULL, Color.kRed, strobeSlowDuration);
         } else if (noteInIndexer) {
-          solid(Color.kOrangeRed);
+          solid(Section.FULL, Color.kOrangeRed);
         } else if (noteInIntake) {
-          solid(Color.kLawnGreen);
+          solid(Section.FULL, Color.kLawnGreen);
         }
       }
 
     leds.setData(buffer);
   }
 
-  private void solid(Color color) {
+  private void solid(Section section, Color color) {
     if (color != null) {
-      for (int i = 0; i < length; i++) {
+      for (int i = section.start(); i < section.end(); i++) {
         buffer.setLED(i, color);
       }
     }
@@ -209,42 +231,42 @@ public class Leds extends SubsystemBase {
     }
   }
 
-  private void strobe(Color c1, Color c2, double duration) {
+  private void strobe(Section section, Color c1, Color c2, double duration) {
     boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
-    solid(c1On ? c1 : c2);
+    solid(section, c1On ? c1 : c2);
   }
 
-  private void strobe(Color color, double duration) {
-    strobe(color, Color.kBlack, duration);
+  private void strobe(Section section, Color color, double duration) {
+    strobe(section, color, Color.kBlack, duration);
   }
 
-  private void breath(Color c1, Color c2) {
-    breath(c1, c2, Timer.getFPGATimestamp());
+  private void breath(Section section, Color c1, Color c2) {
+    breath(section, c1, c2, Timer.getFPGATimestamp());
   }
 
-  private void breath(Color c1, Color c2, double timestamp) {
+  private void breath(Section section, Color c1, Color c2, double timestamp) {
     double x = ((timestamp % breathDuration) / breathDuration) * 2.0 * Math.PI;
     double ratio = (Math.sin(x) + 1.0) / 2.0;
     double red = (c1.red * (1 - ratio)) + (c2.red * ratio);
     double green = (c1.green * (1 - ratio)) + (c2.green * ratio);
     double blue = (c1.blue * (1 - ratio)) + (c2.blue * ratio);
-    solid(new Color(red, green, blue));
+    solid(section, new Color(red, green, blue));
   }
 
-  private void rainbow(double cycleLength, double duration) {
+  private void rainbow(Section section, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() / duration) % 1.0)) * 180.0;
     double xDiffPerLed = 180.0 / cycleLength;
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < section.end(); i++) {
       x += xDiffPerLed;
       x %= 180.0;
       buffer.setHSV(i, (int) x, 255, 255);
     }
   }
 
-  private void wave(Color c1, Color c2, double cycleLength, double duration) {
+  private void wave(Section section, Color c1, Color c2, double cycleLength, double duration) {
     double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
     double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < section.end(); i++) {
       x += xDiffPerLed;
       double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
       if (Double.isNaN(ratio)) {
@@ -260,13 +282,53 @@ public class Leds extends SubsystemBase {
     }
   }
 
-  private void stripes(List<Color> colors, int length, double duration) {
+  private void stripes(Section section, List<Color> colors, int length, double duration) {
     int offset = (int) (Timer.getFPGATimestamp() % duration / duration * length * colors.size());
-    for (int i = 0; i < length; i++) {
+    for (int i = section.start(); i < section.end(); i++) {
       int colorIndex =
           (int) (Math.floor((double) (i - offset) / length) + colors.size()) % colors.size();
       colorIndex = colors.size() - 1 - colorIndex;
       buffer.setLED(i, colors.get(colorIndex));
     }
   }
+
+  public void clearAlerts() {
+    currentAlert = false;
+    firmwareAlert = false;
+    canDisconnect = false;
+  }
+
+  public static enum Section {
+    STATIC,
+    NONSTATIC,
+    FULL;
+
+    private int start() {
+      switch (this) {
+        case STATIC:
+          return length - staticLength; 
+        case NONSTATIC:
+          return 0;
+        case FULL:
+          return 0;   
+        default:
+          return 0;
+      }
+    }
+
+    private int end() {
+      switch (this) {
+        case STATIC:
+          return length;
+        case NONSTATIC:
+          return length - staticLength;
+        case FULL:
+          return length;      
+        default:
+          return length;
+      }
+    }
+
+  }
+
 }

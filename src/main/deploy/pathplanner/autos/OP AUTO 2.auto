@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.77430354290908,
-      "y": 6.537032333323926
+      "x": 0.7660709411924591,
+      "y": 6.53
     },
     "rotation": 60.0
   },
@@ -14,32 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootSubwoofer"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.2
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -49,53 +24,41 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "OP Skip Amp"
+                  "pathName": "OP Auto p1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
+                  "name": "Intake"
                 }
               }
             ]
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ArmOPAUTO"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootCenter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
+            "name": "AutoShoot"
           }
         },
         {
@@ -105,44 +68,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of OP Auto p2"
+                  "pathName": "OP Auto p2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmOPAUTOStage"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShootStage"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
+                  "name": "Intake"
                 }
               }
             ]
@@ -153,9 +85,15 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
                 "type": "named",
                 "data": {
-                  "name": "Spin Flywheels"
+                  "name": "Intake"
                 }
               }
             ]
@@ -164,24 +102,56 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmOPAUTOStage"
+            "name": "AutoShoot"
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.5
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OP Auto p3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootStage"
+            "name": "AutoShoot"
           }
         }
       ]
     }
   },
-  "folder": "AMP Side",
+  "folder": null,
   "choreoAuto": false
 }

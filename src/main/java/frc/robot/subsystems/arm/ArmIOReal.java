@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -12,6 +13,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
+import frc.robot.util.Alert;
+import frc.robot.util.AlertHandler;
+import frc.robot.util.Alert.AlertType;
 
 public class ArmIOReal implements ArmIO {
     private double armSetPoint = 0.0;
@@ -21,6 +25,12 @@ public class ArmIOReal implements ArmIO {
 
     // create a Motion Magic request, voltage output
     private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
+    private Alert armLeftMotorDisconnectAlert;
+    private Alert armLeftMotorCurrentAlert; 
+
+    private Alert armRightMotorDisconnectAlert;
+    private Alert armRightMotorCurrentAlert; 
 
     public ArmIOReal() {
         encoder = new DutyCycleEncoder(0);
@@ -40,7 +50,7 @@ public class ArmIOReal implements ArmIO {
         armConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 11.75;
 
         armConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -13.2;
+        armConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -12.5;
 
         // armConfig.Feedback.SensorToMechanismRatio = 50;
 
@@ -50,9 +60,9 @@ public class ArmIOReal implements ArmIO {
         slot0Configs.kS = 0.28;// 0.25; // Add 0.25 V output to overcome static friction
         slot0Configs.kV = 0.3;// 2.82; // A velocity target of 1 rps results in 0.12 V output
         slot0Configs.kA = 0.0; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0Configs.kP = 1.8;// 0.0004; // A position error of 2.5 rotations results in 12 V output
-        slot0Configs.kI = 0.015;// 0.0005; // no output for integrated error
-        slot0Configs.kD = 0.02;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
+        slot0Configs.kP = 5.75;// 0.0004; // A position error of 2.5 rotations results in 12 V output
+        slot0Configs.kI = 0.7;// 0.0005; // no output for integrated error
+        slot0Configs.kD = 0.15;// 0.0003; // A velocity error of 1 rps results in 0.1 V output
 
         // set Motion Magic settings
         var motionMagicConfigs = armConfig.MotionMagic;
@@ -65,11 +75,16 @@ public class ArmIOReal implements ArmIO {
         m_armMotorLeft.setInverted(true);
 
         m_armMotorRight.setControl(new Follower(Constants.ARM_MOTOR_LEFT, true));
-
         // m_armMotorLeft.setPosition(getAbsoluteRotation());
         // m_armMotorRight.setPosition(getAbsoluteRotation());
 
          m_armMotorLeft.setPosition(getAbsoluteRotations());
+
+        armLeftMotorDisconnectAlert = new Alert("Arm Alert", "Arm left motor is not present on CAN", AlertType.ERROR);
+        armLeftMotorCurrentAlert = new Alert("Arm Alert", "Arm left motor has motor/overcurrent fault", AlertType.WARNING);
+
+        armRightMotorDisconnectAlert = new Alert("Arm Alert", "Arm right motor is not present on CAN", AlertType.ERROR);
+        armRightMotorCurrentAlert = new Alert("Arm Alert", "Arm right motor has motor/overcurrent fault", AlertType.WARNING);    
     }
 
 
@@ -82,6 +97,13 @@ public class ArmIOReal implements ArmIO {
         Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue().booleanValue());
         Logger.recordOutput("Arm/Absoulte Encoder Connected", encoder.isConnected());
         Logger.recordOutput("Arm/Raw Absolute Angle", encoder.getAbsolutePosition());
+
+        StatusCode leftCode = m_armMotorLeft.getAcceleration().getStatus();
+        AlertHandler.reportStatusCodeFault(leftCode, "Arm Alerts", armLeftMotorDisconnectAlert, armLeftMotorCurrentAlert);
+        
+        StatusCode rightCode = m_armMotorLeft.getAcceleration().getStatus();
+        AlertHandler.reportStatusCodeFault(rightCode, "Arm Alerts", armRightMotorDisconnectAlert, armRightMotorCurrentAlert);
+
     }
 
     public void seedEncoders() {

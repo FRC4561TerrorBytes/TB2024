@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.502078857064002
+        "x": 1.7449183616315946,
+        "y": 6.314843398917567
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9203306782681935,
-        "y": 5.098651336903814
+        "x": 2.189296230444312,
+        "y": 6.525338178881486
       },
       "isLocked": false,
-      "linkedName": "CenterNote"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7856981070087494,
-        "y": 4.092954054853979
+        "x": 2.9026396514331485,
+        "y": 6.993104356579084
       },
       "prevControl": {
-        "x": 1.7856981070087494,
-        "y": 4.092954054853979
+        "x": 2.5752033270448305,
+        "y": 6.782609576615164
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far Left / Podium"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 540.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 0.9710219310790633,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "No Turn Paths",
+  "folder": null,
   "previewStartingState": {
-    "rotation": -179.14348577613555,
+    "rotation": 11.11304053594836,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

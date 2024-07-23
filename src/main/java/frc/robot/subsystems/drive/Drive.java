@@ -13,6 +13,9 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -23,6 +26,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -93,12 +98,17 @@ public class Drive extends SubsystemBase {
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
+
     this.gyroIO = gyroIO;
     this.visionIO = visionIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
     modules[3] = new Module(brModuleIO, 3);
+
+    // Take tags that are out of tolerance out of this list
+    int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIds);
 
     // Configure AutoBuilder for PathPlanner
     AutoBuilder.configureHolonomic(
@@ -326,6 +336,7 @@ public class Drive extends SubsystemBase {
   }
 
   /** Returns the maximum angular speed in radians per sec. */
+  @AutoLogOutput(key = "Drive/Max Angular Speed Rad per s")
   public double getMaxAngularSpeedRadPerSec() {
     return MAX_ANGULAR_SPEED;
   }

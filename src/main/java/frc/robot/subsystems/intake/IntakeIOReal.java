@@ -18,12 +18,18 @@ import com.revrobotics.REVLibError;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Leds;
+import frc.robot.util.Alert;
+import frc.robot.util.AlertHandler;
+import frc.robot.util.Alert.AlertType;
 
 /** Add your docs here. */
 public class IntakeIOReal implements IntakeIO{
 
     private final CANSparkMax m_frontIntake = new CANSparkMax(Constants.FRONT_INTAKE_MOTOR, MotorType.kBrushless);
     private final DigitalInput beamBreak = new DigitalInput(2);
+
+    private Alert intakeMotorDisconnectAlert;
+    private Alert intakeMotorCurrentAlert;
 
       public IntakeIOReal() {
 
@@ -55,7 +61,11 @@ public class IntakeIOReal implements IntakeIO{
         m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 50);
         m_frontIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 50);
 
-        m_frontIntake.burnFlash();       
+        m_frontIntake.burnFlash();   
+        
+        intakeMotorDisconnectAlert = new Alert("Intake Alert", "Intake motor is not present on CAN", AlertType.ERROR);
+        intakeMotorCurrentAlert = new Alert("Intake Alert", "Intake motor has motor/overcurrent fault", AlertType.WARNING);
+
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
@@ -64,6 +74,8 @@ public class IntakeIOReal implements IntakeIO{
         inputs.noteInIntake = !beamBreak.get();
 
         Leds.getInstance().noteInIntake = !beamBreak.get();
+
+        AlertHandler.reportSparkMaxFault("Intake Alert", m_frontIntake, intakeMotorDisconnectAlert, intakeMotorCurrentAlert);
     };
 
     public void setIntakeSpeed(double velocity) {

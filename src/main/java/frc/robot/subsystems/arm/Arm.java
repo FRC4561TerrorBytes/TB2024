@@ -6,8 +6,14 @@ package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -15,28 +21,20 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase {
     private ArmIO io;
     private ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
+    
+    public MechanismLigament2d arm;
+    public MechanismLigament2d shooter;
 
-    private SimpleMotorFeedforward armFeedforward;
-    public PIDController armFeedback; 
+    Mechanism2d mech = new Mechanism2d(4, 4);
+
+    MechanismRoot2d root = mech.getRoot("base", 2, 0);
 
     public Arm(ArmIO io) {
         this.io = io;
 
-        switch (Constants.currentMode) {
-        case REAL:
-        case REPLAY:
-            armFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
-            armFeedback = new PIDController(0.5, 0, 0.0);
-            break;
-        case SIM:
-            armFeedforward = new SimpleMotorFeedforward(0.0, 0.35);
-            armFeedback = new PIDController(0.4, 0, 0.0075);
-            break;
-        default:
-            armFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
-            armFeedback = new PIDController(0.0, 0.0, 0.0);
-            break;
-        }
+        arm = root.append(new MechanismLigament2d("arm", 0.324, 0, 6, new Color8Bit(Color.kPurple)));
+        shooter = arm.append(new MechanismLigament2d("shooter", 0.118, 120, 4, new Color8Bit(Color.kHotPink)));
+        Logger.recordOutput("Mech 2d", mech);
     }
 
     public void runArmWithVoltage(double volts) {
@@ -52,7 +50,7 @@ public class Arm extends SubsystemBase {
     }
     
     public double getArmAngleDegrees() {
-        return inputs.armRelativeAngleRotations;
+        return (inputs.armRelativeAngleRotations + 12.25) / Constants.ARM_ABSOLUTE_CONVERSION_FACTOR * 360.0;
     }
 
     public void incrementArmAngle(double inc) {
@@ -88,5 +86,13 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Arm/IO", inputs);
+
+        arm.setAngle(getArmAngleDegrees());
+
+        Pose3d actualArmPose = new Pose3d(-0.025, 0, 0.605, new Rotation3d(Units.degreesToRadians(getArmAngleDegrees()), 0, Units.degreesToRadians(90)));
+        Pose3d requestedArmPose = new Pose3d(-0.025, 0, 0.605, new Rotation3d(Units.degreesToRadians(((inputs.armSetpoint + 12.25) / Constants.ARM_ABSOLUTE_CONVERSION_FACTOR * 360.0)), 0, Units.degreesToRadians(90)));
+    
+        Logger.recordOutput("Poses/Actual Arm", actualArmPose);
+        Logger.recordOutput("Poses/Requested Arn", requestedArmPose);
     }
 }

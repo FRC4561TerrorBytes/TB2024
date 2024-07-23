@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 9.1,
-        "y": 2.7
+        "x": 8.104510650826528,
+        "y": 7.448815277678062
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6672039600003385,
-        "y": 1.5562647239038547
+        "x": 6.70054546759925,
+        "y": 7.175822047606091
       },
       "isLocked": false,
-      "linkedName": "Sternpops note 1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.1480420763979895,
-        "y": 2.09
+        "x": 4.555598659890908,
+        "y": 6.4445901813418836
       },
       "prevControl": {
-        "x": 5.416882856557777,
-        "y": 1.1513147270732498
+        "x": 5.598822789094511,
+        "y": 6.941827850401545
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Wide Auto Shot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -34.49052289033597,
+    "rotation": 20.22485943116806,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Wide Auto",
+  "folder": "Note Align Testing",
   "previewStartingState": {
-    "rotation": 20.323136829662914,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

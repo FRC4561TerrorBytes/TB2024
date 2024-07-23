@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2796798990272578,
-      "y": 5.498863634306841
+      "x": 1.2601803825935456,
+      "y": 5.518363150740554
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ArmSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "pathName": "Note Align Test"
           }
         },
         {
@@ -30,13 +24,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootSubwoofer"
+                  "name": "AutoIntake"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.2
+                  "waitTime": 2.0
                 }
               }
             ]
@@ -45,6 +39,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Tesint",
   "choreoAuto": false
 }
