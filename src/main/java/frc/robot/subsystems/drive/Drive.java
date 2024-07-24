@@ -13,9 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -28,7 +25,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -64,6 +60,9 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+  private boolean[] turnCANDisconnect = new boolean[4];
+  private boolean[] driveCANDisconnect = new boolean[4];
+
 
   private final AprilTagFieldLayout aprilTagMap = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
@@ -175,32 +174,6 @@ public class Drive extends SubsystemBase {
     // Apply odometry update
     m_poseEstimator.update(rawGyroRotation, modulePositions);
 
-    // Set robot orientation from gyro not megatag2
-    // LimelightHelpers.SetRobotOrientation(
-    //   Constants.VISION_LIMELIGHT,
-    //   gyroInputs.yawPosition.getDegrees(),
-    //   0, 0, 0, 0, 0);
-
-    // LimelightHelpers.Results results = LimelightHelpers.getLatestResults(Constants.VISION_LIMELIGHT).targetingResults;
-    //LimelightHelpers.PoseEstimate mt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.VISION_LIMELIGHT);
-    
-    // Logger.recordOutput("Vision/Limelight Pose", results.botpose_wpiblue);
-    //Logger.recordOutput("Vision/mt2 pose", mt2Pose.pose);
-
-    // List<Pose3d> tagPoses = new ArrayList<>();
-    // for (LimelightTarget_Fiducial tag : results.targets_Fiducials) {
-    //   tagPoses.add(aprilTagMap.getTagPose((int) tag.fiducialID).get());
-    // }
-
-    // Logger.recordOutput("Vision/Tags", tagPoses.toArray(Pose3d[]::new));
-
-      // Only update if yaw velocity is less than 720 degrees / sec
-    // if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720) {
-    //   m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Units.degreesToRadians(5)));
-    //   m_poseEstimator.addVisionMeasurement(
-    //       mt2Pose.pose,
-    //       mt2Pose.timestampSeconds);
-    // }
   }
 
   /**
@@ -312,6 +285,26 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.addVisionMeasurement(visionPose, timestamp);
   }
 
+  @AutoLogOutput(key = "Drive/Turn CAN Disconnect")
+  public boolean[] getTurnDisconnect(){
+    int i = 0;
+    for(var module : modules){
+      turnCANDisconnect[i] = module.getTurnMotorConnected();
+      i++;
+    }
+    return turnCANDisconnect;
+  }
+
+  @AutoLogOutput(key = "Drive/Drive CAN Disconnect")
+  public boolean[] getDriveDisconnect(){
+    int i = 0;
+    for(var module : modules){
+      driveCANDisconnect[i] = module.getDriveMotorConnected();
+      i++;
+    }
+    return driveCANDisconnect;
+  }
+
   public void resetGyro() {
     gyroIO.resetGyro();
   }
@@ -374,13 +367,4 @@ public class Drive extends SubsystemBase {
     return angle;
   }
 
-  // public void playSound() {
-  //   m_orchestra.loadMusic("verySecretMusicFile.chrp");
-  //   m_orchestra.play();
-  //   System.out.println("Orchesta playing: " + m_orchestra.isPlaying());
-  // }
-
-  // public void resetTrack() {
-  //   m_orchestra.stop();
-  // }
 }

@@ -49,4 +49,9 @@ public interface ModuleIO {
   public default void setTurnBrakeMode(boolean enable) {}
 
   public default TalonFX getDriveTalon() {return null;}
+
+  public default boolean getDriveMotorConnected() {return false;}
+
+  public default boolean getTurnMotorConnected() {return false;}
+
 }

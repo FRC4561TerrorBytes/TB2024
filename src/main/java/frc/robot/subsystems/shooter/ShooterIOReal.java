@@ -124,4 +124,9 @@ public class ShooterIOReal implements ShooterIO {
     public void stopFlywheel(){
         m_leftFlywheel.set(0);
     }
+
+    @Override
+    public boolean getConnected(){
+        return shooterDisconnectAlert.getState();
+    }
 }

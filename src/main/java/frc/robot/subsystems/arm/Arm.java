@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -80,6 +81,11 @@ public class Arm extends SubsystemBase {
 
     public double getAbsoluteRotations(){
         return io.getAbsoluteRotations();
+    }
+
+    @AutoLogOutput(key = "Arm/CAN Disconnect")
+    public boolean getConnected() {
+        return io.getConnected();
     }
 
     @Override

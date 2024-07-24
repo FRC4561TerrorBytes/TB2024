@@ -6,6 +6,8 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.util.Alert;
+
 /** Add your docs here. */
 public interface IntakeIO {
 
@@ -21,4 +23,7 @@ public interface IntakeIO {
     public default void setIntakeSpeed(double velocity) {};
 
     public default void stopIntake() {};
+
+    public default boolean getConnected() {return false;};
+
 }

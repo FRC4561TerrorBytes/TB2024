@@ -14,6 +14,8 @@
 package frc.robot;
 
 
+import java.util.Arrays;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -34,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.Mode;
 import frc.robot.commands.AmpDrive;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
@@ -236,6 +239,11 @@ public class RobotContainer {
 
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
 
+    //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
+    Trigger CANDisconnect = new Trigger(() -> disconnectActive());
+    CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true));
+    CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false));
+
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
@@ -275,7 +283,7 @@ public class RobotContainer {
     //DEEKSHI CONTROLS
     // Subwoofer angle
     operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
     // Stow arm
     operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
@@ -311,6 +319,25 @@ public class RobotContainer {
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
+  }
+
+  /**
+   * Run through all subsystems and return true if any subsytem has a CAN disconnect
+   * @return
+   */
+  public boolean disconnectActive() {
+    if (Constants.currentMode == Mode.REAL){
+
+        return arm.getConnected() 
+        && shooter.getConnected() 
+        && indexer.getConnected() 
+        && intake.getConnected()
+        && Arrays.asList(drive.getDriveDisconnect()).contains(false)
+        && Arrays.asList(drive.getTurnDisconnect()).contains(false);
+
+    }
+    else
+      return false;
   }
 
   public double getArmAngleDegrees() {

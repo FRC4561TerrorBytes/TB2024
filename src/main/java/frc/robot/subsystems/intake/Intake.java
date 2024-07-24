@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems.intake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.Alert;
 
 public class Intake extends SubsystemBase {
 
@@ -38,20 +40,25 @@ public class Intake extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-        Logger.processInputs("Intake/IO", inputs);
+    Logger.processInputs("Intake/IO", inputs);
 
       
     }
 
-    public void setIntakeSpeed(double velocity){
-      io.setIntakeSpeed(velocity);
+    public void setIntakeSpeed(double velocity) { 
+      io.setIntakeSpeed(velocity); 
     }
 
-    public void stopIntake(){
+    public void stopIntake() {
       io.stopIntake();
     }
 
     public boolean getIntakeBreak() {
       return inputs.noteInIntake;
+    }
+
+    @AutoLogOutput(key = "Intake/CAN Disconnect")
+    public boolean getConnected() {
+      return io.getConnected();
     }
   }

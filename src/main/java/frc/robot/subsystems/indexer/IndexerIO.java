@@ -25,4 +25,7 @@ public interface IndexerIO {
     public default void setIndexerSpeed(double speed) {};
 
     public default void stopIndexer() {};
+
+    public default boolean getConnected() {return false;};
+
 }

@@ -63,4 +63,9 @@ public class IndexerIOReal implements IndexerIO {
     public boolean getIndexerState(){
         return !m_rightLimitSwitch.get() || !m_leftLimitSwitch.get();
     }
+
+    @Override
+    public boolean getConnected(){
+        return indexerMotorDisconnectAlert.getState();
+    }
 }

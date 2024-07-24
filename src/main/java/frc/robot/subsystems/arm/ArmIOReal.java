@@ -136,6 +136,10 @@ public class ArmIOReal implements ArmIO {
     public void nudge(double degrees) {
         armSetPoint = m_armMotorLeft.getPosition().getValueAsDouble() + degrees;
         m_armMotorLeft.setControl(m_request.withPosition(armSetPoint));
+    }
 
+    @Override
+    public boolean getConnected() {
+        return armLeftMotorDisconnectAlert.getState() && armRightMotorDisconnectAlert.getState();
     }
 }

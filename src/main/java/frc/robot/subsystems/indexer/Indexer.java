@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.indexer;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,5 +49,10 @@ public class Indexer extends SubsystemBase {
   public boolean noteInIndexer(){
     //return the beam breaks in the indexer here
     return io.getIndexerState();
+  }
+
+  @AutoLogOutput(key = "Indexer/CAN Disconnect")
+  public boolean getConnected() {
+    return io.getConnected();
   }
 }
