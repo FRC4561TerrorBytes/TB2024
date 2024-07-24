@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -60,7 +61,11 @@ public class AutoNoteAlignCommand extends Command {
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
 
-    if (chair.getEntry("tv").getDouble(0.0) != 1.0 || intake.getIntakeBreak()) {return;}
+    if (intake.getIntakeBreak() || chair.getEntry("tv").getDouble(0.0) != 1.0 && DriverStation.isTeleop() ) {end(true);}
+
+    if (chair.getEntry("tv").getDouble(0.0) != 1.0 && DriverStation.isAutonomous()) {
+      drive.runVelocity(new ChassisSpeeds(0, 0, 0.25 * drive.getMaxAngularSpeedRadPerSec()));
+    }
     
     NetworkTableEntry tx = chair.getEntry("tx");
     double txDeg = tx.getDouble(0.0);
