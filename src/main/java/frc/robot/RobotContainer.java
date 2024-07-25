@@ -191,6 +191,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
     NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
 
+    NamedCommands.registerCommand("AmpPosition",
+      new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
     NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
     NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
     NamedCommands.registerCommand("SabotageShooter", new RunCommand(() -> shooter.setFlywheelSpeed(5), shooter));
@@ -267,7 +271,7 @@ public class RobotContainer {
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+    driverController.a().whileTrue(new AmpDrive(drive, indexer)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
