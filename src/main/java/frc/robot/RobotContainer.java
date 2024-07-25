@@ -19,7 +19,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,11 +39,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AmpDrive;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriveToAutoShoot;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LobShootCommand;
+import frc.robot.commands.MidlineAutoIntake;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
@@ -184,7 +188,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
-    NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
+    NamedCommands.registerCommand("AutoIntake", new MidlineAutoIntake(drive, intake, indexer, arm));
+
+    NamedCommands.registerCommand("Shooting Path", new DriveToAutoShoot());
 
     NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
     NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
@@ -239,7 +245,7 @@ public class RobotContainer {
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
-      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
+      .whileTrue(new MidlineAutoIntake(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
       .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
@@ -311,34 +317,6 @@ public class RobotContainer {
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
-  }
-
-  public double getArmAngleDegrees() {
-    Logger.recordOutput("Shoot Enum", shootEnum);
-    Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
-    Logger.recordOutput("Test/arm", arm.getArmAngleDegrees());
-    return arm.getArmAngleDegrees();
-  }
-
-  public void flywheelSpinup() {
-    if (DriverStation.isTeleopEnabled()
-      && drive.getPose()
-          .getTranslation()
-          .getDistance(
-            AllianceFlipUtil.apply(
-              blueSpeaker.toTranslation2d()))
-          < Units.feetToMeters(25)
-      && indexer.noteInIndexer()) {
-      new RunCommand(() -> shooter.setFlywheelSpeed(10), shooter);
-    }
-  }
-
-  public double getElevatorPositionMeters() {
-    return 0.0;
-  }
-
-  public double getIntakeAngleDegrees() {
-    return shooter.getPivotAngle();
   }
 
   public void autonomousInit() {

@@ -22,7 +22,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 
-public class AutoNoteAlignCommand extends Command {
+public class NoteAlignCommand extends Command {
 
   private final Drive drive;
   private final Intake intake;
@@ -37,7 +37,7 @@ public class AutoNoteAlignCommand extends Command {
 
   boolean inRotTol;
 
-  public AutoNoteAlignCommand(Drive drive, Intake intake, Indexer indexer, Arm arm) {
+  public NoteAlignCommand(Drive drive, Intake intake, Indexer indexer, Arm arm) {
     this.drive = drive;
     this.intake = intake;
     this.indexer = indexer;
@@ -61,11 +61,7 @@ public class AutoNoteAlignCommand extends Command {
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
 
-    if (intake.getIntakeBreak() || chair.getEntry("tv").getDouble(0.0) != 1.0 && DriverStation.isTeleop() ) {end(true);}
-
-    if (chair.getEntry("tv").getDouble(0.0) != 1.0 && DriverStation.isAutonomous()) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, 0.25 * drive.getMaxAngularSpeedRadPerSec()));
-    }
+    if (intake.getIntakeBreak() || chair.getEntry("tv").getDouble(0.0) != 1) {end(true);}
     
     NetworkTableEntry tx = chair.getEntry("tx");
     double txDeg = tx.getDouble(0.0);
