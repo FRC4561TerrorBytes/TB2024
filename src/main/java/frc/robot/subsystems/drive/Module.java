@@ -188,11 +188,11 @@ public class Module {
     return io.getDriveTalon();
   }
 
-  public boolean getDriveMotorConnected(){
-    return io.getDriveMotorConnected();
+  public boolean getDriveMotorDisconnect(){
+    return io.getDriveMotorDisconnect();
   }
 
-  public boolean getTurnMotorConnected(){
-    return io.getTurnMotorConnected();
+  public boolean getTurnMotorDisconnect(){
+    return io.getTurnMotorDisconnect();
   }
 }

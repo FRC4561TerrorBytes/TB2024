@@ -65,7 +65,7 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     @Override
-    public boolean getConnected(){
+    public boolean getDisconnect(){
         return indexerMotorDisconnectAlert.getState();
     }
 }

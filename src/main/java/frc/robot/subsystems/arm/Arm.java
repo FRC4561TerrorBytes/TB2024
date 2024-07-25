@@ -84,8 +84,8 @@ public class Arm extends SubsystemBase {
     }
 
     @AutoLogOutput(key = "Arm/CAN Disconnect")
-    public boolean getConnected() {
-        return io.getConnected();
+    public boolean getDisconnect() {
+        return io.getDisconnect();
     }
 
     @Override

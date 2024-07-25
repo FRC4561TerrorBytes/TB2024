@@ -80,7 +80,7 @@ public class IntakeIOReal implements IntakeIO{
     };
 
     @Override
-    public boolean getConnected(){
+    public boolean getDisconnect(){
         return intakeMotorDisconnectAlert.getState();
     }
 

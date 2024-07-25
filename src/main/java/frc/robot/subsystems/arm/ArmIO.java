@@ -42,5 +42,5 @@ public interface ArmIO {
 
     public default double getAbsoluteRotations(){return 0.0;}
 
-    public default boolean getConnected() {return false;}
+    public default boolean getDisconnect() {return false;}
 }

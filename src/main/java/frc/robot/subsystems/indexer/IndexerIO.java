@@ -26,6 +26,6 @@ public interface IndexerIO {
 
     public default void stopIndexer() {};
 
-    public default boolean getConnected() {return false;};
+    public default boolean getDisconnect() {return false;};
 
 }

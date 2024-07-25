@@ -139,7 +139,7 @@ public class ArmIOReal implements ArmIO {
     }
 
     @Override
-    public boolean getConnected() {
+    public boolean getDisconnect() {
         return armLeftMotorDisconnectAlert.getState() && armRightMotorDisconnectAlert.getState();
     }
 }

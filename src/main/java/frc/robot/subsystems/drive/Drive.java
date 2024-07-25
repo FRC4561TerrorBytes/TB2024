@@ -289,7 +289,7 @@ public class Drive extends SubsystemBase {
   public boolean[] getTurnDisconnect(){
     int i = 0;
     for(var module : modules){
-      turnCANDisconnect[i] = module.getTurnMotorConnected();
+      turnCANDisconnect[i] = module.getTurnMotorDisconnect();
       i++;
     }
     return turnCANDisconnect;
@@ -299,7 +299,7 @@ public class Drive extends SubsystemBase {
   public boolean[] getDriveDisconnect(){
     int i = 0;
     for(var module : modules){
-      driveCANDisconnect[i] = module.getDriveMotorConnected();
+      driveCANDisconnect[i] = module.getDriveMotorDisconnect();
       i++;
     }
     return driveCANDisconnect;

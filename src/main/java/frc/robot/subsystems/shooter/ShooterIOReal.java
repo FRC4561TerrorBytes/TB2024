@@ -126,7 +126,7 @@ public class ShooterIOReal implements ShooterIO {
     }
 
     @Override
-    public boolean getConnected(){
+    public boolean getDisconnect(){
         return shooterDisconnectAlert.getState();
     }
 }

@@ -200,8 +200,8 @@ public class Shooter extends SubsystemBase {
   }
   
   @AutoLogOutput(key = "Shooter/CAN Disconnect")
-  public boolean getConnected(){
-    return io.getConnected();
+  public boolean getDisconnect(){
+    return io.getDisconnect();
   }
 
   public boolean flywheelUpToSpeed(double mps){

@@ -52,7 +52,7 @@ public class Indexer extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Indexer/CAN Disconnect")
-  public boolean getConnected() {
-    return io.getConnected();
+  public boolean getDisconnect() {
+    return io.getDisconnect();
   }
 }

@@ -225,12 +225,12 @@ public class ModuleIOTBSwerve implements ModuleIO {
     }
 
     @Override
-    public boolean getDriveMotorConnected() {
+    public boolean getDriveMotorDisconnect() {
         return driveMotorDisconnectAlert.getState();
     }
 
     @Override
-    public boolean getTurnMotorConnected(){
+    public boolean getTurnMotorDisconnect(){
         return turnMotorDisconnectAlert.getState();
     }
 

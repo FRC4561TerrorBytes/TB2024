@@ -1,6 +1,3 @@
-// Copyright 2021-2023 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // version 3 as published by the Free Software Foundation or
@@ -182,13 +179,14 @@ public class RobotContainer {
         break;
     }
 
+    //Visualize command scheduler routine in SmartDashboard
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
+    //Register NamedCommands for use in PathPlanner
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
     NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
-
     NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
     NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
     NamedCommands.registerCommand("SabotageShooter", new RunCommand(() -> shooter.setFlywheelSpeed(5), shooter));
@@ -209,7 +207,6 @@ public class RobotContainer {
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
-    // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
    
     // Configure the button bindings
     configureButtonBindings();
@@ -233,16 +230,15 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
-    // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-    Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
-
+    //Rumble controller when note intake finishes
+    Trigger noteInIndexer = new Trigger(indexer::noteInIndexer);
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
 
     //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
     Trigger CANDisconnect = new Trigger(() -> disconnectActive());
-    CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true));
-    CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false));
+    CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true).ignoringDisable(true));
+    CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false).ignoringDisable(true));
 
   //PANAV CONTROLS
     // Intake command
@@ -293,7 +289,7 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
 
-    //
+    //Preset Arm Positions
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
@@ -323,23 +319,27 @@ public class RobotContainer {
 
   /**
    * Run through all subsystems and return true if any subsytem has a CAN disconnect
-   * @return
+   * @return CANDisconnectActive
    */
-  public boolean disconnectActive() {
+  private boolean disconnectActive() {
     if (Constants.currentMode == Mode.REAL){
 
-        return arm.getConnected() 
-        && shooter.getConnected() 
-        && indexer.getConnected() 
-        && intake.getConnected()
-        && Arrays.asList(drive.getDriveDisconnect()).contains(false)
-        && Arrays.asList(drive.getTurnDisconnect()).contains(false);
+        return arm.getDisconnect() 
+        && shooter.getDisconnect() 
+        && indexer.getDisconnect() 
+        && intake.getDisconnect()
+        && Arrays.asList(drive.getDriveDisconnect()).contains(true)
+        && Arrays.asList(drive.getTurnDisconnect()).contains(true);
 
     }
     else
       return false;
   }
 
+  /**
+   * Return angle of arm
+   * @return arm angle
+   */
   public double getArmAngleDegrees() {
     Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
@@ -347,6 +347,9 @@ public class RobotContainer {
     return arm.getArmAngleDegrees();
   }
 
+  /**
+   * Automatically spin up flywheels when close to speaker, currently not functional
+   */
   public void flywheelSpinup() {
     if (DriverStation.isTeleopEnabled()
       && drive.getPose()
@@ -358,14 +361,6 @@ public class RobotContainer {
       && indexer.noteInIndexer()) {
       new RunCommand(() -> shooter.setFlywheelSpeed(10), shooter);
     }
-  }
-
-  public double getElevatorPositionMeters() {
-    return 0.0;
-  }
-
-  public double getIntakeAngleDegrees() {
-    return shooter.getPivotAngle();
   }
 
   public void autonomousInit() {
@@ -398,6 +393,10 @@ public class RobotContainer {
     return null;
   }
 
+  /**
+   * Rumble driver controller for 1 second
+   * @return driverRumbleCommand
+   */
   private Command driverRumbleCommand() {
     return Commands.startEnd(
       () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);},

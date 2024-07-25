@@ -58,7 +58,7 @@ public class Intake extends SubsystemBase {
     }
 
     @AutoLogOutput(key = "Intake/CAN Disconnect")
-    public boolean getConnected() {
-      return io.getConnected();
+    public boolean getDisconnect() {
+      return io.getDisconnect();
     }
   }

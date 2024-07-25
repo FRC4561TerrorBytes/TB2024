@@ -27,5 +27,5 @@ public interface ShooterIO {
 
     public default void stopFlywheel() {};
 
-    public default boolean getConnected() {return false;};
+    public default boolean getDisconnect() {return false;};
 }
