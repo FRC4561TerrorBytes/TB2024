@@ -42,7 +42,6 @@ public class AlertHandler {
         
         short faults = sparkMax.getFaults();
 
-        System.out.println(faults);
         if (faults != 0) {
             disconnectAlert.set(true);
         } else {

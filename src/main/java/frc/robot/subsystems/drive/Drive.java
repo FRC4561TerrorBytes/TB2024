@@ -60,8 +60,8 @@ public class Drive extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
-  private boolean[] turnCANDisconnect = new boolean[4];
-  private boolean[] driveCANDisconnect = new boolean[4];
+  private Boolean[] turnCANDisconnect = new Boolean[4];
+  private Boolean[] driveCANDisconnect = new Boolean[4];
 
 
   private final AprilTagFieldLayout aprilTagMap = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
@@ -286,7 +286,7 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Drive/Turn CAN Disconnect")
-  public boolean[] getTurnDisconnect(){
+  public Boolean[] getTurnDisconnect(){
     int i = 0;
     for(var module : modules){
       turnCANDisconnect[i] = module.getTurnMotorDisconnect();
@@ -296,13 +296,17 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Drive/Drive CAN Disconnect")
-  public boolean[] getDriveDisconnect(){
+  public Boolean[] getDriveDisconnect(){
     int i = 0;
     for(var module : modules){
       driveCANDisconnect[i] = module.getDriveMotorDisconnect();
       i++;
     }
     return driveCANDisconnect;
+  }
+
+  public boolean getGyroDisconnect(){
+    return gyroIO.getDisconnect();
   }
 
   public void resetGyro() {

@@ -235,10 +235,10 @@ public class RobotContainer {
     Trigger noteInIndexer = new Trigger(indexer::noteInIndexer);
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
 
-    //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
-    Trigger CANDisconnect = new Trigger(() -> disconnectActive());
-    CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true).ignoringDisable(true));
-    CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false).ignoringDisable(true));
+    // //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
+    // Trigger CANDisconnect = new Trigger(() -> disconnectActive());
+    // CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true).ignoringDisable(true));
+    // CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false).ignoringDisable(true));
 
   //PANAV CONTROLS
     // Intake command
@@ -321,19 +321,23 @@ public class RobotContainer {
    * Run through all subsystems and return true if any subsytem has a CAN disconnect
    * @return CANDisconnectActive
    */
-  private boolean disconnectActive() {
-    if (Constants.currentMode == Mode.REAL){
+  public void disconnectActive() {
+    if (Constants.currentMode == Mode.REAL) {
 
-        return arm.getDisconnect() 
-        && shooter.getDisconnect() 
-        && indexer.getDisconnect() 
-        && intake.getDisconnect()
-        && Arrays.asList(drive.getDriveDisconnect()).contains(true)
-        && Arrays.asList(drive.getTurnDisconnect()).contains(true);
+      if (arm.getDisconnect()
+          || shooter.getDisconnect()
+          || indexer.getDisconnect()
+          || intake.getDisconnect()
+          || drive.getGyroDisconnect()
+          || Arrays.stream(drive.getDriveDisconnect()).anyMatch(x -> x == true) // Check if any value in the array is true                                                                                // true
+          || Arrays.stream(drive.getTurnDisconnect()).anyMatch(x -> x == true)) {
 
+        Leds.getInstance().canDisconnect = true;
+      } else {
+        Leds.getInstance().canDisconnect = false;
+
+      }
     }
-    else
-      return false;
   }
 
   /**
