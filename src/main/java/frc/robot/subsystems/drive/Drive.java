@@ -199,13 +199,16 @@ public class Drive extends SubsystemBase {
     prevYAccel = YAccel;
 
     // Discard data if collision is detected
-    if (xJerk > -2 && yJerk > -2) {
+    if (xJerk > -8.5 && yJerk > -8.5) {
       m_poseEstimator.update(rawGyroRotation, modulePositions);
     } else {
       collisions++;
     }
 
     Logger.recordOutput("Vision/Collisions Detected", collisions);
+
+    Logger.recordOutput("Vision/xJerk", xJerk);
+    Logger.recordOutput("Vision/yJerk", yJerk);
     
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 

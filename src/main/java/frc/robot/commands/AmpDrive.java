@@ -37,7 +37,7 @@ public class AmpDrive extends Command {
 
     pathCommand = AutoBuilder.pathfindThenFollowPath(
       PathPlannerPath.fromPathFile("Amp Path"), 
-      new PathConstraints(3, 3, 540, 540));
+      new PathConstraints(1, 1, 360, 360));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
