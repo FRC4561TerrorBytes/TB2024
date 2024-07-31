@@ -318,8 +318,7 @@ public class RobotContainer {
   }
 
   /**
-   * Run through all subsystems and return true if any subsytem has a CAN disconnect
-   * @return CANDisconnectActive
+   * Run through all subsystems and set upper LED section to red if any system has a disconnect
    */
   public void disconnectActive() {
     if (Constants.currentMode == Mode.REAL) {
@@ -329,8 +328,8 @@ public class RobotContainer {
           || indexer.getDisconnect()
           || intake.getDisconnect()
           || drive.getGyroDisconnect()
-          || Arrays.stream(drive.getDriveDisconnect()).anyMatch(x -> x == true) // Check if any value in the array is true                                                                                // true
-          || Arrays.stream(drive.getTurnDisconnect()).anyMatch(x -> x == true)) {
+          || isAnyTrue(drive.getDriveDisconnect())
+          || isAnyTrue(drive.getTurnDisconnect())) {
 
         Leds.getInstance().canDisconnect = true;
       } else {
@@ -338,6 +337,17 @@ public class RobotContainer {
 
       }
     }
+  }
+
+  /**
+   * Loop through a boolean array and return true if any element is true
+   * @param array
+   * @return
+   */
+  private static boolean isAnyTrue(boolean[] array){
+
+    for(boolean b : array) if(b) return true;
+    return false;
   }
 
   /**
