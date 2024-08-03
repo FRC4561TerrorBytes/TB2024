@@ -13,8 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -26,8 +25,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -43,11 +40,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.SwerveSetpoint;
 
 
 public class Drive extends SubsystemBase {
@@ -67,6 +67,17 @@ public class Drive extends SubsystemBase {
   private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
 
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+
+  private boolean modulesOrienting = false;
+  private SwerveSetpoint currentSetpoint =
+  new SwerveSetpoint(
+      new ChassisSpeeds(),
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      });
 
   private double prevXAccel = 0.0;
   private double prevYAccel = 0.0;
@@ -277,6 +288,14 @@ public class Drive extends SubsystemBase {
     return driveVelocityAverage / 4.0;
   }
 
+  public double[] getWheelRadiusCharacterizationPosition() {
+    return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
+  }
+
+  public void runWheelRadiusCharacterization(double omegaSpeed) {
+    runVelocity(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
+  }
+
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
@@ -389,6 +408,48 @@ public class Drive extends SubsystemBase {
     Pose2d relative = getSpeakerPose().relativeTo(getPose());
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
+  }
+
+    /**
+   * Returns command that orients all modules to {@code orientation}, ending when the modules have
+   * rotated.
+   */
+  public Command orientModules(Rotation2d orientation) {
+    return orientModules(new Rotation2d[] {orientation, orientation, orientation, orientation});
+  }
+
+  /**
+   * Returns command that orients all modules to {@code orientations[]}, ending when the modules
+   * have rotated.
+   */
+  public Command orientModules(Rotation2d[] orientations) {
+    return run(() -> {
+          SwerveModuleState[] states = new SwerveModuleState[4];
+          for (int i = 0; i < orientations.length; i++) {
+            modules[i].runSetpoint(
+                new SwerveModuleState(0.0, orientations[i]));
+            states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
+          }
+          currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
+        })
+        .until(
+            () ->
+                Arrays.stream(modules)
+                    .allMatch(
+                        module ->
+                            EqualsUtil.epsilonEquals(
+                                module.getAngle().getDegrees(),
+                                module.getState().angle.getDegrees(),
+                                2.0)))
+        .beforeStarting(() -> modulesOrienting = true)
+        .finallyDo(() -> modulesOrienting = false)
+        .withName("Orient Modules");
+  }
+
+  public static Rotation2d[] getCircleOrientations() {
+    return Arrays.stream(Constants.MODULE_TRANSLATIONS)
+        .map(translation -> translation.getAngle().plus(new Rotation2d(Math.PI / 2.0)))
+        .toArray(Rotation2d[]::new);
   }
 
   // public void playSound() {

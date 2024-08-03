@@ -156,6 +156,10 @@ public class Module {
     return inputs.drivePositionRad * WHEEL_RADIUS;
   }
 
+  public double getPositionRads() {
+    return inputs.drivePositionRad;
+  }
+
   /** Returns the current drive velocity of the module in meters per second. */
   public double getVelocityMetersPerSec() {
     return inputs.driveVelocityRadPerSec * WHEEL_RADIUS;

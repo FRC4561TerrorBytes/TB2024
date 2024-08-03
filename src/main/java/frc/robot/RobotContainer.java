@@ -42,6 +42,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -209,13 +210,13 @@ public class RobotContainer {
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
 
-    autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
-      .andThen(new WaitCommand(1.5))
-      .andThen(new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER))
-        .withTimeout(1.0)
-      .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
-        .withTimeout(1.5));
-    // autoChooser.addOption("Square Test", AutoBuilder.buildAuto("Square"));
+    autoChooser.addOption(
+      "Drive Wheel Characterization",
+      drive.orientModules(Drive.getCircleOrientations())
+      .andThen(
+        new WheelRadiusCharacterization(
+          drive, WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE))
+      .withName("Drive Wheel Radius Characterization"));
    
     // Configure the button bindings
     configureButtonBindings();
