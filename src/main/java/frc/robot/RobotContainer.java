@@ -24,23 +24,21 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AmpDrive;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
@@ -249,75 +247,29 @@ public class RobotContainer {
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
-      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
-      .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
-      .onFalse(new InstantCommand(() -> drive.stop(), drive));
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm));
 
-    // Run shoot command (from anywhere)
-    driverController.rightBumper().and(() -> autoShootToggle)
-      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
+    driverController.leftTrigger()
+      .whileTrue(new IntakeCommand(intake, indexer, arm));
 
     //Preset shooting
-    driverController.rightBumper().and(() -> !autoShootToggle)
+    driverController.rightBumper().and(() -> !shootEnum.equals(shootPositions.AMP))
       .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
 
-    // Reset gyro
-    driverController.rightStick()
-      .and(driverController.leftStick())
-      .onTrue(new InstantCommand(() -> drive.resetGyro()));
+    driverController.rightTrigger()
+      .whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    // Auto shoot toggle
-    driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
-      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
+    driverController.a()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
-    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+    driverController.b()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
-    driverController.a().whileTrue(new AmpDrive(drive, indexer)).onFalse(new InstantCommand(() -> drive.stop(), drive));
-
-    driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
-
-    //Drive Nudges
-    driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
-    driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
-    driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
-    driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
-
-    //DEEKSHI CONTROLS
-    // Subwoofer angle
-    operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
-
-    // Stow arm
-    operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
-    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
-    
-    //Nudge arm up/down
-    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
-    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
-
-    //
-    operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
-
-    operatorController.b().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STAGE)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
-
-    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.WING)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));    
-
-    //Podium shot angle
-    operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
-
-    //Re seed arm with abs encoder
-    operatorController.rightStick().and(operatorController.leftStick())
-      .onTrue(new InstantCommand(() -> arm.seedEncoders()));
-
-    //Outtake, out-index
-    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
-    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
-
-    operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
+    driverController.y()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
