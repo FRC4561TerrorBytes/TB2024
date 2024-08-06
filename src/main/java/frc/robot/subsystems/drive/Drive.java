@@ -13,6 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.Arrays;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -42,6 +44,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
@@ -65,6 +68,8 @@ public class Drive extends SubsystemBase {
   private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
 
   private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+
+  private final SysIdRoutine sysId;
 
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
 
@@ -145,6 +150,22 @@ public class Drive extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    sysId = 
+        new SysIdRoutine(
+          new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Drive/SysIDState", state.toString())),
+          new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              for (int i = 0; i < 4; i++) {
+                modules[i].runCharacterization(voltage.in(Volts));
+              }
+            },
+            null,
+            this));
 
         //m_orchestra.addInstrument(modules[1].getDriveTalon());
 
@@ -452,13 +473,13 @@ public class Drive extends SubsystemBase {
         .toArray(Rotation2d[]::new);
   }
 
-  // public void playSound() {
-  //   m_orchestra.loadMusic("verySecretMusicFile.chrp");
-  //   m_orchestra.play();
-  //   System.out.println("Orchesta playing: " + m_orchestra.isPlaying());
-  // }
-
-  // public void resetTrack() {
-  //   m_orchestra.stop();
-  // }
+    /** Returns a command to run a quasistatic test in the specified direction. */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+      return sysId.quasistatic(direction);
+    }
+  
+    /** Returns a command to run a dynamic test in the specified direction. */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+      return sysId.dynamic(direction);
+    }
 }
