@@ -42,7 +42,7 @@ public class NoteAlign extends Command {
   public void execute() {
     LimelightResults results = LimelightHelpers.getLatestResults("limelight-driver");
 
-    LimelightTarget_Detector[] notes = results.targetingResults.targets_Detector;
+    LimelightTarget_Detector[] notes = results.targets_Detector;
     LimelightTarget_Detector closestNote = getClosestNote(notes);
 
     Logger.recordOutput("NoteAlign/Note Count", notes.length);

@@ -330,7 +330,7 @@ public class Drive extends SubsystemBase {
   private LimelightTarget_Fiducial getClosestTag(String cameraName) {
     double closest = 100;
     LimelightTarget_Fiducial target = null;
-    LimelightTarget_Fiducial[] targetList = LimelightHelpers.getLatestResults(cameraName).targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] targetList = LimelightHelpers.getLatestResults(cameraName).targets_Fiducials;
     for (LimelightTarget_Fiducial i : targetList) {
       double value = i.tx;
       if (value < closest) {
