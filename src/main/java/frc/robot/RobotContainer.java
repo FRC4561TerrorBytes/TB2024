@@ -92,6 +92,8 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0); //Change when done
   private final CommandXboxController operatorController = new CommandXboxController(1); //Change when done
 
+  private final CommandXboxController outreachController = new CommandXboxController(2);
+
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -230,9 +232,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY() / driveRatio,
-            () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() / driveRatio));
+            () -> -outreachController.getLeftY() / driveRatio,
+            () -> -outreachController.getLeftX() / driveRatio,
+            () -> -outreachController.getRightX() / driveRatio));
     
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
@@ -247,27 +249,98 @@ public class RobotContainer {
   //PANAV CONTROLS
     // Intake command
     driverController.leftBumper()
-      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm));
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
+      .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
+      .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
-    driverController.leftTrigger()
-      .whileTrue(new IntakeCommand(intake, indexer, arm));
-
+    // Run shoot command (from anywhere)
+    driverController.rightBumper().and(() -> autoShootToggle)
+      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
+      
     //Preset shooting
-    driverController.rightBumper().and(() -> !shootEnum.equals(shootPositions.AMP))
+    driverController.rightBumper().and(() -> !autoShootToggle)
       .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
 
-    driverController.rightTrigger()
+    // Reset gyro
+    driverController.rightStick()
+      .and(driverController.leftStick())
+      .onTrue(new InstantCommand(() -> drive.resetGyro()));
+
+    // Auto shoot toggle
+    driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
+      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
+
+    driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    // driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+
+    // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
+
+    //Drive Nudges
+    driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
+    driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
+    driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
+    driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
+
+  //Operator CONTROLS
+    // Subwoofer angle
+    operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
+
+    // Stow arm
+    operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
+
+    //Nudge arm up/down
+    operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
+    operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
+
+    //
+    operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    operatorController.b().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STAGE)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    operatorController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.WING)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));    
+
+    //Podium shot angle
+    operatorController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.PODIUM)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
+    //Re seed arm with abs encoder
+    operatorController.rightStick().and(operatorController.leftStick())
+      .onTrue(new InstantCommand(() -> arm.seedEncoders()));
+
+    //Outtake, out-index
+    operatorController.leftBumper().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.2), indexer));
+    operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
+
+    operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
+    
+  //OUTREACH CONTROLS
+    outreachController.leftBumper()
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm));
+
+    outreachController.leftTrigger()
+      .whileTrue(new IntakeCommand(intake, indexer, arm));
+
+    outreachController.rightBumper().and(() -> !shootEnum.equals(shootPositions.AMP))
+      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
+
+    outreachController.rightTrigger()
       .whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    driverController.a()
+    outreachController.a()
       .onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
-    driverController.b()
+    outreachController.b()
       .onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
-    driverController.y()
+    outreachController.y()
       .onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
