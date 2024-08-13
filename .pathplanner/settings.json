@@ -5,11 +5,13 @@
   "pathFolders": [
     "5 Note",
     "Close Paths",
+    "Defined Pats",
     "Note Align Testing",
     "OP AUTO",
     "Wide Auto"
   ],
   "autoFolders": [
+    "Auto Routes",
     "Tesint"
   ],
   "defaultMaxVel": 4.0,
