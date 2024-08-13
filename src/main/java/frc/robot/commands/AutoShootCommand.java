@@ -6,16 +6,17 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
+import frc.robot.Constants.Mode;
 import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
@@ -23,6 +24,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.util.AllianceFlipUtil;
 
 public class AutoShootCommand extends Command {
 
@@ -32,6 +34,8 @@ public class AutoShootCommand extends Command {
   private final Intake intake;
   private final Drive drive;
   private double targetMPS;
+
+  private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
 
   public AutoShootCommand(Arm arm, Shooter shooter, Indexer indexer, Intake intake, Drive drive) {
     this.arm = arm;
@@ -46,25 +50,20 @@ public class AutoShootCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //drive.stop();
-    NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.VISION_LIMELIGHT);
-    NetworkTableEntry tx = chair.getEntry("tx");
-    double txAngle = tx.getDouble(0.0);
-
     Leds.getInstance().autoShootCommand = true;
-    Leds.getInstance().autoShootStartAngle = txAngle;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.VISION_LIMELIGHT);
-    NetworkTableEntry tx = chair.getEntry("tx");
-    double txAngle = tx.getDouble(0.0);
+    Translation2d speakerAlliance = AllianceFlipUtil.apply(blueSpeaker).toTranslation2d();
+    Pose2d robotRotation = drive.getPose();
 
-    // if (chair.getEntry("tid").getDouble(0.0) == 0.0) {
-    //   return;
-    // }
+    Transform2d pose = robotRotation.minus(new Pose2d(speakerAlliance, Rotation2d.fromDegrees(180.0)));
+
+    Logger.recordOutput("Auto Shoot/Speaker Rot", pose);
+
+    double txAngle = 0.0;
 
     if (txAngle > 3.5) {
       drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
@@ -110,6 +109,9 @@ public class AutoShootCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (Constants.currentMode == Mode.SIM) {
+      return false;
+    }
     if (!indexer.noteInIndexer()) {
       for (int i = 0; i < 25; i++) {
         continue;
