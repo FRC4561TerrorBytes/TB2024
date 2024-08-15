@@ -85,7 +85,7 @@ public class RobotContainer {
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
-  private double driveRatio = 1.0;
+  private double drivePercent = 0.25;
   private boolean slowMode = false;
 
   // Controllers
@@ -232,9 +232,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -outreachController.getLeftY() / driveRatio,
-            () -> -outreachController.getLeftX() / driveRatio,
-            () -> -outreachController.getRightX() / driveRatio));
+            () -> -outreachController.getLeftY() * drivePercent,
+            () -> -outreachController.getLeftX() * drivePercent,
+            () -> -outreachController.getRightX() * drivePercent));
     
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
@@ -382,15 +382,6 @@ public class RobotContainer {
 
   public void teleopInit() {
     // arm.setArmSetpoint(arm.getArmAngleDegrees());
-  }
-
-  public void adjustDriveRatio(){
-    slowMode = !slowMode;
-    if (slowMode == true){
-      driveRatio = 2;
-    } else {
-      driveRatio = 1;
-    }
   }
 
   /**
