@@ -30,7 +30,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -51,6 +51,6 @@
       ]
     }
   },
-  "folder": "Auto Routes",
+  "folder": "Tesint",
   "choreoAuto": false
 }

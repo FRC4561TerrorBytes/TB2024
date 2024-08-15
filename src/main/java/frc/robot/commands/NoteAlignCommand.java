@@ -11,7 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -61,7 +60,7 @@ public class NoteAlignCommand extends Command {
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
 
-    if (intake.getIntakeBreak() || chair.getEntry("tv").getDouble(0.0) != 1) {end(true);}
+    if (intake.getIntakeBreak() || chair.getEntry("tv").getDouble(0.0) != 1.0) {return;}
     
     NetworkTableEntry tx = chair.getEntry("tx");
     double txDeg = tx.getDouble(0.0);

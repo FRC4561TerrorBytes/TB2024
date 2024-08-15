@@ -11,7 +11,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -49,10 +48,6 @@ public class MidlineAutoIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // if (!DriverStation.isAutonomous()) {
-    //   end(true);
-    // }
-
     drive.stop();
     LimelightHelpers.setLEDMode_ForceOn(Constants.DRIVER_LIMELIGHT);
     arm.setArmSetpoint(shootPositions.STOW.getShootAngle());
