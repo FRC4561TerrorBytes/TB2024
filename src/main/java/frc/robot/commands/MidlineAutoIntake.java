@@ -6,6 +6,10 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -20,6 +24,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.util.AllianceFlipUtil;
 
 public class MidlineAutoIntake extends Command {
 
@@ -60,15 +65,24 @@ public class MidlineAutoIntake extends Command {
   public void execute() {
     NetworkTable chair = NetworkTableInstance.getDefault().getTable(Constants.DRIVER_LIMELIGHT);
 
-    if (chair.getEntry("tv").getDouble(0.0) != 0.0) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, -0.25 * drive.getMaxAngularSpeedRadPerSec()));
-    }
-    
     NetworkTableEntry tx = chair.getEntry("tx");
-    double txDeg = tx.getDouble(50.0);
+    double txDeg = tx.getDouble(-1);
 
     NetworkTableEntry ty = chair.getEntry("ty");
-    double tyDeg = ty.getDouble(50.0);
+    double tyDeg = ty.getDouble(-1);
+
+    if (chair.getEntry("tv").getDouble(0.0) != 0.0 || txDeg == -1 || tyDeg == -1) {
+      Transform2d centerNote = new Transform2d(8.28, 4.10, Rotation2d.fromDegrees(0.0));
+      Rotation2d rotToCenter = new Rotation2d();
+
+      rotToCenter = new Rotation2d(
+        centerNote.getX() - drive.getPose().getX(),
+        centerNote.getY() - drive.getPose().getY());
+
+      Logger.recordOutput("Note Align/Rotation to Center", new Pose2d(drive.getPose().getTranslation(), rotToCenter));
+
+      drive.runVelocity(new ChassisSpeeds(0, 0, -0.25 * drive.getMaxAngularSpeedRadPerSec()));
+    }
 
     double angleToGoalRad = Units.degreesToRadians(camMountAngleDeg + tyDeg);
 
