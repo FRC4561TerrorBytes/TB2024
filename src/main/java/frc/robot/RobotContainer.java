@@ -39,6 +39,7 @@ import frc.robot.commands.DriveToAutoShoot;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.MidlineAutoIntake;
+import frc.robot.commands.NoteAlignCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
@@ -325,7 +326,7 @@ public class RobotContainer {
     
   //OUTREACH CONTROLS
     outreachController.leftBumper()
-      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm));
+      .whileTrue(new NoteAlignCommand(drive, intake, indexer, arm));
 
     outreachController.leftTrigger()
       .whileTrue(new IntakeCommand(intake, indexer, arm));
