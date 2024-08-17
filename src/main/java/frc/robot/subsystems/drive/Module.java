@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class Module {
-  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.0);
+  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.4281924016077103);
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -154,6 +154,10 @@ public class Module {
   /** Returns the current drive position of the module in meters. */
   public double getPositionMeters() {
     return inputs.drivePositionRad * WHEEL_RADIUS;
+  }
+
+  public double getPositionRads() {
+    return inputs.drivePositionRad;
   }
 
   /** Returns the current drive velocity of the module in meters per second. */
