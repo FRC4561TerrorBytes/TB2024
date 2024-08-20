@@ -35,7 +35,7 @@ public class AutoShootCommand extends Command {
   private final Drive drive;
   private double targetMPS;
 
-  private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
+  private static final Translation2d blueSpeaker = new Translation2d(0.225, 5.55);
 
   public AutoShootCommand(Arm arm, Shooter shooter, Indexer indexer, Intake intake, Drive drive) {
     this.arm = arm;
@@ -76,7 +76,6 @@ public class AutoShootCommand extends Command {
       drive.stopWithX();
     }
 
-    double distanceMeters = Units.inchesToMeters(shooter.findFlatDistanceWithVision());
     double armAngleInterpolated = shooter.interpolateArmAngle(distanceMeters);
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;

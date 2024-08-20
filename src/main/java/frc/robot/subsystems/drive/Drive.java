@@ -48,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.SwerveSetpoint;
@@ -60,6 +61,8 @@ public class Drive extends SubsystemBase {
   private static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  private static final Translation2d speakerPose = new Translation2d(0.0, 5.55);
+  private static final Translation2d blueSpeaker = new Translation2d(0.225, 5.55);
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -250,6 +253,23 @@ public class Drive extends SubsystemBase {
     }
 
     // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
+  }
+
+  public void getSpeakerDistance()
+  {
+    Translation2d current = new Translation2d(getPose().getX(), getPose().getY());
+    if(AllianceFlipUtil.shouldFlip())
+    {
+      Translation2d redSpeaker = new Translation2d(AllianceFlipUtil.apply(speakerPose.getX()), AllianceFlipUtil.apply(speakerPose.getY()));
+      double dist = Math.sqrt(
+        Math.pow(
+          Math.abs(current.getX()-redSpeaker.getX()), 2) + Math.pow(Math.abs(current.getY()-redSpeaker.getY()), 2));
+    } else
+    {
+      double dist = Math.sqrt(
+        Math.pow(
+          Math.abs(current.getX()-blueSpeaker.getX()), 2) + Math.pow(Math.abs(current.getY()-blueSpeaker.getY()), 2));
+    }
   }
 
   /**
