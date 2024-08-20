@@ -255,20 +255,25 @@ public class Drive extends SubsystemBase {
     // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
   }
 
-  public void getSpeakerDistance()
+  /**
+   * Return distance from speaker
+   * @return distance from speaker
+   */
+  @AutoLogOutput(key = "Drive/Distance from Speaker")
+  public double getSpeakerDistance()
   {
     Translation2d current = new Translation2d(getPose().getX(), getPose().getY());
     if(AllianceFlipUtil.shouldFlip())
     {
       Translation2d redSpeaker = new Translation2d(AllianceFlipUtil.apply(speakerPose.getX()), AllianceFlipUtil.apply(speakerPose.getY()));
-      double dist = Math.sqrt(
+      return Math.sqrt(
         Math.pow(
-          Math.abs(current.getX()-redSpeaker.getX()), 2) + Math.pow(Math.abs(current.getY()-redSpeaker.getY()), 2));
+          Math.abs(current.getX()-redSpeaker.getX()), 2.0) + Math.pow(Math.abs(current.getY()-redSpeaker.getY()), 2.0));
     } else
     {
-      double dist = Math.sqrt(
+      return Math.sqrt(
         Math.pow(
-          Math.abs(current.getX()-blueSpeaker.getX()), 2) + Math.pow(Math.abs(current.getY()-blueSpeaker.getY()), 2));
+          Math.abs(current.getX()-blueSpeaker.getX()), 2.0) + Math.pow(Math.abs(current.getY()-blueSpeaker.getY()), 2.0));
     }
   }
 

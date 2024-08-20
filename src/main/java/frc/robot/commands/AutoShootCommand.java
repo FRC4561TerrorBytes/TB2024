@@ -7,11 +7,9 @@ package frc.robot.commands;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,7 +54,7 @@ public class AutoShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Translation2d speakerAlliance = AllianceFlipUtil.apply(blueSpeaker).toTranslation2d();
+    Translation2d speakerAlliance = AllianceFlipUtil.apply(blueSpeaker);
     Pose2d robotRotation = drive.getPose();
 
     Transform2d pose = robotRotation.minus(new Pose2d(speakerAlliance, Rotation2d.fromDegrees(180.0)));
@@ -76,7 +74,7 @@ public class AutoShootCommand extends Command {
       drive.stopWithX();
     }
 
-    double armAngleInterpolated = shooter.interpolateArmAngle(distanceMeters);
+    double armAngleInterpolated = shooter.interpolateArmAngle(drive.getDistanceFromSpeaker());
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
 
