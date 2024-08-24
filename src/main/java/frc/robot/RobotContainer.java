@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.WheelRadiusCharacterization;
@@ -232,9 +233,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -outreachController.getLeftY() / driveRatio,
-            () -> -outreachController.getLeftX() / driveRatio,
-            () -> -outreachController.getRightX() / driveRatio));
+            () -> -driverController.getLeftY() / driveRatio,
+            () -> -driverController.getLeftX() / driveRatio,
+            () -> -driverController.getRightX() / driveRatio));
     
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));

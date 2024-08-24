@@ -13,7 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Arrays;
 
@@ -27,7 +27,9 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -43,6 +45,7 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -61,8 +64,7 @@ public class Drive extends SubsystemBase {
   private static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
-  private static final Translation2d speakerPose = new Translation2d(0.0, 5.55);
-  private static final Translation2d blueSpeaker = new Translation2d(0.225, 5.55);
+  private static final Translation2d speakerPosition = new Translation2d(0.0, 5.55);
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -248,7 +250,7 @@ public class Drive extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
     if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 999999));
       m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
     }
 
@@ -256,25 +258,14 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Return distance from speaker
-   * @return distance from speaker
+   * 
+   * @return Ideal rotation to speaker opening
    */
-  @AutoLogOutput(key = "Drive/Distance from Speaker")
-  public double getSpeakerDistance()
-  {
-    Translation2d current = new Translation2d(getPose().getX(), getPose().getY());
-    if(AllianceFlipUtil.shouldFlip())
-    {
-      Translation2d redSpeaker = new Translation2d(AllianceFlipUtil.apply(speakerPose.getX()), AllianceFlipUtil.apply(speakerPose.getY()));
-      return Math.sqrt(
-        Math.pow(
-          Math.abs(current.getX()-redSpeaker.getX()), 2.0) + Math.pow(Math.abs(current.getY()-redSpeaker.getY()), 2.0));
-    } else
-    {
-      return Math.sqrt(
-        Math.pow(
-          Math.abs(current.getX()-blueSpeaker.getX()), 2.0) + Math.pow(Math.abs(current.getY()-blueSpeaker.getY()), 2.0));
-    }
+  @AutoLogOutput(key = "Drive/Rotation To Speaker")
+  public Rotation2d getRotationToSpeaker(){
+      return new Rotation2d(
+        getSpeakerPose().getX() - getPose().getX(),
+        getSpeakerPose().getY() - getPose().getY());
   }
 
   /**
@@ -334,10 +325,12 @@ public class Drive extends SubsystemBase {
     return driveVelocityAverage / 4.0;
   }
 
+  /** Returns rolling average wheel radius during routine */
   public double[] getWheelRadiusCharacterizationPosition() {
     return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
   }
 
+  /** Method to just spin in a circle */
   public void runWheelRadiusCharacterization(double omegaSpeed) {
     runVelocity(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
   }
@@ -375,7 +368,6 @@ public class Drive extends SubsystemBase {
 
 
   public Rotation2d getRotation() {
-    //return pose.getRotation();
     return getPose().getRotation();
   }
 
@@ -433,6 +425,10 @@ public class Drive extends SubsystemBase {
     };
   }
 
+  /**
+   * Pose of speaker depending on current alliance
+   * @return
+   */
   public Pose2d getSpeakerPose(){
     Pose2d speaker = new Pose2d();
     if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
@@ -444,16 +440,12 @@ public class Drive extends SubsystemBase {
     return speaker;
   }
 
+  /**
+   * Distance from speaker opening
+   * @return
+   */
   public double getDistanceFromSpeaker(){
     return getSpeakerPose().getTranslation().getDistance(getPose().getTranslation());
-  }
-
-  public double getRotationFromSpeaker(){
-    
-    //using the convention of 0 facing forward on blue origin(facing red) and 0 facing forward on red is facing blue wall
-    Pose2d relative = getSpeakerPose().relativeTo(getPose());
-    double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
-    return angle;
   }
 
     /**
