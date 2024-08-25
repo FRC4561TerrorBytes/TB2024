@@ -6,12 +6,6 @@ package frc.robot.commands;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
@@ -22,7 +16,6 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.AllianceFlipUtil;
 
 public class AutoShootCommand extends Command {
 
@@ -33,7 +26,6 @@ public class AutoShootCommand extends Command {
   private final Drive drive;
   private double targetMPS;
 
-  private static final Translation2d blueSpeaker = new Translation2d(0.225, 5.55);
 
   public AutoShootCommand(Arm arm, Shooter shooter, Indexer indexer, Intake intake, Drive drive) {
     this.arm = arm;
@@ -54,40 +46,16 @@ public class AutoShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Translation2d speakerAlliance = AllianceFlipUtil.apply(blueSpeaker);
-    Pose2d robotRotation = drive.getPose();
-
-    Transform2d pose = robotRotation.minus(new Pose2d(speakerAlliance, Rotation2d.fromDegrees(180.0)));
-
-    Logger.recordOutput("Auto Shoot/Speaker Rot", pose);
-
-    double txAngle = 0.0;
-
-    if (txAngle > 3.5) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, -Units.degreesToRadians(20)));
-      Logger.recordOutput("Auto Rotate/Rotating", true);
-    } else if (txAngle < -3.5) {
-      drive.runVelocity(new ChassisSpeeds(0, 0, Units.degreesToRadians(20)));
-      Logger.recordOutput("Auto Rotate/Rotating", true);
-    } else {
-      Logger.recordOutput("Auto Rotate/Rotating", false);
-      drive.stopWithX();
-    }
-
     double armAngleInterpolated = shooter.interpolateArmAngle(drive.getDistanceFromSpeaker());
     arm.setArmSetpoint(armAngleInterpolated);
     targetMPS = 25;
 
-    if (txAngle < 3.5 && txAngle > -3.5) {
-      shooter.setFlywheelSpeed(targetMPS);
+    shooter.setFlywheelSpeed(targetMPS);
 
-      if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
-        indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
-        intake.setIntakeSpeed(0.5);
-      }
+    if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
+      indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
+      intake.setIntakeSpeed(0.5);
     }
-
-    Logger.recordOutput("Auto Rotate/TX", txAngle);
   }
 
   // Called once the command ends or is interrupted.

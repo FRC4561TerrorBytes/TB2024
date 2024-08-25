@@ -256,7 +256,9 @@ public class RobotContainer {
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
-      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
+      .whileTrue(
+        new FaceSpeaker(drive)
+        .andThen(new AutoShootCommand(arm, shooter, indexer, intake, drive)));
       
     //Preset shooting
     driverController.rightBumper().and(() -> !autoShootToggle)

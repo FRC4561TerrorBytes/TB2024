@@ -51,7 +51,7 @@ public class FaceSpeaker extends Command {
   @Override
   public void initialize() {
     controller.reset();
-    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees());
+    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees() - 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,9 +63,9 @@ public class FaceSpeaker extends Command {
     drive.runVelocity(
       new ChassisSpeeds(0, 0,rotationSpeed));
 
-    Logger.recordOutput("TurnActive", true);
-    Logger.recordOutput("Turn X Goal", controller.getSetpoint());
-    Logger.recordOutput("TurnSpeed", rotationSpeed);
+    Logger.recordOutput("Speaker Rot/TurnActive", true);
+    Logger.recordOutput("Speaker Rot/Turn X Goal", controller.getSetpoint());
+    Logger.recordOutput("Speaker Rot/TurnSpeed", rotationSpeed);
   }
 
   // Called once the command ends or is interrupted.
