@@ -255,7 +255,7 @@ public final class Constants {
 
         public static final boolean tuningMode = true;
 
-        public static final Mode currentMode = Mode.SIM;
+        public static final Mode currentMode = Mode.REAL;
 
         public static enum Mode {
                 /** Running on a real robot. */

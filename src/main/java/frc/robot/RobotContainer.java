@@ -47,6 +47,10 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOReal;
 import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOReal;
+import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -83,6 +87,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
+  private final Climber climber;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
@@ -151,6 +156,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIOReal());
         shooter = new Shooter(new ShooterIOReal(), indexer);
         intake = new Intake(new IntakeIOReal());
+        climber = new Climber(new ClimberIOReal());
         break;
 
       case SIM:
@@ -167,6 +173,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIOSim());
         intake = new Intake(new IntakeIOSim());
         shooter = new Shooter(new ShooterIOSim(), indexer);
+        climber = new Climber(new ClimberIOSim());
         break;
 
       default:
@@ -183,6 +190,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         intake = new Intake(new IntakeIO() {});
         shooter = new Shooter(new ShooterIO() {}, indexer);
+        climber = new Climber(new ClimberIO() {});
         break;
     }
 
@@ -280,10 +288,10 @@ public class RobotContainer {
     // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
     //Drive Nudges
-    driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
-    driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
-    driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
-    driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
+    // driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
+    // driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
+    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(0.5), climber));
+    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-0.5), climber));
 
   //Operator CONTROLS
     // Subwoofer angle
