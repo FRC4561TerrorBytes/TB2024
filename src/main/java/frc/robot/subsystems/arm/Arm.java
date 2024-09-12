@@ -78,9 +78,7 @@ public class Arm extends SubsystemBase {
         return io.getArmEncoderRotation();
     }
 
-    public double getAbsoluteRotations(){
-        return io.getAbsoluteRotations();
-    }
+    
 
     @Override
     public void periodic() {

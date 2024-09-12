@@ -33,7 +33,7 @@ public class ArmIOReal implements ArmIO {
     private Alert armRightMotorCurrentAlert; 
 
     public ArmIOReal() {
-        encoder = new DutyCycleEncoder(0);
+        
 
         m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
         m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
@@ -78,7 +78,7 @@ public class ArmIOReal implements ArmIO {
         // m_armMotorLeft.setPosition(getAbsoluteRotation());
         // m_armMotorRight.setPosition(getAbsoluteRotation());
 
-         m_armMotorLeft.setPosition(getAbsoluteRotations());
+         m_armMotorLeft.setPosition(-12.0);
 
         armLeftMotorDisconnectAlert = new Alert("Arm Alert", "Arm left motor is not present on CAN", AlertType.ERROR);
         armLeftMotorCurrentAlert = new Alert("Arm Alert", "Arm left motor has motor/overcurrent fault", AlertType.WARNING);
@@ -107,7 +107,7 @@ public class ArmIOReal implements ArmIO {
     }
 
     public void seedEncoders() {
-        m_armMotorLeft.setPosition(getAbsoluteRotations());
+        m_armMotorLeft.setPosition(-12.0);
     }
 
     public void stopArm() {
@@ -128,10 +128,7 @@ public class ArmIOReal implements ArmIO {
         return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.2;
     }
 
-    @AutoLogOutput(key = "ArmAbsoluteRotations")
-    public double getAbsoluteRotations() {
-        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
-    }
+    
 
     public void nudge(double degrees) {
         armSetPoint = m_armMotorLeft.getPosition().getValueAsDouble() + degrees;

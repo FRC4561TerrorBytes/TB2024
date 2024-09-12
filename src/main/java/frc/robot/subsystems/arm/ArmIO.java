@@ -40,5 +40,5 @@ public interface ArmIO {
 
     public default void nudge(double degrees) {}
 
-    public default double getAbsoluteRotations(){return 0.0;}
+    
 }
