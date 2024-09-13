@@ -74,9 +74,6 @@ public class AutoShootCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Constants.currentMode == Mode.SIM) {
-      return false;
-    }
     if (!indexer.noteInIndexer()) {
       for (int i = 0; i < 25; i++) {
         continue;
