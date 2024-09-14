@@ -1,19 +1,23 @@
 package frc.robot.subsystems.climber;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class ClimberIOReal implements ClimberIO {
 
-    private final CANSparkMax climberMotor = new CANSparkMax(99, MotorType.kBrushless);
+    private final CANSparkMax climberMotor = new CANSparkMax(28, MotorType.kBrushless);
+    private final RelativeEncoder encoder;
 
 
     public ClimberIOReal() {
         climberMotor.restoreFactoryDefaults();
-
-        climberMotor.setSmartCurrentLimit(50, 20);
-        climberMotor.setIdleMode(IdleMode.kBrake);
+        
+        encoder = climberMotor.getEncoder();
+        climberMotor.setSmartCurrentLimit(60, 20);
+        climberMotor.setIdleMode(IdleMode.kBrake
+        );
 
         climberMotor.burnFlash();
     }
@@ -21,6 +25,7 @@ public class ClimberIOReal implements ClimberIO {
     public void updateInputs(ClimberIOInputs inputs) {
         inputs.climberAppliedVolts = climberMotor.getAppliedOutput();
         inputs.climberCurrentAmps = climberMotor.getOutputCurrent();
+        inputs.climberPosition = encoder.getPosition();
     }
 
     public void setClimberSpeed(double speed) {

@@ -249,6 +249,7 @@ public class RobotContainer {
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
+    climber.setDefaultCommand(new InstantCommand(() -> climber.stopClimber(), climber));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
     Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
@@ -290,8 +291,8 @@ public class RobotContainer {
     //Drive Nudges
     // driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
     // driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
-    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(0.5), climber));
-    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-0.5), climber));
+    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(1), climber));
+    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
 
   //Operator CONTROLS
     // Subwoofer angle
