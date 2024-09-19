@@ -13,6 +13,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+import java.util.Arrays;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,6 +28,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -37,19 +40,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
+import frc.robot.util.SwerveSetpoint;
 
 
 public class Drive extends SubsystemBase {
-
-  private PIDController pidController = new PIDController(0.0000000001, 0.0, 0.0);
-
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
@@ -59,12 +64,33 @@ public class Drive extends SubsystemBase {
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
+  private final VisionIO visionIO;
+  private final VisionIOInputsAutoLogged visionInputs = new VisionIOInputsAutoLogged();
+
+  private BuiltInAccelerometer accelerometer = new BuiltInAccelerometer();
+
+  private final SysIdRoutine sysId;
+
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private boolean[] turnCANDisconnect = new boolean[4];
   private boolean[] driveCANDisconnect = new boolean[4];
 
 
-  private final AprilTagFieldLayout aprilTagMap = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+  private boolean modulesOrienting = false;
+  private SwerveSetpoint currentSetpoint =
+  new SwerveSetpoint(
+      new ChassisSpeeds(),
+      new SwerveModuleState[] {
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState(),
+        new SwerveModuleState()
+      });
+
+  private double prevXAccel = 0.0;
+  private double prevYAccel = 0.0;
+  private int collisions = 0;
 
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
@@ -87,12 +113,14 @@ public class Drive extends SubsystemBase {
 
   public Drive(
       GyroIO gyroIO,
+      VisionIO visionIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
       ModuleIO brModuleIO) {
 
     this.gyroIO = gyroIO;
+    this.visionIO = visionIO;
     modules[0] = new Module(flModuleIO, 0);
     modules[1] = new Module(frModuleIO, 1);
     modules[2] = new Module(blModuleIO, 2);
@@ -127,12 +155,35 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
+    sysId = 
+        new SysIdRoutine(
+          new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            (state) -> Logger.recordOutput("Drive/SysIDState", state.toString())),
+          new SysIdRoutine.Mechanism(
+            (voltage) -> {
+              for (int i = 0; i < 4; i++) {
+                modules[i].runCharacterization(voltage.in(Volts));
+              }
+            },
+            null,
+            this));
+
         //m_orchestra.addInstrument(modules[1].getDriveTalon());
+
+    int[] validIDs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIDs);
   }
 
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+
+    visionIO.updateInputs(visionInputs);
+    Logger.processInputs("Vision/Limelight", visionInputs);
+
     for (var module : modules) {
       module.periodic();
     }
@@ -171,9 +222,39 @@ public class Drive extends SubsystemBase {
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 
-    // Apply odometry update
-    m_poseEstimator.update(rawGyroRotation, modulePositions);
+    // Get current acceleration values
+    double XAccel = accelerometer.getX();
+    double YAccel = accelerometer.getY();
 
+    // Calculate jerk by subtracting current accel with previous and dividing by loop time
+    double xJerk = (XAccel - prevXAccel) / 0.2;
+    double yJerk = (YAccel - prevYAccel) / 0.2;
+
+    // Set Previous accel for next loop
+    prevXAccel = XAccel;
+    prevYAccel = YAccel;
+
+
+    // Discard data if collision is detected
+    if (xJerk > -8.5 && yJerk > -8.5) {
+      m_poseEstimator.update(rawGyroRotation, modulePositions);
+    } else {
+      collisions++;
+    }
+
+    Logger.recordOutput("Vision/Collisions Detected", collisions);
+
+    Logger.recordOutput("Vision/xJerk", xJerk);
+    Logger.recordOutput("Vision/yJerk", yJerk);
+    
+    LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
+    if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
+      m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
+    }
+
+    // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
   }
 
   /**
@@ -231,6 +312,14 @@ public class Drive extends SubsystemBase {
       driveVelocityAverage += module.getCharacterizationVelocity();
     }
     return driveVelocityAverage / 4.0;
+  }
+
+  public double[] getWheelRadiusCharacterizationPosition() {
+    return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
+  }
+
+  public void runWheelRadiusCharacterization(double omegaSpeed) {
+    runVelocity(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules. */
@@ -371,4 +460,56 @@ public class Drive extends SubsystemBase {
     return angle;
   }
 
+
+    /**
+   * Returns command that orients all modules to {@code orientation}, ending when the modules have
+   * rotated.
+   */
+  public Command orientModules(Rotation2d orientation) {
+    return orientModules(new Rotation2d[] {orientation, orientation, orientation, orientation});
+  }
+
+  /**
+   * Returns command that orients all modules to {@code orientations[]}, ending when the modules
+   * have rotated.
+   */
+  public Command orientModules(Rotation2d[] orientations) {
+    return run(() -> {
+          SwerveModuleState[] states = new SwerveModuleState[4];
+          for (int i = 0; i < orientations.length; i++) {
+            modules[i].runSetpoint(
+                new SwerveModuleState(0.0, orientations[i]));
+            states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
+          }
+          currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
+        })
+        .until(
+            () ->
+                Arrays.stream(modules)
+                    .allMatch(
+                        module ->
+                            EqualsUtil.epsilonEquals(
+                                module.getAngle().getDegrees(),
+                                module.getState().angle.getDegrees(),
+                                2.0)))
+        .beforeStarting(() -> modulesOrienting = true)
+        .finallyDo(() -> modulesOrienting = false)
+        .withName("Orient Modules");
+  }
+
+  public static Rotation2d[] getCircleOrientations() {
+    return Arrays.stream(Constants.MODULE_TRANSLATIONS)
+        .map(translation -> translation.getAngle().plus(new Rotation2d(Math.PI / 2.0)))
+        .toArray(Rotation2d[]::new);
+  }
+
+    /** Returns a command to run a quasistatic test in the specified direction. */
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+      return sysId.quasistatic(direction);
+    }
+  
+    /** Returns a command to run a dynamic test in the specified direction. */
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+      return sysId.dynamic(direction);
+    }
 }

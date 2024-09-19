@@ -23,15 +23,15 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AmpDrive;
@@ -40,8 +40,8 @@ import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
@@ -53,6 +53,8 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTBSwerve;
+import frc.robot.subsystems.drive.VisionIO;
+import frc.robot.subsystems.drive.VisionIOLimelight;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOReal;
@@ -90,6 +92,8 @@ public class RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0); //Change when done
   private final CommandXboxController operatorController = new CommandXboxController(1); //Change when done
+
+  private final CommandXboxController outreachController = new CommandXboxController(2);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -137,6 +141,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
+                new VisionIOLimelight(),
                 new ModuleIOTBSwerve(0),
                 new ModuleIOTBSwerve(1),
                 new ModuleIOTBSwerve(2),
@@ -153,6 +158,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIOSim(),
                 new ModuleIOSim(),
                 new ModuleIOSim(),
@@ -168,6 +174,7 @@ public class RobotContainer {
         drive =
             new Drive(
                 new GyroIO() {},
+                new VisionIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
@@ -187,6 +194,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
     NamedCommands.registerCommand("AutoIntake", new AutoNoteAlignCommand(drive, intake, indexer, arm));
+
+    NamedCommands.registerCommand("AmpPosition",
+      new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
+
     NamedCommands.registerCommand("SabotageIntake", new RunCommand(() -> intake.setIntakeSpeed(0.3), intake));
     NamedCommands.registerCommand("SabotageIndexer", new RunCommand(() -> indexer.setIndexerSpeed(0.4), indexer));
     NamedCommands.registerCommand("SabotageShooter", new RunCommand(() -> shooter.setFlywheelSpeed(5), shooter));
@@ -207,6 +219,15 @@ public class RobotContainer {
         .withTimeout(1.0)
       .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
         .withTimeout(1.5));
+    
+    autoChooser.addOption(
+      "Drive Wheel Characterization",
+      drive.orientModules(Drive.getCircleOrientations())
+      .andThen(
+        new WheelRadiusCharacterization(
+          drive, WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE))
+      .withName("Drive Wheel Radius Characterization"));
+
    
     // Configure the button bindings
     configureButtonBindings();
@@ -222,9 +243,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY() / driveRatio,
-            () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() / driveRatio));
+            () -> -outreachController.getLeftY() / driveRatio,
+            () -> -outreachController.getLeftX() / driveRatio,
+            () -> -outreachController.getRightX() / driveRatio));
     
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
@@ -250,7 +271,7 @@ public class RobotContainer {
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
       .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
-
+      
     //Preset shooting
     driverController.rightBumper().and(() -> !autoShootToggle)
       .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
@@ -266,9 +287,9 @@ public class RobotContainer {
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+    // driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
-    driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
+    // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
     //Drive Nudges
     driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
@@ -276,7 +297,7 @@ public class RobotContainer {
     driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
     driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
 
-    //DEEKSHI CONTROLS
+  //Operator CONTROLS
     // Subwoofer angle
     operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
@@ -284,7 +305,7 @@ public class RobotContainer {
     // Stow arm
     operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
     .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
-    
+
     //Nudge arm up/down
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
@@ -312,6 +333,31 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
 
     operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
+    
+  //OUTREACH CONTROLS
+    outreachController.leftBumper()
+      .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm));
+
+    outreachController.leftTrigger()
+      .whileTrue(new IntakeCommand(intake, indexer, arm));
+
+    outreachController.rightBumper().and(() -> !shootEnum.equals(shootPositions.AMP))
+      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
+
+    outreachController.rightTrigger()
+      .whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
+
+    outreachController.a()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
+
+    outreachController.b()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
+
+    outreachController.y()
+      .onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.shootAngle))));
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);

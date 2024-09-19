@@ -1,4 +1,4 @@
-//LimelightHelpers v1.5.0 (March 27, 2024)
+//LimelightHelpers v1.6 (April 9, 2024)
 
 package frc.robot;
 
@@ -386,13 +386,13 @@ public class LimelightHelpers {
     }
 
     public static class RawFiducial {
-        public int id;
-        public double txnc;
-        public double tync;
-        public double ta;
-        public double distToCamera;
-        public double distToRobot;
-        public double ambiguity;
+        public int id = 0;
+        public double txnc = 0;
+        public double tync = 0;
+        public double ta = 0;
+        public double distToCamera = 0;
+        public double distToRobot = 0;
+        public double ambiguity = 0;
 
 
         public RawFiducial(int id, double txnc, double tync, double ta, double distToCamera, double distToRobot, double ambiguity) {
@@ -403,6 +403,41 @@ public class LimelightHelpers {
             this.distToCamera = distToCamera;
             this.distToRobot = distToRobot;
             this.ambiguity = ambiguity;
+        }
+    }
+
+    public static class RawDetection {
+        public int classId = 0;
+        public double txnc = 0;
+        public double tync = 0;
+        public double ta = 0;
+        public double corner0_X = 0;
+        public double corner0_Y = 0;
+        public double corner1_X = 0;
+        public double corner1_Y = 0;
+        public double corner2_X = 0;
+        public double corner2_Y = 0;
+        public double corner3_X = 0;
+        public double corner3_Y = 0;
+
+
+        public RawDetection(int classId, double txnc, double tync, double ta, 
+            double corner0_X, double corner0_Y, 
+            double corner1_X, double corner1_Y, 
+            double corner2_X, double corner2_Y, 
+            double corner3_X, double corner3_Y ) {
+            this.classId = classId;
+            this.txnc = txnc;
+            this.tync = tync;
+            this.ta = ta;
+            this.corner0_X = corner0_X;
+            this.corner0_Y = corner0_Y;
+            this.corner1_X = corner1_X;
+            this.corner1_Y = corner1_Y;
+            this.corner2_X = corner2_X;
+            this.corner2_Y = corner2_Y;
+            this.corner3_X = corner3_X;
+            this.corner3_Y = corner3_Y;
         }
     }
 
@@ -468,7 +503,7 @@ public class LimelightHelpers {
         return new Pose2d(tran2d, r2d);
     }
 
-    private static double extractBotPoseEntry(double[] inData, int position){
+    private static double extractArrayEntry(double[] inData, int position){
         if(inData.length < position+1)
         {
             return 0;
@@ -480,11 +515,11 @@ public class LimelightHelpers {
         var poseEntry = LimelightHelpers.getLimelightNTTableEntry(limelightName, entryName);
         var poseArray = poseEntry.getDoubleArray(new double[0]);
         var pose = toPose2D(poseArray);
-        double latency = extractBotPoseEntry(poseArray,6);
-        int tagCount = (int)extractBotPoseEntry(poseArray,7);
-        double tagSpan = extractBotPoseEntry(poseArray,8);
-        double tagDist = extractBotPoseEntry(poseArray,9);
-        double tagArea = extractBotPoseEntry(poseArray,10);
+        double latency = extractArrayEntry(poseArray,6);
+        int tagCount = (int)extractArrayEntry(poseArray,7);
+        double tagSpan = extractArrayEntry(poseArray,8);
+        double tagDist = extractArrayEntry(poseArray,9);
+        double tagArea = extractArrayEntry(poseArray,10);
         //getlastchange() in microseconds, ll latency in milliseconds
         var timestamp = (poseEntry.getLastChange() / 1000000.0) - (latency/1000.0);
 
@@ -511,6 +546,65 @@ public class LimelightHelpers {
         }
 
         return new PoseEstimate(pose, timestamp,latency,tagCount,tagSpan,tagDist,tagArea,rawFiducials);
+    }
+
+    private static RawFiducial[] getRawFiducials(String limelightName) {
+        var entry = LimelightHelpers.getLimelightNTTableEntry(limelightName, "rawfiducials");
+        var rawFiducialArray = entry.getDoubleArray(new double[0]);
+        int valsPerEntry = 7;
+        if (rawFiducialArray.length % valsPerEntry != 0) {
+            return new RawFiducial[0];
+        }
+    
+        int numFiducials = rawFiducialArray.length / valsPerEntry;
+        RawFiducial[] rawFiducials = new RawFiducial[numFiducials];
+    
+        for (int i = 0; i < numFiducials; i++) {
+            int baseIndex = i * valsPerEntry;
+            int id = (int) extractArrayEntry(rawFiducialArray, baseIndex);
+            double txnc = extractArrayEntry(rawFiducialArray, baseIndex + 1);
+            double tync = extractArrayEntry(rawFiducialArray, baseIndex + 2);
+            double ta = extractArrayEntry(rawFiducialArray, baseIndex + 3);
+            double distToCamera = extractArrayEntry(rawFiducialArray, baseIndex + 4);
+            double distToRobot = extractArrayEntry(rawFiducialArray, baseIndex + 5);
+            double ambiguity = extractArrayEntry(rawFiducialArray, baseIndex + 6);
+            
+            rawFiducials[i] = new RawFiducial(id, txnc, tync, ta, distToCamera, distToRobot, ambiguity);
+        }
+    
+        return rawFiducials;
+    }
+
+    public static RawDetection[] getRawDetections(String limelightName) {
+        var entry = LimelightHelpers.getLimelightNTTableEntry(limelightName, "rawdetections");
+        var rawDetectionArray = entry.getDoubleArray(new double[0]);
+        int valsPerEntry = 11;
+        if (rawDetectionArray.length % valsPerEntry != 0) {
+            return new RawDetection[0];
+        }
+    
+        int numDetections = rawDetectionArray.length / valsPerEntry;
+        RawDetection[] rawDetections = new RawDetection[numDetections];
+    
+        for (int i = 0; i < numDetections; i++) {
+            int baseIndex = i * valsPerEntry; // Starting index for this detection's data
+            int classId = (int) extractArrayEntry(rawDetectionArray, baseIndex);
+            double txnc = extractArrayEntry(rawDetectionArray, baseIndex + 1);
+            double tync = extractArrayEntry(rawDetectionArray, baseIndex + 2);
+            double ta = extractArrayEntry(rawDetectionArray, baseIndex + 3);
+            double corner0_X = extractArrayEntry(rawDetectionArray, baseIndex + 4);
+            double corner0_Y = extractArrayEntry(rawDetectionArray, baseIndex + 5);
+            double corner1_X = extractArrayEntry(rawDetectionArray, baseIndex + 6);
+            double corner1_Y = extractArrayEntry(rawDetectionArray, baseIndex + 7);
+            double corner2_X = extractArrayEntry(rawDetectionArray, baseIndex + 8);
+            double corner2_Y = extractArrayEntry(rawDetectionArray, baseIndex + 9);
+            double corner3_X = extractArrayEntry(rawDetectionArray, baseIndex + 10);
+            double corner3_Y = extractArrayEntry(rawDetectionArray, baseIndex + 11);
+            
+            rawDetections[i] = new RawDetection(classId, txnc, tync, ta, corner0_X, corner0_Y, corner1_X, corner1_Y, corner2_X, corner2_Y, corner3_X, corner3_Y);
+        }
+    
+        return rawDetections;
     }
 
     private static void printPoseEstimate(PoseEstimate pose) {
@@ -906,6 +1000,32 @@ public class LimelightHelpers {
             validIDsDouble[i] = validIDs[i];
         }        
         setLimelightNTDoubleArray(limelightName, "fiducial_id_filters_set", validIDsDouble);
+    }
+
+    public static void SetFiducialDownscalingOverride(String limelightName, float downscale) 
+    {
+        int d = 0; // pipeline
+        if (downscale == 1.0)
+        {
+            d = 1;
+        }
+        if (downscale == 1.5)
+        {
+            d = 2;
+        }
+        if (downscale == 2)
+        {
+            d = 3;
+        }
+        if (downscale == 3)
+        {
+            d = 4;
+        }
+        if (downscale == 4)
+        {
+            d = 5;
+        }
+        setLimelightNTDouble(limelightName, "fiducial_downscale_set", d);
     }
     
     public static void setCameraPose_RobotSpace(String limelightName, double forward, double side, double up, double roll, double pitch, double yaw) {
