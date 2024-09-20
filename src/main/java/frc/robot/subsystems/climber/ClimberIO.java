@@ -8,6 +8,7 @@ public interface ClimberIO {
         public double climberAppliedVolts = 0.0;
         public double climberCurrentAmps = 0.0;
         public double climberPosition = 0.0;
+        public double climberTempC = 0.0;
     }
 
     public default void updateInputs(ClimberIOInputs inputs) {};

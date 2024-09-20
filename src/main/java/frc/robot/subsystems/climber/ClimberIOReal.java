@@ -15,9 +15,8 @@ public class ClimberIOReal implements ClimberIO {
         climberMotor.restoreFactoryDefaults();
         
         encoder = climberMotor.getEncoder();
-        climberMotor.setSmartCurrentLimit(60, 20);
-        climberMotor.setIdleMode(IdleMode.kBrake
-        );
+        climberMotor.setSmartCurrentLimit(15);
+        climberMotor.setIdleMode(IdleMode.kBrake);
 
         climberMotor.burnFlash();
     }
@@ -26,6 +25,7 @@ public class ClimberIOReal implements ClimberIO {
         inputs.climberAppliedVolts = climberMotor.getAppliedOutput();
         inputs.climberCurrentAmps = climberMotor.getOutputCurrent();
         inputs.climberPosition = encoder.getPosition();
+        inputs.climberTempC = climberMotor.getMotorTemperature();
     }
 
     public void setClimberSpeed(double speed) {
