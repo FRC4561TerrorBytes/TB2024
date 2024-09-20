@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.util.Alert;
 import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
@@ -176,18 +177,6 @@ public class Shooter extends SubsystemBase {
     return Units.degreesToRotations(degrees)*encoderToArm;
   }
 
-  // public double calculateFlywheelSpeed(){
-  //   m_angle = Units.degreesToRadians(findStraightLineAngle());
-
-  //   double xOffset = (Constants.ARM_LENGTH*Math.sin(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(Units.degreesToRadians(90) - m_angle)) + Constants.ELEVATOR_X_OFFSET;
-
-  //   //need this here because it is used in find velocity function
-  //   m_height = Constants.ELEVATOR_PIVOT_HEIGHT-(Constants.ARM_LENGTH*Math.cos(m_angle - Constants.FLYWHEEL_OFFSET)) + (Constants.FLYWHEELS_FROM_ARM*Math.sin(m_angle));
-
-  //   //distance from flywheel exit using flat distance to frame and subtracting(closer) the arm based off angle using trig
-  //   m_velocitySetpoint = findVelocity(findFlatDistanceWithVision() + (Units.inchesToMeters(26.0)/2) - xOffset)*6;
-  //   return m_velocitySetpoint;
-  // }
 
   @AutoLogOutput(key = "Shooter/VelocitySetpoint")
   public double getVelocity(){
@@ -208,6 +197,11 @@ public class Shooter extends SubsystemBase {
 
   public void setVoltage(double voltage) {
     io.setVoltage(voltage);
+  }
+  
+  @AutoLogOutput(key = "Shooter/CAN Disconnect")
+  public boolean getDisconnect(){
+    return io.getDisconnect();
   }
 
   public boolean flywheelUpToSpeed(double mps){

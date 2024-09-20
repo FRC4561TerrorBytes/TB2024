@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -221,6 +222,16 @@ public class ModuleIOTBSwerve implements ModuleIO {
 
     public TalonFX getDriveTalon() {
         return driveTalon;
+    }
+
+    @Override
+    public boolean getDriveMotorDisconnect() {
+        return driveMotorDisconnectAlert.getState();
+    }
+
+    @Override
+    public boolean getTurnMotorDisconnect(){
+        return turnMotorDisconnectAlert.getState();
     }
 
 }

@@ -13,6 +13,7 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -189,5 +190,13 @@ public class Module {
 
   public TalonFX getDriveTalon() {
     return io.getDriveTalon();
+  }
+
+  public boolean getDriveMotorDisconnect(){
+    return io.getDriveMotorDisconnect();
+  }
+
+  public boolean getTurnMotorDisconnect(){
+    return io.getTurnMotorDisconnect();
   }
 }

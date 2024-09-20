@@ -14,9 +14,7 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
-
 import java.util.Arrays;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,6 +25,9 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -72,6 +73,9 @@ public class Drive extends SubsystemBase {
   private final SysIdRoutine sysId;
 
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
+  private boolean[] turnCANDisconnect = new boolean[4];
+  private boolean[] driveCANDisconnect = new boolean[4];
+
 
   private boolean modulesOrienting = false;
   private SwerveSetpoint currentSetpoint =
@@ -230,6 +234,7 @@ public class Drive extends SubsystemBase {
     prevXAccel = XAccel;
     prevYAccel = YAccel;
 
+
     // Discard data if collision is detected
     if (xJerk > -8.5 && yJerk > -8.5) {
       m_poseEstimator.update(rawGyroRotation, modulePositions);
@@ -369,6 +374,30 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.addVisionMeasurement(visionPose, timestamp);
   }
 
+  @AutoLogOutput(key = "Drive/Turn CAN Disconnect")
+  public boolean[] getTurnDisconnect(){
+    int i = 0;
+    for(var module : modules){
+      turnCANDisconnect[i] = module.getTurnMotorDisconnect();
+      i++;
+    }
+    return turnCANDisconnect;
+  }
+
+  @AutoLogOutput(key = "Drive/Drive CAN Disconnect")
+  public boolean[] getDriveDisconnect(){
+    int i = 0;
+    for(var module : modules){
+      driveCANDisconnect[i] = module.getDriveMotorDisconnect();
+      i++;
+    }
+    return driveCANDisconnect;
+  }
+
+  public boolean getGyroDisconnect(){
+    return gyroIO.getDisconnect();
+  }
+
   public void resetGyro() {
     gyroIO.resetGyro();
   }
@@ -430,6 +459,7 @@ public class Drive extends SubsystemBase {
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
   }
+
 
     /**
    * Returns command that orients all modules to {@code orientation}, ending when the modules have

@@ -19,46 +19,14 @@ public class AlertHandler {
     public static void reportStatusCodeFault(StatusCode statusCode, String moduleLabel, Alert disconnectAlert, Alert firmwareAlert) {
 
         switch (statusCode) {
-            case EcuIsNotPresent:
-            case CouldNotRetrieveV6Firmware:
-            case InvalidParamValue:
-                // This case covers the TalonFX not existing, not sure it captures every
-                // disconnect
-                disconnectAlert.set(true);
-                break;
-            case NoConfigs:
-                // This case should trigger when the TalonFX reboots improperly when code does
-                // not reboot, such as brownouts
-
-                disconnectAlert.set(true);
-                break;
-            case RxTimeout:
-                // This should cover issues with CAN latency while connection is good, and catch
-                // disconnects
-                disconnectAlert.set(true);
-                Leds.getInstance().canDisconnect = true;
-                break;
-            case CanMessageStale: 
-                // Catches most CAN disconnects while the TalonFX is booted up
-                disconnectAlert.set(true);
-                Leds.getInstance().canDisconnect = true;
-                break;
-            case ApiTooOld:
-            case AppTooOld:
-            case FirmwareTooNew:
-            case FirmwareVersNotCompatible:
-            case FirmVersionCouldNotBeRetrieved:
-                // Old firmware and issues with firmware getting corrupted
-                Leds.getInstance().firmwareAlert = true;
-                firmwareAlert.set(true);
-                break;
             case OK:
                 // This case covers the TalonFX reporting no issues
-                Leds.getInstance().clearAlerts();
                 firmwareAlert.set(false);
                 disconnectAlert.set(false);
-                break;
+                break;            
             default:
+                //Random disconnects return various status codes depending on bus topology
+                disconnectAlert.set(true);
                 break;
         }
 
@@ -73,17 +41,10 @@ public class AlertHandler {
     public static void reportSparkMaxFault(String moduleLabel, CANSparkMax sparkMax, Alert disconnectAlert, Alert currentAlert) {
         
         short faults = sparkMax.getFaults();
-        boolean CANfault = sparkMax.getFault(FaultID.kCANRX) || sparkMax.getFault(FaultID.kCANTX) || sparkMax.getFault(FaultID.kBrownout); // may be                                                                                                  // wiring
-        boolean motorFault = sparkMax.getFault(FaultID.kMotorFault) || sparkMax.getFault(FaultID.kOvercurrent);
 
-        if (CANfault || faults != 0) {
+        if (faults != 0) {
             disconnectAlert.set(true);
-            Leds.getInstance().canDisconnect = true;
-        }  else if (motorFault) {
-            Leds.getInstance().currentAlert = true;
-            currentAlert.set(true);
         } else {
-            Leds.getInstance().clearAlerts();
             disconnectAlert.set(false);
             currentAlert.set(false);
         }
