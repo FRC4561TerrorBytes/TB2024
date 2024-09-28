@@ -52,7 +52,7 @@ public class AutoShootCommand extends Command {
 
     shooter.setFlywheelSpeed(targetMPS);
 
-    if (shooter.flywheelUpToSpeed(targetMPS * 0.875) && arm.armAtSetpoint()) {
+    if (shooter.flywheelUpToSpeed(targetMPS) && arm.armAtSetpoint()) {
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
       intake.setIntakeSpeed(0.5);
     }

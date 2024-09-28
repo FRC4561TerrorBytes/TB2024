@@ -29,7 +29,7 @@ public class FaceSpeaker extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        kP = 0.018;
+        kP = 0.08;
         kI = 0.0;
         kD = 0.0;
         toleranceDegrees = 1.0;
@@ -51,7 +51,7 @@ public class FaceSpeaker extends Command {
   @Override
   public void initialize() {
     controller.reset();
-    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees() - 180);
+    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,6 +64,7 @@ public class FaceSpeaker extends Command {
       new ChassisSpeeds(0, 0,rotationSpeed));
 
     Logger.recordOutput("Speaker Rot/TurnActive", true);
+    Logger.recordOutput("Speaker Rot/Current Rot", drive.getPose().getRotation().getDegrees());
     Logger.recordOutput("Speaker Rot/Turn X Goal", controller.getSetpoint());
     Logger.recordOutput("Speaker Rot/TurnSpeed", rotationSpeed);
   }

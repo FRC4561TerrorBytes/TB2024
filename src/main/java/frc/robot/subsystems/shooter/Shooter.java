@@ -211,7 +211,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps;
+    return inputs.shooterVelocityMPS >= (mps * 0.95);
   }
 
   public boolean noteShot(){
