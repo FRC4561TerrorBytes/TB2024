@@ -6,6 +6,8 @@ package frc.robot.subsystems.climber;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
@@ -29,5 +31,21 @@ public class Climber extends SubsystemBase {
 
   public void stopClimber() {
     io.stopClimber();
+  }
+
+  public boolean getSwitchOneStatus() {
+    return inputs.climberSwitchOne;
+  }
+
+  public boolean getSwitchTwoStatus() {
+    return inputs.climberSwitchTwo;
+  }
+
+  public Command prepareClimber() {
+    return new RunCommand(() -> setClimberSpeed(1)).until(() -> getSwitchOneStatus());
+  }
+
+  public Command climb() {
+    return new RunCommand(() -> setClimberSpeed(1)).until(() -> getSwitchTwoStatus());
   }
 }

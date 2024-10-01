@@ -288,11 +288,10 @@ public class RobotContainer {
 
     // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
-    //Drive Nudges
-    // driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
-    // driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
-    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(1), climber));
-    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
+    driverController.povLeft().whileTrue(climber.prepareClimber());
+    driverController.povUp().whileTrue(climber.climb());
+    driverController.povDown().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
+    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(1), climber));
 
   //Operator CONTROLS
     // Subwoofer angle
