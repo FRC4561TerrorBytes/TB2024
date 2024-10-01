@@ -18,9 +18,8 @@ public class ClimberIOReal implements ClimberIO {
         climberMotor.restoreFactoryDefaults();
         
         encoder = climberMotor.getEncoder();
-        climberMotor.setSmartCurrentLimit(60, 20);
-        climberMotor.setIdleMode(IdleMode.kBrake
-        );
+        climberMotor.setSmartCurrentLimit(15);
+        climberMotor.setIdleMode(IdleMode.kBrake);
 
         switchOne = climberMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
         switchTwo = climberMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
@@ -37,6 +36,7 @@ public class ClimberIOReal implements ClimberIO {
         inputs.climberPosition = encoder.getPosition();
         inputs.climberSwitchOne = switchOne.isPressed();
         inputs.climberSwitchTwo = switchTwo.isPressed();
+        inputs.climberTempC = climberMotor.getMotorTemperature();
     }
 
     public void setClimberSpeed(double speed) {

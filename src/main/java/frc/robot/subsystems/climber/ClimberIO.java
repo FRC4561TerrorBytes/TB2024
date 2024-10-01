@@ -10,6 +10,7 @@ public interface ClimberIO {
         public double climberPosition = 0.0;
         public boolean climberSwitchOne = false;
         public boolean climberSwitchTwo = false;
+        public double climberTempC = 0.0;
     }
 
     public default void updateInputs(ClimberIOInputs inputs) {};
