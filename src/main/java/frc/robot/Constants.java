@@ -39,7 +39,7 @@ public final class Constants {
 
         public static final int PIGEON_ID = 20;
 
-        public static final int FALCON_500_MAX_RPM = 6380;
+        public static final int KRAKEN_X60_MAX_RPM = 6000;
         public static final int CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION = 2048;
         public static final int NEO_MAX_RPM = 5676;
         public static final int NEO_TICKS_PER_ROTATION = 4096;
@@ -48,7 +48,7 @@ public final class Constants {
         public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(26.0);
         public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(26.0);
 
-        public static final double MAX_VELOCITY_METERS_PER_SECOND = FALCON_500_MAX_RPM / 60.0 *
+        public static final double MAX_VELOCITY_METERS_PER_SECOND = KRAKEN_X60_MAX_RPM / 60.0 *
                         (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) *
                         0.10033 * Math.PI;
 
