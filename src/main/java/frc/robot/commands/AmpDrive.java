@@ -4,6 +4,10 @@
 
 package frc.robot.commands;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -21,9 +25,8 @@ public class AmpDrive extends Command {
   private Indexer indexer;
   private Command pathCommand;
 
-  public AmpDrive(Drive drive, Indexer indexer) {
+  public AmpDrive(Drive drive) {
     this.drive = drive;
-    this.indexer = indexer;
 
     addRequirements(drive);
   }
@@ -35,9 +38,17 @@ public class AmpDrive extends Command {
 
     ampPose = AllianceFlipUtil.apply(ampPose);
 
-    pathCommand = AutoBuilder.pathfindThenFollowPath(
-      PathPlannerPath.fromPathFile("Amp Path"), 
-      new PathConstraints(1, 1, 360, 360));
+    try {
+      pathCommand = AutoBuilder.pathfindThenFollowPath(
+        PathPlannerPath.fromPathFile("Amp Path"), 
+        new PathConstraints(1, 1, 360, 360));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

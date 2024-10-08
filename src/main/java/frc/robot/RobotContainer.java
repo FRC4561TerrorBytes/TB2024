@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
@@ -284,7 +285,7 @@ public class RobotContainer {
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    // driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+    driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
     // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
