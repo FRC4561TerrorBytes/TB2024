@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
@@ -112,7 +113,7 @@ public class RobotContainer {
     STOW(-12, 0.0),
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8, 25.0),
-    AMP(7.3, 0.0),
+    AMP(7.5, 0.0),
     STAGE(-8.9, 30.0),
     WING(-9.825, 35.0),
     CENTER_AUTO_NOTE(-8, 25.0),
@@ -252,13 +253,13 @@ public class RobotContainer {
     climber.setDefaultCommand(new InstantCommand(() -> climber.stopClimber(), climber));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
-    Trigger outreachConnected = new Trigger(() -> DriverStation.isJoystickConnected(2));
+    // Trigger outreachConnected = new Trigger(() -> DriverStation.isJoystickConnected(2));
 
-    outreachConnected.whileTrue(
-        DriveCommands.joystickDrive(drive, 
-        () -> -outreachController.getLeftY() / driveRatio, 
-        () -> -outreachController.getLeftX() / driveRatio, 
-        () -> -outreachController.getRightX() / driveRatio));
+    // outreachConnected.whileTrue(
+    //     DriveCommands.joystickDrive(drive, 
+    //     () -> -outreachController.getLeftY() / driveRatio, 
+    //     () -> -outreachController.getLeftX() / driveRatio, 
+    //     () -> -outreachController.getRightX() / driveRatio));
 
     Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
 
@@ -270,6 +271,9 @@ public class RobotContainer {
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
       .onFalse(new InstantCommand(() -> drive.stop(), drive));
+
+    driverController.leftTrigger()
+      .toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
     driverController.rightBumper().and(() -> autoShootToggle)
@@ -292,7 +296,10 @@ public class RobotContainer {
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    // driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+    driverController.a().whileTrue(new AmpDrive(drive, indexer)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+
+    driverController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
 
     // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
@@ -365,6 +372,7 @@ public class RobotContainer {
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
+    SmartDashboard.putData(drive);
   }
 
   public double getArmAngleDegrees() {

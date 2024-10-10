@@ -8,6 +8,9 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -52,7 +55,7 @@ public class FaceSpeaker extends Command {
   @Override
   public void initialize() {
     controller.reset();
-    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees());
+    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees() + 180);
 
     Leds.getInstance().autoShootEndAngle = controller.getSetpoint() + 180;
     Leds.getInstance().autoShootStartAngle = drive.getPose().getRotation().getDegrees() + 180;
@@ -74,6 +77,7 @@ public class FaceSpeaker extends Command {
     Logger.recordOutput("Speaker Rot/Current Rot", drive.getPose().getRotation().getDegrees());
     Logger.recordOutput("Speaker Rot/Turn X Goal", controller.getSetpoint());
     Logger.recordOutput("Speaker Rot/TurnSpeed", rotationSpeed);
+    Logger.recordOutput("Speaker Rot/Pose", new Pose2d(drive.getPose().getTranslation(), drive.getRotationToSpeaker().plus(Rotation2d.fromDegrees(180))));
   }
 
   // Called once the command ends or is interrupted.

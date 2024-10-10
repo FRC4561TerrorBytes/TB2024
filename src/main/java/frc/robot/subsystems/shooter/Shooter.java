@@ -221,7 +221,7 @@ public class Shooter extends SubsystemBase {
 
   public void idleFlywheels(shootPositions armPosition) {
     if (indexer.noteInIndexer() && !armPosition.equals(shootPositions.AMP)) {
-      setFlywheelSpeed(10);
+      setFlywheelSpeed(0);
     } else {
       stopFlywheel();
     }
