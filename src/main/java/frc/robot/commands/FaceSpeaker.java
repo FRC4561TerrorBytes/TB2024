@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.drive.Drive;
 
 public class FaceSpeaker extends Command {
@@ -52,6 +53,10 @@ public class FaceSpeaker extends Command {
   public void initialize() {
     controller.reset();
     controller.setSetpoint(drive.getRotationToSpeaker().getDegrees());
+
+    Leds.getInstance().autoShootEndAngle = controller.getSetpoint() + 180;
+    Leds.getInstance().autoShootStartAngle = drive.getPose().getRotation().getDegrees() + 180;
+    Leds.getInstance().autoShootCommand = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,6 +64,8 @@ public class FaceSpeaker extends Command {
   public void execute() {
     //30 degrees per second max rotation speed
     double rotationSpeed = MathUtil.clamp(controller.calculate(drive.getPose().getRotation().getDegrees()), -30, 30);
+
+    Leds.getInstance().autoShootCurrentAngle = drive.getPose().getRotation().getDegrees() + 180;
 
     drive.runVelocity(
       new ChassisSpeeds(0, 0,rotationSpeed));

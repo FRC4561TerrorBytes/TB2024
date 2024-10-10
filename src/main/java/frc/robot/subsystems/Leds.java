@@ -45,6 +45,8 @@ public class Leds extends SubsystemBase {
   public boolean autoShootCommand = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
+  public double autoShootEndAngle = 0.0;
+  public double autoShootCurrentAngle = 0.0;
   public boolean canDisconnect = false;
   public boolean firmwareAlert = false;
   public boolean currentAlert = false;
@@ -106,10 +108,8 @@ public class Leds extends SubsystemBase {
     Logger.recordOutput("LEDS/Auto Shoot", autoShoot);
 
     NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
-    NetworkTableEntry tx = chair.getEntry("tx");
     NetworkTableEntry tid = chair.getEntry("tid");
     double id = tid.getDouble(0.0);
-    double txAngle = Math.abs(tx.getDouble(57)) - 2;
 
     if (DriverStation.isFMSAttached()) {
       alliance = DriverStation.getAlliance();
@@ -202,7 +202,7 @@ public class Leds extends SubsystemBase {
         } else if (intaking) {
           strobe(Section.FULL, Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
-          solid(1.0 - (txAngle / autoShootStartAngle), Color.kPurple);
+          solid((autoShootStartAngle - autoShootCurrentAngle) / (autoShootStartAngle - autoShootEndAngle), Color.kPurple);
         } else if (autoShoot && (id == 7.0 || id == 4.0)) {
           rainbow(Section.FULL, rainbowCycleLength, rainbowDuration);
         } else if (autoShoot && (id != 7.0 || id != 4.0)) {
