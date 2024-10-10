@@ -244,7 +244,7 @@ public class RobotContainer {
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
             () -> -driverController.getRightX() / driveRatio));
-    
+
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
@@ -252,6 +252,14 @@ public class RobotContainer {
     climber.setDefaultCommand(new InstantCommand(() -> climber.stopClimber(), climber));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
    
+    Trigger outreachConnected = new Trigger(() -> DriverStation.isJoystickConnected(2));
+
+    outreachConnected.whileTrue(
+        DriveCommands.joystickDrive(drive, 
+        () -> -outreachController.getLeftY() / driveRatio, 
+        () -> -outreachController.getLeftX() / driveRatio, 
+        () -> -outreachController.getRightX() / driveRatio));
+
     Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
 
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
