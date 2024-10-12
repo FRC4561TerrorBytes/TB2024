@@ -41,6 +41,7 @@ import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
@@ -301,11 +302,11 @@ public class RobotContainer {
     driverController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
     .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
 
-    // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
+    driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
-    driverController.povLeft().whileTrue(climber.prepareClimber());
-    driverController.povUp().whileTrue(climber.climb());
-    driverController.povDown().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
+    driverController.povUp().whileTrue(climber.prepareClimber());
+    driverController.povDown().whileTrue(climber.climb());
+    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
     driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(1), climber));
 
   //Operator CONTROLS
@@ -373,6 +374,7 @@ public class RobotContainer {
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
     SmartDashboard.putData(drive);
+    SmartDashboard.putData(climber);
   }
 
   public double getArmAngleDegrees() {

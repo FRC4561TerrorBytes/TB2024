@@ -48,6 +48,7 @@ public class Leds extends SubsystemBase {
   public double autoShootEndAngle = 0.0;
   public double autoShootCurrentAngle = 0.0;
   public boolean ampDrive = false;
+  public boolean climbDone = false;
   public boolean canDisconnect = false;
   public boolean firmwareAlert = false;
   public boolean currentAlert = false;
@@ -204,6 +205,8 @@ public class Leds extends SubsystemBase {
           strobe(Section.FULL, Color.kDodgerBlue, strobeSlowDuration);
         } else if (autoShootCommand) {
           solid((autoShootStartAngle - autoShootCurrentAngle) / (autoShootStartAngle - autoShootEndAngle), Color.kPurple);
+        } else if (autoShoot) {
+          strobe(Section.FULL, Color.kFirstRed, strobeSlowDuration);
         } else if (ampDrive) {
           rainbow(Section.FULL, rainbowCycleLength, rainbowDuration);
         } else if (noteInIndexer) {

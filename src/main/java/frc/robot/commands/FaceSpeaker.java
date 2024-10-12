@@ -33,7 +33,7 @@ public class FaceSpeaker extends Command {
 
     switch (Constants.currentMode) {
       case REAL:
-        kP = 0.08;
+        kP = 0.12;
         kI = 0.0;
         kD = 0.0;
         toleranceDegrees = 1.0;

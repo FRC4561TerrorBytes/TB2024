@@ -12,8 +12,9 @@ public class ClimberIOSim implements ClimberIO {
 
     public void updateInputs(ClimberIOInputs inputs) {
         climberMotorSim.update(LOOP_PERIOD_SECS);
-
         inputs.climberAppliedVolts = climberAppliedVolts;
+        inputs.climberPosition = climberMotorSim.getAngularPositionRotations();
+        inputs.climberCurrentAmps = climberMotorSim.getCurrentDrawAmps();
     }
 
     public void setClimberSpeed(double speed) {

@@ -10,8 +10,7 @@ public class ClimberIOReal implements ClimberIO {
 
     private final CANSparkMax climberMotor = new CANSparkMax(28, MotorType.kBrushless);
     private final RelativeEncoder encoder;
-    private final SparkLimitSwitch switchOne;
-    private final SparkLimitSwitch switchTwo;
+    private final SparkLimitSwitch limitSwitch;
 
 
     public ClimberIOReal() {
@@ -21,11 +20,8 @@ public class ClimberIOReal implements ClimberIO {
         climberMotor.setSmartCurrentLimit(15);
         climberMotor.setIdleMode(IdleMode.kBrake);
 
-        switchOne = climberMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-        switchTwo = climberMotor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-
-        switchOne.enableLimitSwitch(false);
-        switchTwo.enableLimitSwitch(true);
+        limitSwitch = climberMotor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
+        limitSwitch.enableLimitSwitch(true);
 
         climberMotor.burnFlash();
     }
@@ -34,8 +30,7 @@ public class ClimberIOReal implements ClimberIO {
         inputs.climberAppliedVolts = climberMotor.getAppliedOutput();
         inputs.climberCurrentAmps = climberMotor.getOutputCurrent();
         inputs.climberPosition = encoder.getPosition();
-        inputs.climberSwitchOne = switchOne.isPressed();
-        inputs.climberSwitchTwo = switchTwo.isPressed();
+        inputs.climberLimitSwitch = limitSwitch.isPressed();
         inputs.climberTempC = climberMotor.getMotorTemperature();
     }
 

@@ -33,19 +33,19 @@ public class Climber extends SubsystemBase {
     io.stopClimber();
   }
 
-  public boolean getSwitchOneStatus() {
-    return inputs.climberSwitchOne;
+  public boolean getLimitSwitchStatus() {
+    return inputs.climberLimitSwitch;
   }
 
-  public boolean getSwitchTwoStatus() {
-    return inputs.climberSwitchTwo;
+  public double getClimberPosition() {
+    return inputs.climberPosition;
   }
 
   public Command prepareClimber() {
-    return new RunCommand(() -> setClimberSpeed(1)).until(() -> getSwitchOneStatus());
+    return new RunCommand(() -> setClimberSpeed(1), this).until(() -> getClimberPosition() > 120);
   }
 
   public Command climb() {
-    return new RunCommand(() -> setClimberSpeed(1)).until(() -> getSwitchTwoStatus());
+    return new RunCommand(() -> setClimberSpeed(1), this).until(() -> getLimitSwitchStatus());
   }
 }
