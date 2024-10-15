@@ -38,6 +38,8 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
         public static final int PIGEON_ID = 20;
+        
+        public static final double DRIVE_DEADBAND = 0.125;
 
         public static final int KRAKEN_X60_MAX_RPM = 6000;
         public static final int CTRE_TALONFX_ENCODER_TICKS_PER_ROTATION = 2048;

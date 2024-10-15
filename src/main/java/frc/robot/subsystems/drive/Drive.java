@@ -89,10 +89,6 @@ public class Drive extends SubsystemBase {
         new SwerveModuleState()
       });
 
-  private double prevXAccel = 0.0;
-  private double prevYAccel = 0.0;
-  private int collisions = 0;
-
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
@@ -222,30 +218,6 @@ public class Drive extends SubsystemBase {
       Twist2d twist = kinematics.toTwist2d(moduleDeltas);
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
-
-    // Get current acceleration values
-    double XAccel = accelerometer.getX();
-    double YAccel = accelerometer.getY();
-
-    // Calculate jerk by subtracting current accel with previous and dividing by loop time
-    double xJerk = (XAccel - prevXAccel) / 0.2;
-    double yJerk = (YAccel - prevYAccel) / 0.2;
-
-    // Set Previous accel for next loop
-    prevXAccel = XAccel;
-    prevYAccel = YAccel;
-
-    // Discard data if collision is detected
-    if (xJerk > -8.5 && yJerk > -8.5) {
-      m_poseEstimator.update(rawGyroRotation, modulePositions);
-    } else {
-      collisions++;
-    }
-
-    Logger.recordOutput("Vision/Collisions Detected", collisions);
-
-    Logger.recordOutput("Vision/xJerk", xJerk);
-    Logger.recordOutput("Vision/yJerk", yJerk);
     
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
