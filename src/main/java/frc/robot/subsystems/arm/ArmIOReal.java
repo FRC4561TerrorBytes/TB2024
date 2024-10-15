@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.StatusCode;
@@ -14,8 +13,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 import frc.robot.util.Alert;
-import frc.robot.util.AlertHandler;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.AlertHandler;
 
 public class ArmIOReal implements ArmIO {
     private double armSetPoint = 0.0;

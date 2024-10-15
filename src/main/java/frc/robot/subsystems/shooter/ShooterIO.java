@@ -5,7 +5,6 @@
 package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
-import frc.robot.util.Alert;
 
 /** Add your docs here. */
 public interface ShooterIO {
