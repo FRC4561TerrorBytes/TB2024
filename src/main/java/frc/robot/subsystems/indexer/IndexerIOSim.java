@@ -18,9 +18,9 @@ public class IndexerIOSim implements IndexerIO {
 
     public void updateInputs(IndexerIOInputs inputs) {
         indexerMotorSim.update(LOOP_PERIOD_SECS);
-
         inputs.indexerAppliedVolts = indexerAppliedVolts;
     }
+
 
     public void setIndexerSpeed(double speed){
         indexerAppliedVolts = speed / 12;

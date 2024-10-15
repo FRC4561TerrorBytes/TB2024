@@ -30,6 +30,7 @@ public class IntakeIOReal implements IntakeIO{
 
     private Alert intakeMotorDisconnectAlert;
     private Alert intakeMotorCurrentAlert;
+    private boolean alertActive;
 
       public IntakeIOReal() {
 
@@ -78,9 +79,13 @@ public class IntakeIOReal implements IntakeIO{
         AlertHandler.reportSparkMaxFault("Intake Alert", m_frontIntake, intakeMotorDisconnectAlert, intakeMotorCurrentAlert);
     };
 
+    @Override
+    public boolean getDisconnect(){
+        return intakeMotorDisconnectAlert.getState();
+    }
+
     public void setIntakeSpeed(double velocity) {
         m_frontIntake.set(velocity);
-        //m_rotatorRoller.setVoltage(velocity * 12);
     };
 
     public void stopIntake() {

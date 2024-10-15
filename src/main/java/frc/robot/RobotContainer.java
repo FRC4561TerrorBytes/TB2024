@@ -1,6 +1,3 @@
-// Copyright 2021-2023 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // version 3 as published by the Free Software Foundation or
@@ -13,6 +10,8 @@
 
 package frc.robot;
 
+
+import java.util.Arrays;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -34,7 +33,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.Mode;
+import frc.robot.commands.AmpDrive;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AmpDrive;
 import frc.robot.commands.AutoNoteAlignCommand;
@@ -197,8 +199,10 @@ public class RobotContainer {
         break;
     }
 
+    //Visualize command scheduler routine in SmartDashboard
     SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
+    //Register NamedCommands for use in PathPlanner
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
     NamedCommands.registerCommand("Spin Flywheels", new InstantCommand(() -> shooter.setFlywheelSpeed(15)));
     NamedCommands.registerCommand("AutoShoot", new AutoShootCommand(arm, shooter, indexer, intake, drive));
@@ -222,6 +226,13 @@ public class RobotContainer {
     //     new FeedForwardCharacterization(
     //         drive, drive::runCharacterizationVolts, drive::getCharacterizationVelocity));
 
+    autoChooser.addOption("ShootGrab", new InstantCommand(() -> arm.setArmSetpoint(-6))
+      .andThen(new WaitCommand(1.5))
+      .andThen(new ShootCommand(shooter, indexer, intake, arm, shootPositions.SUBWOOFER))
+        .withTimeout(1.0)
+      .andThen(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0, () -> 0))
+        .withTimeout(1.5));
+    
     autoChooser.addOption(
       "Drive Wheel Characterization",
       drive.orientModules(Drive.getCircleOrientations())
@@ -229,6 +240,7 @@ public class RobotContainer {
         new WheelRadiusCharacterization(
           drive, WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE))
       .withName("Drive Wheel Radius Characterization"));
+
    
     // Configure the button bindings
     configureButtonBindings();
@@ -254,18 +266,14 @@ public class RobotContainer {
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
     climber.setDefaultCommand(new InstantCommand(() -> climber.stopClimber(), climber));
     // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
-   
-    // Trigger outreachConnected = new Trigger(() -> DriverStation.isJoystickConnected(2));
-
-    // outreachConnected.whileTrue(
-    //     DriveCommands.joystickDrive(drive, 
-    //     () -> -outreachController.getLeftY() / driveRatio, 
-    //     () -> -outreachController.getLeftX() / driveRatio, 
-    //     () -> -outreachController.getRightX() / driveRatio));
 
     Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
-
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
+
+    // //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
+    // Trigger CANDisconnect = new Trigger(() -> disconnectActive());
+    // CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true).ignoringDisable(true));
+    // CANDisconnect.onFalse(new InstantCommand(() -> Leds.getInstance().canDisconnect = false).ignoringDisable(true));
 
   //PANAV CONTROLS
     // Intake command
@@ -313,7 +321,7 @@ public class RobotContainer {
   //Operator CONTROLS
     // Subwoofer angle
     operatorController.povLeft().onTrue(new InstantCommand(() -> shootEnum = shootPositions.SUBWOOFER)
-      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));// arm.getArmAngleDegrees() + 5)));
+      .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
     // Stow arm
     operatorController.povRight().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
@@ -323,7 +331,7 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() + 0.25), arm));
     operatorController.povDown().onTrue(new InstantCommand(() -> arm.setArmSetpoint(arm.getArmEncoderRotation() - 0.25), arm));
 
-    //
+    //Preset Arm Positions
     operatorController.a().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
       .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootEnum.getShootAngle()))));
 
@@ -378,6 +386,43 @@ public class RobotContainer {
     SmartDashboard.putData(climber);
   }
 
+  /**
+   * Run through all subsystems and set upper LED section to red if any system has a disconnect
+   */
+  public void disconnectActive() {
+    if (Constants.currentMode == Mode.REAL) {
+
+      if (arm.getDisconnect()
+          || shooter.getDisconnect()
+          || indexer.getDisconnect()
+          || intake.getDisconnect()
+          || drive.getGyroDisconnect()
+          || isAnyTrue(drive.getDriveDisconnect())
+          || isAnyTrue(drive.getTurnDisconnect())) {
+
+        Leds.getInstance().canDisconnect = true;
+      } else {
+        Leds.getInstance().canDisconnect = false;
+
+      }
+    }
+  }
+
+  /**
+   * Loop through a boolean array and return true if any element is true
+   * @param array
+   * @return
+   */
+  private static boolean isAnyTrue(boolean[] array){
+
+    for(boolean b : array) if(b) return true;
+    return false;
+  }
+
+  /**
+   * Return angle of arm
+   * @return arm angle
+   */
   public double getArmAngleDegrees() {
     Logger.recordOutput("Shoot Enum", shootEnum);
     Logger.recordOutput("speaker thing", drive.getPose().getTranslation().getDistance(AllianceFlipUtil.apply(blueSpeaker.toTranslation2d())));
@@ -385,6 +430,9 @@ public class RobotContainer {
     return arm.getArmAngleDegrees();
   }
 
+  /**
+   * Automatically spin up flywheels when close to speaker, currently not functional
+   */
   public void flywheelSpinup() {
     if (DriverStation.isTeleopEnabled()
       && drive.getPose()
@@ -396,14 +444,6 @@ public class RobotContainer {
       && indexer.noteInIndexer()) {
       new RunCommand(() -> shooter.setFlywheelSpeed(10), shooter);
     }
-  }
-
-  public double getElevatorPositionMeters() {
-    return 0.0;
-  }
-
-  public double getIntakeAngleDegrees() {
-    return shooter.getPivotAngle();
   }
 
   public void autonomousInit() {
@@ -436,6 +476,10 @@ public class RobotContainer {
     return null;
   }
 
+  /**
+   * Rumble driver controller for 1 second
+   * @return driverRumbleCommand
+   */
   private Command driverRumbleCommand() {
     return Commands.startEnd(
       () -> {driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);},

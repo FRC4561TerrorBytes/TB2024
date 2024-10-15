@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -79,6 +80,11 @@ public class Arm extends SubsystemBase {
     }
 
     
+
+    @AutoLogOutput(key = "Arm/CAN Disconnect")
+    public boolean getDisconnect() {
+        return io.getDisconnect();
+    }
 
     @Override
     public void periodic() {
