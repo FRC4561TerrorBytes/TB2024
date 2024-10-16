@@ -217,7 +217,9 @@ public class Drive extends SubsystemBase {
       Twist2d twist = kinematics.toTwist2d(moduleDeltas);
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
-    
+
+
+    m_poseEstimator.update(rawGyroRotation, modulePositions);
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
     if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){

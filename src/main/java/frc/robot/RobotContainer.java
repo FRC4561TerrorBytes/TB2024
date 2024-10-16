@@ -281,23 +281,18 @@ public class RobotContainer {
       .toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
-    driverController.rightBumper().and(() -> autoShootToggle)
+    driverController.rightBumper()
       .whileTrue(
         new FaceSpeaker(drive)
-        .andThen(new AutoShootCommand(arm, shooter, indexer, intake, drive)));
+        .andThen(new AutoShootCommand(arm, shooter, indexer, intake, drive))
+        .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = true)));
       
-    //Preset shooting
-    driverController.rightBumper().and(() -> !autoShootToggle)
-      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
+    driverController.rightBumper().onFalse(new InstantCommand(() -> Leds.getInstance().autoShoot = false));
 
     // Reset gyro
     driverController.rightStick()
       .and(driverController.leftStick())
       .onTrue(new InstantCommand(() -> drive.resetGyro()));
-
-    // Auto shoot toggle
-    driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
-      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
 
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
@@ -305,6 +300,9 @@ public class RobotContainer {
 
     driverController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
     .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
+
+    driverController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.AMP.getShootAngle()),arm)));
 
     driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
