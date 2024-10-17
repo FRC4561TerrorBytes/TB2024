@@ -13,8 +13,10 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.Arrays;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -25,9 +27,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,6 +60,7 @@ public class Drive extends SubsystemBase {
   private static final double DRIVE_BASE_RADIUS =
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  private static final Translation2d speakerPosition = new Translation2d(0.0, 5.55);
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -87,10 +87,6 @@ public class Drive extends SubsystemBase {
         new SwerveModuleState(),
         new SwerveModuleState()
       });
-
-  private double prevXAccel = 0.0;
-  private double prevYAccel = 0.0;
-  private int collisions = 0;
 
   // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
 
@@ -222,39 +218,27 @@ public class Drive extends SubsystemBase {
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 
-    // Get current acceleration values
-    double XAccel = accelerometer.getX();
-    double YAccel = accelerometer.getY();
 
-    // Calculate jerk by subtracting current accel with previous and dividing by loop time
-    double xJerk = (XAccel - prevXAccel) / 0.2;
-    double yJerk = (YAccel - prevYAccel) / 0.2;
-
-    // Set Previous accel for next loop
-    prevXAccel = XAccel;
-    prevYAccel = YAccel;
-
-
-    // Discard data if collision is detected
-    if (xJerk > -8.5 && yJerk > -8.5) {
-      m_poseEstimator.update(rawGyroRotation, modulePositions);
-    } else {
-      collisions++;
-    }
-
-    Logger.recordOutput("Vision/Collisions Detected", collisions);
-
-    Logger.recordOutput("Vision/xJerk", xJerk);
-    Logger.recordOutput("Vision/yJerk", yJerk);
-    
+    m_poseEstimator.update(rawGyroRotation, modulePositions);
     LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
     if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 999999));
       m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
     }
 
     // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
+  }
+
+  /**
+   * 
+   * @return Ideal rotation to speaker opening
+   */
+  @AutoLogOutput(key = "Drive/Rotation To Speaker")
+  public Rotation2d getRotationToSpeaker(){
+      return new Rotation2d(
+        getSpeakerPose().getX() - getPose().getX(),
+        getSpeakerPose().getY() - getPose().getY());
   }
 
   /**
@@ -314,10 +298,12 @@ public class Drive extends SubsystemBase {
     return driveVelocityAverage / 4.0;
   }
 
+  /** Returns rolling average wheel radius during routine */
   public double[] getWheelRadiusCharacterizationPosition() {
     return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
   }
 
+  /** Method to just spin in a circle */
   public void runWheelRadiusCharacterization(double omegaSpeed) {
     runVelocity(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
   }
@@ -355,7 +341,6 @@ public class Drive extends SubsystemBase {
 
 
   public Rotation2d getRotation() {
-    //return pose.getRotation();
     return getPose().getRotation();
   }
 
@@ -437,6 +422,10 @@ public class Drive extends SubsystemBase {
     };
   }
 
+  /**
+   * Pose of speaker depending on current alliance
+   * @return
+   */
   public Pose2d getSpeakerPose(){
     Pose2d speaker = new Pose2d();
     if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
@@ -448,6 +437,10 @@ public class Drive extends SubsystemBase {
     return speaker;
   }
 
+  /**
+   * Distance from speaker opening
+   * @return
+   */
   public double getDistanceFromSpeaker(){
     return getSpeakerPose().getTranslation().getDistance(getPose().getTranslation());
   }
@@ -459,7 +452,6 @@ public class Drive extends SubsystemBase {
     double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
     return angle;
   }
-
 
     /**
    * Returns command that orients all modules to {@code orientation}, ending when the modules have

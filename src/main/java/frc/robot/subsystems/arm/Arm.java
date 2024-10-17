@@ -79,9 +79,7 @@ public class Arm extends SubsystemBase {
         return io.getArmEncoderRotation();
     }
 
-    public double getAbsoluteRotations(){
-        return io.getAbsoluteRotations();
-    }
+    
 
     @AutoLogOutput(key = "Arm/CAN Disconnect")
     public boolean getDisconnect() {

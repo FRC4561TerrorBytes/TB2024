@@ -35,7 +35,7 @@ public class LobShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.flywheelUpToSpeed(15.0 * 0.875) && arm.armAtSetpoint()) {
+    if (shooter.flywheelUpToSpeed(15.0) && arm.armAtSetpoint()) {
       indexer.setIndexerSpeed(Constants.INDEXER_FEED_SPEED);
     }
   }

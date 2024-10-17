@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.RobotContainer.shootPositions;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.util.Alert;
 import frc.robot.util.NoteVisualizer;
 
 /** Add your docs here. */
@@ -205,7 +204,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelUpToSpeed(double mps){
-    return inputs.shooterVelocityMPS >= mps;
+    return inputs.shooterVelocityMPS >= (mps * 0.95);
   }
 
   public boolean noteShot(){
