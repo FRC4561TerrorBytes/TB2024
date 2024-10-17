@@ -109,6 +109,8 @@ public class RobotContainer {
 
   public static boolean lobbing = false;
 
+  public double rotMultiplier = 1;
+
   public enum shootPositions{
     STOW(-12, 0.0),
     SUBWOOFER(-4.7, 25.0),    
@@ -249,12 +251,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger armAmp = new Trigger(() -> shootEnum == shootPositions.AMP);
+    armAmp
+      .onTrue(new InstantCommand(() -> rotMultiplier = 0.25))
+      .onFalse(new InstantCommand(() -> rotMultiplier = 1));
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() / driveRatio));
+            () -> -driverController.getRightX() * rotMultiplier));
 
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
