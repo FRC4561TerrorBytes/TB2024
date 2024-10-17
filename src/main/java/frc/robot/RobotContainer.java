@@ -275,7 +275,7 @@ public class RobotContainer {
 
     Trigger ampProximity = new Trigger(() -> 
       drive.getPose().getTranslation().getDistance(
-        AllianceFlipUtil.apply(new Translation2d(1.83, 7.73))) >= 0.75);
+        AllianceFlipUtil.apply(new Translation2d(1.83, 7.73))) >= 0.5);
 
     // //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
     // Trigger CANDisconnect = new Trigger(() -> disconnectActive());
