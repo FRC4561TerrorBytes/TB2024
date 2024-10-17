@@ -43,7 +43,7 @@ public class Leds extends SubsystemBase {
   public boolean autoDrive = false;
   public double autoFinishedTime = 0.0;
   public boolean autoShootCommand = false;
-  public boolean climbLimit = true;
+  public boolean climbLimit = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
   public double autoShootEndAngle = 0.0;
