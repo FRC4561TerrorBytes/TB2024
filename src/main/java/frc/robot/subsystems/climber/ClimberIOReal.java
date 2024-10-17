@@ -6,6 +6,8 @@ import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.subsystems.Leds;
+
 public class ClimberIOReal implements ClimberIO {
 
     private final CANSparkMax climberMotor = new CANSparkMax(28, MotorType.kBrushless);
@@ -32,6 +34,12 @@ public class ClimberIOReal implements ClimberIO {
         inputs.climberPosition = encoder.getPosition();
         inputs.climberLimitSwitch = limitSwitch.isPressed();
         inputs.climberTempC = climberMotor.getMotorTemperature();
+
+        if (limitSwitch.isPressed()) {
+            Leds.getInstance().climbLimit = true;
+        } else {
+            Leds.getInstance().climbLimit = false;
+        }
     }
 
     public void setClimberSpeed(double speed) {
