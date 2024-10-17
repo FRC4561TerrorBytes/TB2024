@@ -253,7 +253,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     Trigger armAmp = new Trigger(() -> shootEnum == shootPositions.AMP);
     armAmp
-      .onTrue(new InstantCommand(() -> rotMultiplier = 0.25))
+      .onTrue(new InstantCommand(() -> rotMultiplier = 0.5))
       .onFalse(new InstantCommand(() -> rotMultiplier = 1));
 
     drive.setDefaultCommand(
@@ -284,12 +284,12 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper()
+    driverController.leftBumper().and(ampProximity)
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
       .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
-    driverController.leftTrigger()
+    driverController.leftTrigger().and(ampProximity)
       .toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
