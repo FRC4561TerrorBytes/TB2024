@@ -43,6 +43,7 @@ public class Leds extends SubsystemBase {
   public boolean autoDrive = false;
   public double autoFinishedTime = 0.0;
   public boolean autoShootCommand = false;
+  public boolean climbLimit = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
   public double autoShootEndAngle = 0.0;
@@ -203,6 +204,8 @@ public class Leds extends SubsystemBase {
           strobe(Section.FULL, Color.kDarkOrange, strobeSlowDuration);
         } else if (intaking) {
           strobe(Section.FULL, Color.kDodgerBlue, strobeSlowDuration);
+        } else if (climbLimit) {
+          solid(Section.FULL, Color.kYellow);
         } else if (autoShootCommand) {
           solid((autoShootStartAngle - autoShootCurrentAngle) / (autoShootStartAngle - autoShootEndAngle), Color.kPurple);
         } else if (autoShoot) {

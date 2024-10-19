@@ -17,6 +17,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -107,6 +108,8 @@ public class RobotContainer {
   private boolean autoShootToggle = true;
 
   public static boolean lobbing = false;
+
+  public double rotMultiplier = 1;
 
   public enum shootPositions{
     STOW(-12, 0.0),
@@ -248,12 +251,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger armAmp = new Trigger(() -> shootEnum == shootPositions.AMP);
+    armAmp
+      .onTrue(new InstantCommand(() -> rotMultiplier = 0.5))
+      .onFalse(new InstantCommand(() -> rotMultiplier = 1));
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
             () -> -driverController.getLeftY() / driveRatio,
             () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() / driveRatio));
+            () -> -driverController.getRightX() * rotMultiplier));
 
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
@@ -265,6 +273,10 @@ public class RobotContainer {
     Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
 
+    Trigger ampProximity = new Trigger(() -> 
+      drive.getPose().getTranslation().getDistance(
+        AllianceFlipUtil.apply(new Translation2d(1.83, 7.73))) >= 0.5);
+
     // //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
     // Trigger CANDisconnect = new Trigger(() -> disconnectActive());
     // CANDisconnect.onTrue(new InstantCommand(() -> Leds.getInstance().canDisconnect = true).ignoringDisable(true));
@@ -272,12 +284,12 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper()
+    driverController.leftBumper().and(ampProximity)
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
       .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
-    driverController.leftTrigger()
+    driverController.leftTrigger().and(ampProximity)
       .toggleOnTrue(new IntakeCommand(intake, indexer, arm));
 
     // Run shoot command (from anywhere)
@@ -298,7 +310,8 @@ public class RobotContainer {
 
     driverController.a().whileTrue(new AmpDrive(drive, indexer)).onFalse(new InstantCommand(() -> drive.stop(), drive));
 
-    driverController.y().onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    driverController.y().and(ampProximity)
+    .onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
     .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
 
     driverController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
