@@ -317,7 +317,7 @@ public class RobotContainer {
     driverController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
     .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.AMP.getShootAngle()),arm)));
 
-    driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
+    // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
     driverController.povUp().whileTrue(climber.prepareClimber());
     driverController.povDown().whileTrue(climber.climb());
