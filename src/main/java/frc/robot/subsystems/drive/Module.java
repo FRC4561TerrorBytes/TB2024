@@ -13,7 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class Module {
-  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.4281924016077103);
+  private static final double WHEEL_RADIUS = Units.inchesToMeters(3);
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();

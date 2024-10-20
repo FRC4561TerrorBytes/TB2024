@@ -5,7 +5,6 @@
 package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
-import frc.robot.util.Alert;
 
 /** Add your docs here. */
 public interface ShooterIO {
@@ -16,6 +15,7 @@ public interface ShooterIO {
         public double shooterVelocityMPS = 0.0;
         public double shooterCurrentAmps = 0.0;
         public double motorPosition = 0.0;
+        public double motorSetpoint = 0.0;
     }
     
     /** Run open loop at the specified voltage. */

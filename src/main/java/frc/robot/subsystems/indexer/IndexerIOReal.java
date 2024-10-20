@@ -48,7 +48,7 @@ public class IndexerIOReal implements IndexerIO {
         Logger.recordOutput("LeftLimit",!m_leftLimitSwitch.get());
         Logger.recordOutput("RightLimit",!m_rightLimitSwitch.get());
 
-        AlertHandler.reportSparkMaxFault("Indexer Alert", m_indexer, indexerMotorDisconnectAlert, indexerMotorCurrentAlert);
+        // AlertHandler.reportSparkMaxFault("Indexer Alert", m_indexer, indexerMotorDisconnectAlert, indexerMotorCurrentAlert);
         // SmartDashboard.putNumber("Indexer Current", m_indexer.getOutputCurrent());
     }
 
