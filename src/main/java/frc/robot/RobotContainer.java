@@ -360,6 +360,7 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
 
     operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
+    operatorController.rightTrigger().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
     
   //OUTREACH CONTROLS
     outreachController.leftBumper()
