@@ -259,9 +259,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY() / driveRatio,
-            () -> -driverController.getLeftX() / driveRatio,
-            () -> -driverController.getRightX() * rotMultiplier));
+            () -> driverController.getLeftY() / driveRatio,
+            () -> driverController.getLeftX() / driveRatio,
+            () -> driverController.getRightX() * rotMultiplier));
 
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
