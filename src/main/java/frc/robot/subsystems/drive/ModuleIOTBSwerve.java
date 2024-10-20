@@ -168,8 +168,8 @@ public class ModuleIOTBSwerve implements ModuleIO {
                 turnAbsolutePosition);
 
         // Report status code to AdvantageAlerts
-        AlertHandler.reportStatusCodeFault(drivePosition.getStatus(), moduleLabel, driveMotorDisconnectAlert, driveMotorFirmwareAlert);
-        AlertHandler.reportSparkMaxFault(moduleLabel, turnSparkMax, turnMotorDisconnectAlert, turnMotorCurrentAlert);
+        // AlertHandler.reportStatusCodeFault(drivePosition.getStatus(), moduleLabel, driveMotorDisconnectAlert, driveMotorFirmwareAlert);
+        // AlertHandler.reportSparkMaxFault(moduleLabel, turnSparkMax, turnMotorDisconnectAlert, turnMotorCurrentAlert);
 
         // Drive motor inputs
         inputs.drivePositionRad = Units.rotationsToRadians(drivePosition.getValueAsDouble()) / DRIVE_GEAR_RATIO;

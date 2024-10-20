@@ -97,10 +97,10 @@ public class ArmIOReal implements ArmIO {
         
 
         StatusCode leftCode = m_armMotorLeft.getAcceleration().getStatus();
-        AlertHandler.reportStatusCodeFault(leftCode, "Arm Alerts", armLeftMotorDisconnectAlert, armLeftMotorCurrentAlert);
+        // AlertHandler.reportStatusCodeFault(leftCode, "Arm Alerts", armLeftMotorDisconnectAlert, armLeftMotorCurrentAlert);
         
         StatusCode rightCode = m_armMotorLeft.getAcceleration().getStatus();
-        AlertHandler.reportStatusCodeFault(rightCode, "Arm Alerts", armRightMotorDisconnectAlert, armRightMotorCurrentAlert);
+        // AlertHandler.reportStatusCodeFault(rightCode, "Arm Alerts", armRightMotorDisconnectAlert, armRightMotorCurrentAlert);
 
     }
 

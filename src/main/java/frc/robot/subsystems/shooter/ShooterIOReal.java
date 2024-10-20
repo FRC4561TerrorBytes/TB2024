@@ -103,7 +103,7 @@ public class ShooterIOReal implements ShooterIO {
         inputs.motorPosition = m_leftFlywheel.getPosition().getValueAsDouble();
         inputs.motorSetpoint = m_request.Velocity * Constants.FLYWHEEL_CIRCUMFERENCE;
 
-        AlertHandler.reportStatusCodeFault(position.getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
+        // AlertHandler.reportStatusCodeFault(position.getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
     }
 
     public void setVoltage(double volts){

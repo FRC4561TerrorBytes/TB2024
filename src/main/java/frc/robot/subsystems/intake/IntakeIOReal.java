@@ -75,7 +75,7 @@ public class IntakeIOReal implements IntakeIO{
 
         Leds.getInstance().noteInIntake = !beamBreak.get();
 
-        AlertHandler.reportSparkMaxFault("Intake Alert", m_frontIntake, intakeMotorDisconnectAlert, intakeMotorCurrentAlert);
+        // AlertHandler.reportSparkMaxFault("Intake Alert", m_frontIntake, intakeMotorDisconnectAlert, intakeMotorCurrentAlert);
     };
 
     @Override
