@@ -26,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class Module {
-  private static final double WHEEL_RADIUS = Units.inchesToMeters(2);
+  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.45);
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
