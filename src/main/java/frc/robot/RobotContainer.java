@@ -197,8 +197,8 @@ public class RobotContainer {
         break;
     }
 
-    //Visualize command scheduler routine in SmartDashboard
-    SmartDashboard.putData("Commands", CommandScheduler.getInstance());
+    //Visualize command scheduler routine in SmartDashboard, turn on only for debugging
+    //SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
     //Register NamedCommands for use in PathPlanner
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));

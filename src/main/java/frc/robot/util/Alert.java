@@ -50,7 +50,7 @@ public class Alert {
   public Alert(String group, String text, AlertType type) {
     if (!groups.containsKey(group)) {
       groups.put(group, new SendableAlerts());
-      SmartDashboard.putData(group, groups.get(group));
+      // SmartDashboard.putData(group, groups.get(group));
     }
 
     this.text = text;
