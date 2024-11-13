@@ -13,7 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,7 +26,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class Module {
-  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.4281924016077103);
+  private static final double WHEEL_RADIUS = Units.inchesToMeters(2.45);
 
   private final ModuleIO io;
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -60,9 +59,9 @@ public class Module {
         turnFeedback = new PIDController(10.0, 0.0, 0.0);
         break;
       default:
-        driveFeedforward = new SimpleMotorFeedforward(0.25, 2.3);
+        driveFeedforward = new SimpleMotorFeedforward(0.25, 2.5);
         driveFeedback = new PIDController(1, 0.0, 0.0);
-        turnFeedback = new PIDController(1.6, 0.0, 0.1);
+        turnFeedback = new PIDController(1.8, 0.0, 0.1);
         break;
     }
 

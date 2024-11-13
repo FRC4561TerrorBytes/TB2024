@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.StatusCode;
@@ -14,8 +13,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants;
 import frc.robot.util.Alert;
-import frc.robot.util.AlertHandler;
 import frc.robot.util.Alert.AlertType;
+import frc.robot.util.AlertHandler;
 
 public class ArmIOReal implements ArmIO {
     private double armSetPoint = 0.0;
@@ -33,7 +32,7 @@ public class ArmIOReal implements ArmIO {
     private Alert armRightMotorCurrentAlert; 
 
     public ArmIOReal() {
-        encoder = new DutyCycleEncoder(0);
+        
 
         m_armMotorLeft = new TalonFX(Constants.ARM_MOTOR_LEFT);
         m_armMotorRight = new TalonFX(Constants.ARM_MOTOR_RIGHT);
@@ -78,7 +77,7 @@ public class ArmIOReal implements ArmIO {
         // m_armMotorLeft.setPosition(getAbsoluteRotation());
         // m_armMotorRight.setPosition(getAbsoluteRotation());
 
-         m_armMotorLeft.setPosition(getAbsoluteRotations());
+         m_armMotorLeft.setPosition(-12.0);
 
         armLeftMotorDisconnectAlert = new Alert("Arm Alert", "Arm left motor is not present on CAN", AlertType.ERROR);
         armLeftMotorCurrentAlert = new Alert("Arm Alert", "Arm left motor has motor/overcurrent fault", AlertType.WARNING);
@@ -90,24 +89,23 @@ public class ArmIOReal implements ArmIO {
 
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armSetpoint = armSetPoint;
-        inputs.armAbsoluteAngleRotations = (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
+        
         inputs.armRelativeAngleRotations = m_armMotorLeft.getPosition().getValueAsDouble();
         inputs.armCurrentAmps = m_armMotorLeft.getSupplyCurrent().getValueAsDouble();
         Logger.recordOutput("FwdSoftLimit", m_armMotorLeft.getFault_ForwardSoftLimit().getValue().booleanValue());
         Logger.recordOutput("RevSoftLimit", m_armMotorLeft.getFault_ReverseSoftLimit().getValue().booleanValue());
-        Logger.recordOutput("Arm/Absoulte Encoder Connected", encoder.isConnected());
-        Logger.recordOutput("Arm/Raw Absolute Angle", encoder.getAbsolutePosition());
+        
 
         StatusCode leftCode = m_armMotorLeft.getAcceleration().getStatus();
-        AlertHandler.reportStatusCodeFault(leftCode, "Arm Alerts", armLeftMotorDisconnectAlert, armLeftMotorCurrentAlert);
+        // AlertHandler.reportStatusCodeFault(leftCode, "Arm Alerts", armLeftMotorDisconnectAlert, armLeftMotorCurrentAlert);
         
         StatusCode rightCode = m_armMotorLeft.getAcceleration().getStatus();
-        AlertHandler.reportStatusCodeFault(rightCode, "Arm Alerts", armRightMotorDisconnectAlert, armRightMotorCurrentAlert);
+        // AlertHandler.reportStatusCodeFault(rightCode, "Arm Alerts", armRightMotorDisconnectAlert, armRightMotorCurrentAlert);
 
     }
 
     public void seedEncoders() {
-        m_armMotorLeft.setPosition(getAbsoluteRotations());
+        m_armMotorLeft.setPosition(-12.0);
     }
 
     public void stopArm() {
@@ -128,10 +126,7 @@ public class ArmIOReal implements ArmIO {
         return Math.abs(getArmEncoderRotation() - armSetPoint) <= 0.2;
     }
 
-    @AutoLogOutput(key = "ArmAbsoluteRotations")
-    public double getAbsoluteRotations() {
-        return (-encoder.getAbsolutePosition() + Constants.ARM_ABSOLUTE_ENCODER_OFFSET)*Constants.ARM_ABSOLUTE_CONVERSION_FACTOR;
-    }
+    
 
     public void nudge(double degrees) {
         armSetPoint = m_armMotorLeft.getPosition().getValueAsDouble() + degrees;

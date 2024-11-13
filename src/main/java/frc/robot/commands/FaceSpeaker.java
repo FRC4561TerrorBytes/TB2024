@@ -8,66 +8,89 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.drive.Drive;
 
 public class FaceSpeaker extends Command {
 
-  private PIDController pidController = new PIDController(0.0175, 0, 0.002);
+  private final PIDController controller;
+  private static double kP = 0;
+  private static double kI = 0;
+  private static double kD = 0;
+  private static double toleranceDegrees = 0;
 
   private Drive drive;
 
-  private int degreesClosestTo = 0;
-
-  private double angle;
-
-  double rotationRate;
-
   public FaceSpeaker(Drive drive) {
+    addRequirements(drive);
     this.drive = drive;
 
-    pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(1);
+    switch (Constants.currentMode) {
+      case REAL:
+        kP = 0.12;
+        kI = 0.0;
+        kD = 0.0;
+        toleranceDegrees = 1.0;
+        break;
+      default: // for SIM
+        kP = 0.1;
+        kI = 0.0;
+        kD = 0.001;
+        toleranceDegrees = 1.5;
+        break;
+    }
 
-    addRequirements(drive);
+    controller = new PIDController(kP, kI, kD, 0.02);
+    controller.setTolerance(toleranceDegrees);
+    controller.enableContinuousInput(-180, 180);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pidController.reset();
+    controller.reset();
+    controller.setSetpoint(drive.getRotationToSpeaker().getDegrees() + 180);
 
-    pidController.setSetpoint(drive.getRotationFromSpeaker());
+    Leds.getInstance().autoShootEndAngle = controller.getSetpoint() + 180;
+    Leds.getInstance().autoShootStartAngle = drive.getPose().getRotation().getDegrees() + 180;
+    Leds.getInstance().autoShootCommand = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rawAngle = drive.getRotation().getDegrees();
+    //30 degrees per second max rotation speed
+    double rotationSpeed = MathUtil.clamp(controller.calculate(drive.getPose().getRotation().getDegrees()), -30, 30);
 
-    rotationRate = pidController.calculate(rawAngle + 180);    
-    rotationRate += 1.2 * Math.signum(rotationRate);
-    rotationRate = MathUtil.applyDeadband(rotationRate, 0.1);
+    Leds.getInstance().autoShootCurrentAngle = drive.getPose().getRotation().getDegrees() + 180;
 
-    rotationRate = Math.copySign(rotationRate * rotationRate, rotationRate);
+    drive.runVelocity(
+      new ChassisSpeeds(0, 0,rotationSpeed));
 
-    drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, rotationRate * drive.getMaxAngularSpeedRadPerSec(), drive.getRotation()));
-
-    Logger.recordOutput("FaceSpeaker/Raw Angle", rawAngle + 180);
-    Logger.recordOutput("FaceSpeaker/Rotation Rate", rotationRate);
-    Logger.recordOutput("FaceSpeaker/Angle Setpoint", degreesClosestTo);
+    Logger.recordOutput("Speaker Rot/TurnActive", true);
+    Logger.recordOutput("Speaker Rot/Current Rot", drive.getPose().getRotation().getDegrees());
+    Logger.recordOutput("Speaker Rot/Turn X Goal", controller.getSetpoint());
+    Logger.recordOutput("Speaker Rot/TurnSpeed", rotationSpeed);
+    Logger.recordOutput("Speaker Rot/Pose", new Pose2d(drive.getPose().getTranslation(), drive.getRotationToSpeaker().plus(Rotation2d.fromDegrees(180))));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.stop();
+    if (!interrupted)
+      drive.stopWithX();
+    else
+      drive.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidController.atSetpoint();
+    return controller.atSetpoint();
   }
 }

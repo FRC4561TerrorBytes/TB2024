@@ -39,12 +39,17 @@ public class Leds extends SubsystemBase {
   public boolean noteInIntake = false;
   public boolean noteInIndexer = false;
   public boolean autoFinished = false;
-  public boolean autoShoot = false;
+  public boolean autoShoot = true;
   public boolean autoDrive = false;
   public double autoFinishedTime = 0.0;
   public boolean autoShootCommand = false;
+  public boolean climbLimit = false;
   public boolean autoNoteAlign = false;
   public double autoShootStartAngle = 0.0;
+  public double autoShootEndAngle = 0.0;
+  public double autoShootCurrentAngle = 0.0;
+  public boolean ampDrive = false;
+  public boolean climbDone = false;
   public boolean canDisconnect = false;
   public boolean firmwareAlert = false;
   public boolean currentAlert = false;
@@ -106,10 +111,8 @@ public class Leds extends SubsystemBase {
     Logger.recordOutput("LEDS/Auto Shoot", autoShoot);
 
     NetworkTable chair = NetworkTableInstance.getDefault().getTable("limelight-vanap");
-    NetworkTableEntry tx = chair.getEntry("tx");
     NetworkTableEntry tid = chair.getEntry("tid");
     double id = tid.getDouble(0.0);
-    double txAngle = Math.abs(tx.getDouble(57)) - 2;
 
     if (DriverStation.isFMSAttached()) {
       alliance = DriverStation.getAlliance();
@@ -201,12 +204,14 @@ public class Leds extends SubsystemBase {
           strobe(Section.FULL, Color.kDarkOrange, strobeSlowDuration);
         } else if (intaking) {
           strobe(Section.FULL, Color.kDodgerBlue, strobeSlowDuration);
+        } else if (climbLimit) {
+          solid(Section.FULL, Color.kYellow);
         } else if (autoShootCommand) {
-          solid(1.0 - (txAngle / autoShootStartAngle), Color.kPurple);
-        } else if (autoShoot && (id == 7.0 || id == 4.0)) {
+          solid((autoShootStartAngle - autoShootCurrentAngle) / (autoShootStartAngle - autoShootEndAngle), Color.kPurple);
+        } else if (autoShoot) {
+          strobe(Section.FULL, Color.kNavy, strobeSlowDuration);
+        } else if (ampDrive) {
           rainbow(Section.FULL, rainbowCycleLength, rainbowDuration);
-        } else if (autoShoot && (id != 7.0 || id != 4.0)) {
-          strobe(Section.FULL, Color.kRed, strobeSlowDuration);
         } else if (noteInIndexer) {
           solid(Section.FULL, Color.kOrangeRed);
         } else if (noteInIntake) {

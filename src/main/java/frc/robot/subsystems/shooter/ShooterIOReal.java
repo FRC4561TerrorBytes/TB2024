@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.shooter;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -103,9 +101,9 @@ public class ShooterIOReal implements ShooterIO {
         inputs.shooterCurrentAmps = m_leftFlywheel.getSupplyCurrent().getValueAsDouble();
         inputs.shooterVoltage = m_leftFlywheel.getMotorVoltage().getValueAsDouble();
         inputs.motorPosition = m_leftFlywheel.getPosition().getValueAsDouble();
+        inputs.motorSetpoint = m_request.Velocity * Constants.FLYWHEEL_CIRCUMFERENCE;
 
-        AlertHandler.reportStatusCodeFault(position.getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
-
+        // AlertHandler.reportStatusCodeFault(position.getStatus(), "Shooter", shooterDisconnectAlert, shooterFirmwareAlert);
     }
 
     public void setVoltage(double volts){
@@ -117,7 +115,6 @@ public class ShooterIOReal implements ShooterIO {
 
         // VELOCITY IN MPS
         velocity = velocity/Constants.FLYWHEEL_CIRCUMFERENCE;
-        Logger.recordOutput("Shooter/VelocitySetpoint", velocity);
         m_leftFlywheel.setControl(m_request.withVelocity(velocity));
     }
 

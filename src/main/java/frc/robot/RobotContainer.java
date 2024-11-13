@@ -11,20 +11,18 @@
 package frc.robot;
 
 
-import java.util.Arrays;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,13 +32,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
 import frc.robot.commands.AmpDrive;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNoteAlignCommand;
 import frc.robot.commands.AutoShootCommand;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.LobShootCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.WheelRadiusCharacterization;
 import frc.robot.subsystems.Leds;
@@ -48,6 +48,10 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOReal;
 import frc.robot.subsystems.arm.ArmIOSim;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOReal;
+import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
@@ -84,6 +88,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Indexer indexer;
+  private final Climber climber;
   private final NoteVisualizer visualizer = new NoteVisualizer();
 
   //divides the movement by the value of drive ratio.
@@ -100,15 +105,17 @@ public class RobotContainer {
   private final LoggedDashboardChooser<Command> autoChooser;
 
   private static final Translation3d blueSpeaker = new Translation3d(0.225, 5.55, 2.1);
-  private boolean autoShootToggle = false;
+  private boolean autoShootToggle = true;
 
   public static boolean lobbing = false;
+
+  public double rotMultiplier = 1;
 
   public enum shootPositions{
     STOW(-12, 0.0),
     SUBWOOFER(-4.7, 25.0),    
     PODIUM(-8, 25.0),
-    AMP(7.3, 0.0),
+    AMP(7.5, 0.0),
     STAGE(-8.9, 30.0),
     WING(-9.825, 35.0),
     CENTER_AUTO_NOTE(-8, 25.0),
@@ -152,6 +159,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIOReal());
         shooter = new Shooter(new ShooterIOReal(), indexer);
         intake = new Intake(new IntakeIOReal());
+        climber = new Climber(new ClimberIOReal());
         break;
 
       case SIM:
@@ -168,6 +176,7 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIOSim());
         intake = new Intake(new IntakeIOSim());
         shooter = new Shooter(new ShooterIOSim(), indexer);
+        climber = new Climber(new ClimberIOSim());
         break;
 
       default:
@@ -184,11 +193,12 @@ public class RobotContainer {
         indexer = new Indexer(new IndexerIO() {});
         intake = new Intake(new IntakeIO() {});
         shooter = new Shooter(new ShooterIO() {}, indexer);
+        climber = new Climber(new ClimberIO() {});
         break;
     }
 
-    //Visualize command scheduler routine in SmartDashboard
-    SmartDashboard.putData("Commands", CommandScheduler.getInstance());
+    //Visualize command scheduler routine in SmartDashboard, turn on only for debugging
+    //SmartDashboard.putData("Commands", CommandScheduler.getInstance());
 
     //Register NamedCommands for use in PathPlanner
     NamedCommands.registerCommand("Intake", new IntakeCommand(intake, indexer, arm));
@@ -241,21 +251,31 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    Trigger armAmp = new Trigger(() -> shootEnum == shootPositions.AMP);
+    armAmp
+      .onTrue(new InstantCommand(() -> rotMultiplier = 0.5))
+      .onFalse(new InstantCommand(() -> rotMultiplier = 1));
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -outreachController.getLeftY() / driveRatio,
-            () -> -outreachController.getLeftX() / driveRatio,
-            () -> -outreachController.getRightX() / driveRatio));
-    
+            () -> driverController.getLeftY() / driveRatio,
+            () -> driverController.getLeftX() / driveRatio,
+            () -> driverController.getRightX() * rotMultiplier));
+
     // Default commands
     shooter.setDefaultCommand(new InstantCommand(() -> shooter.idleFlywheels(shootEnum), shooter));
     intake.setDefaultCommand(new InstantCommand(() -> intake.stopIntake(), intake));
     indexer.setDefaultCommand(new InstantCommand(() -> indexer.stopIndexer(), indexer));
-   
-    //Rumble controller when note intake finishes
-    Trigger noteInIndexer = new Trigger(indexer::noteInIndexer);
+    climber.setDefaultCommand(new InstantCommand(() -> climber.stopClimber(), climber));
+    // led.setDefaultCommand(new InstantCommand(() -> led.setColor(rgbValues.GREEN), led));
+
+    Trigger noteInIndexer = new Trigger(() -> indexer.noteInIndexer());
     noteInIndexer.onTrue(driverRumbleCommand().withTimeout(1.0));
+
+    Trigger ampProximity = new Trigger(() -> 
+      drive.getPose().getTranslation().getDistance(
+        AllianceFlipUtil.apply(new Translation2d(1.83, 7.73))) >= 0.5);
 
     // //Use a trigger to set CAN disconnect warnings on LED, using triggers to avoid adding methods to robot periodic
     // Trigger CANDisconnect = new Trigger(() -> disconnectActive());
@@ -264,39 +284,45 @@ public class RobotContainer {
 
   //PANAV CONTROLS
     // Intake command
-    driverController.leftBumper()
+    driverController.leftBumper().and(ampProximity)
       .whileTrue(new AutoNoteAlignCommand(drive, intake, indexer, arm))
       .toggleOnFalse(new IntakeCommand(intake, indexer, arm))
       .onFalse(new InstantCommand(() -> drive.stop(), drive));
 
+    driverController.leftTrigger().and(ampProximity)
+      .toggleOnTrue(new IntakeCommand(intake, indexer, arm));
+
     // Run shoot command (from anywhere)
-    driverController.rightBumper().and(() -> autoShootToggle)
-      .whileTrue(new AutoShootCommand(arm, shooter, indexer, intake, drive));
+    driverController.rightBumper()
+      .whileTrue(
+        new FaceSpeaker(drive)
+        .andThen(new AutoShootCommand(arm, shooter, indexer, intake, drive))
+        .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = true)));
       
-    //Preset shooting
-    driverController.rightBumper().and(() -> !autoShootToggle)
-      .whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
+    driverController.rightBumper().onFalse(new InstantCommand(() -> Leds.getInstance().autoShoot = false));
 
     // Reset gyro
     driverController.rightStick()
       .and(driverController.leftStick())
       .onTrue(new InstantCommand(() -> drive.resetGyro()));
 
-    // Auto shoot toggle
-    driverController.x().onTrue(new InstantCommand(() -> autoShootToggle = !autoShootToggle)
-      .alongWith(new InstantCommand(() -> Leds.getInstance().autoShoot = !Leds.getInstance().autoShoot)));
-
     driverController.b().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(-0.4), indexer));
 
-    // driverController.a().whileTrue(new AmpDrive(drive)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+    driverController.a().whileTrue(new AmpDrive(drive, indexer)).onFalse(new InstantCommand(() -> drive.stop(), drive));
+
+    driverController.y().and(ampProximity)
+    .onTrue(new InstantCommand(() -> shootEnum = shootPositions.STOW)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.STOW.getShootAngle()),arm)));
+
+    driverController.x().onTrue(new InstantCommand(() -> shootEnum = shootPositions.AMP)
+    .andThen(new InstantCommand(() -> arm.setArmSetpoint(shootPositions.AMP.getShootAngle()),arm)));
 
     // driverController.rightTrigger().whileTrue(new LobShootCommand(arm, shooter, indexer));
 
-    //Drive Nudges
-    driverController.povUp().whileTrue(DriveCommands.joystickDrive(drive, () -> -0.5, () -> 0.0, () -> 0.0));
-    driverController.povDown().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.5, () -> 0.0, () -> 0.0));
-    driverController.povLeft().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> -0.5, () -> 0.0));
-    driverController.povRight().whileTrue(DriveCommands.joystickDrive(drive, () -> 0.0, () -> 0.5, () -> 0.0));
+    driverController.povUp().whileTrue(climber.prepareClimber());
+    driverController.povDown().whileTrue(climber.climb());
+    driverController.povLeft().whileTrue(new RunCommand(() -> climber.setClimberSpeed(-1), climber));
+    driverController.povRight().whileTrue(new RunCommand(() -> climber.setClimberSpeed(1), climber));
 
   //Operator CONTROLS
     // Subwoofer angle
@@ -334,6 +360,7 @@ public class RobotContainer {
     operatorController.rightBumper().whileTrue(new RunCommand(() -> intake.setIntakeSpeed(-Constants.INTAKE_SPEED), intake));
 
     operatorController.leftTrigger().whileTrue(new RunCommand(() -> indexer.setIndexerSpeed(0.2), indexer));
+    operatorController.rightTrigger().whileTrue(new ShootCommand(shooter, indexer, intake, arm, shootEnum));
     
   //OUTREACH CONTROLS
     outreachController.leftBumper()
@@ -362,6 +389,8 @@ public class RobotContainer {
 
     SmartDashboard.putData(arm);
     SmartDashboard.putData(indexer);
+    SmartDashboard.putData(drive);
+    SmartDashboard.putData(climber);
   }
 
   /**

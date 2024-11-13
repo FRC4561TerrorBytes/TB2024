@@ -13,8 +13,11 @@
 
 package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.Arrays;
+import java.util.Optional;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -25,9 +28,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -53,14 +53,13 @@ import frc.robot.util.EqualsUtil;
 import frc.robot.util.LocalADStarAK;
 import frc.robot.util.SwerveSetpoint;
 
-
 public class Drive extends SubsystemBase {
   private static final double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(26.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(26.0);
-  private static final double DRIVE_BASE_RADIUS =
-      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+  private static final double DRIVE_BASE_RADIUS = Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
   private static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  private static final Translation2d speakerPosition = new Translation2d(0.0, 5.55);
 
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -76,40 +75,36 @@ public class Drive extends SubsystemBase {
   private boolean[] turnCANDisconnect = new boolean[4];
   private boolean[] driveCANDisconnect = new boolean[4];
 
-
   private boolean modulesOrienting = false;
-  private SwerveSetpoint currentSetpoint =
-  new SwerveSetpoint(
+  private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
       new ChassisSpeeds(),
       new SwerveModuleState[] {
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState()
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState(),
+          new SwerveModuleState()
       });
 
-  private double prevXAccel = 0.0;
-  private double prevYAccel = 0.0;
-  private int collisions = 0;
-
-  // private final Orchestra m_orchestra = new Orchestra("verySecretMusicFile.chrp"); ///home/lvuser/deploy/verySecretMusicFile.chrp
+  // private final Orchestra m_orchestra = new
+  // Orchestra("verySecretMusicFile.chrp");
+  // ///home/lvuser/deploy/verySecretMusicFile.chrp
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = // For delta tracking
       new SwerveModulePosition[] {
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition(),
-        new SwerveModulePosition()
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition(),
+          new SwerveModulePosition()
       };
 
-  private SwerveDrivePoseEstimator m_poseEstimator =
-    new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+  private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(kinematics, rawGyroRotation,
+      lastModulePositions, new Pose2d());
 
-
-  //CHANGE THE NUMBERS IN THE VECTOR BUILDER
-  // private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  // CHANGE THE NUMBERS IN THE VECTOR BUILDER
+  // private static final Vector<N3> visionMeasurementStdDevs =
+  // VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
   public Drive(
       GyroIO gyroIO,
@@ -127,7 +122,7 @@ public class Drive extends SubsystemBase {
     modules[3] = new Module(brModuleIO, 3);
 
     // Take tags that are out of tolerance out of this list
-    int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    int[] validIds = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
     LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIds);
 
     // Configure AutoBuilder for PathPlanner
@@ -137,12 +132,11 @@ public class Drive extends SubsystemBase {
         () -> kinematics.toChassisSpeeds(getModuleStates()),
         this::runVelocity,
         new HolonomicPathFollowerConfig(
-            new PIDConstants(1.86, 0, 0), 
-            new PIDConstants(1.2,0,0.07),
+            new PIDConstants(1.86, 0, 0),
+            new PIDConstants(1.2, 0, 0.07),
             MAX_LINEAR_SPEED, DRIVE_BASE_RADIUS, new ReplanningConfig()),
-        () -> 
-        DriverStation.getAlliance().isPresent()
-          && DriverStation.getAlliance().get() == Alliance.Red,
+        () -> DriverStation.getAlliance().isPresent()
+            && DriverStation.getAlliance().get() == Alliance.Red,
         this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
@@ -155,14 +149,13 @@ public class Drive extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
-    sysId = 
-        new SysIdRoutine(
-          new SysIdRoutine.Config(
+    sysId = new SysIdRoutine(
+        new SysIdRoutine.Config(
             null,
             null,
             null,
             (state) -> Logger.recordOutput("Drive/SysIDState", state.toString())),
-          new SysIdRoutine.Mechanism(
+        new SysIdRoutine.Mechanism(
             (voltage) -> {
               for (int i = 0; i < 4; i++) {
                 modules[i].runCharacterization(voltage.in(Volts));
@@ -171,9 +164,9 @@ public class Drive extends SubsystemBase {
             null,
             this));
 
-        //m_orchestra.addInstrument(modules[1].getDriveTalon());
+    // m_orchestra.addInstrument(modules[1].getDriveTalon());
 
-    int[] validIDs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+    int[] validIDs = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
     LimelightHelpers.SetFiducialIDFiltersOverride(Constants.VISION_LIMELIGHT, validIDs);
   }
 
@@ -204,11 +197,10 @@ public class Drive extends SubsystemBase {
     SwerveModulePosition[] modulePositions = getModulePositions();
     SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
     for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-      moduleDeltas[moduleIndex] =
-          new SwerveModulePosition(
-              modulePositions[moduleIndex].distanceMeters
-                  - lastModulePositions[moduleIndex].distanceMeters,
-              modulePositions[moduleIndex].angle);
+      moduleDeltas[moduleIndex] = new SwerveModulePosition(
+          modulePositions[moduleIndex].distanceMeters
+              - lastModulePositions[moduleIndex].distanceMeters,
+          modulePositions[moduleIndex].angle);
       lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
     }
 
@@ -222,39 +214,28 @@ public class Drive extends SubsystemBase {
       rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
     }
 
-    // Get current acceleration values
-    double XAccel = accelerometer.getX();
-    double YAccel = accelerometer.getY();
+    m_poseEstimator.update(rawGyroRotation, modulePositions);
+    LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0,
+        0);
 
-    // Calculate jerk by subtracting current accel with previous and dividing by loop time
-    double xJerk = (XAccel - prevXAccel) / 0.2;
-    double yJerk = (YAccel - prevYAccel) / 0.2;
-
-    // Set Previous accel for next loop
-    prevXAccel = XAccel;
-    prevYAccel = YAccel;
-
-
-    // Discard data if collision is detected
-    if (xJerk > -8.5 && yJerk > -8.5) {
-      m_poseEstimator.update(rawGyroRotation, modulePositions);
-    } else {
-      collisions++;
-    }
-
-    Logger.recordOutput("Vision/Collisions Detected", collisions);
-
-    Logger.recordOutput("Vision/xJerk", xJerk);
-    Logger.recordOutput("Vision/yJerk", yJerk);
-    
-    LimelightHelpers.SetRobotOrientation(Constants.VISION_LIMELIGHT, getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-
-    if(Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0){
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, Units.degreesToRadians(5)));
+    if (Math.abs(Units.radiansToDegrees(gyroInputs.yawVelocityRadPerSec)) < 720 && visionInputs.mt2TagCount > 0) {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 999999));
       m_poseEstimator.addVisionMeasurement(visionInputs.mt2Pose, visionInputs.mt2Timestamp);
     }
 
-    // I wonder if we had a command factory for a note align inside of drive bc of IO later stuf???
+    // I wonder if we had a command factory for a note align inside of drive bc of
+    // IO later stuf???
+  }
+
+  /**
+   * 
+   * @return Ideal rotation to speaker opening
+   */
+  @AutoLogOutput(key = "Drive/Rotation To Speaker")
+  public Rotation2d getRotationToSpeaker() {
+    return new Rotation2d(
+        getSpeakerPose().getX() - getPose().getX(),
+        getSpeakerPose().getY() - getPose().getY());
   }
 
   /**
@@ -286,8 +267,10 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
-   * return to their normal orientations the next time a nonzero velocity is requested.
+   * Stops the drive and turns the modules to an X arrangement to resist movement.
+   * The modules will
+   * return to their normal orientations the next time a nonzero velocity is
+   * requested.
    */
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
@@ -314,15 +297,20 @@ public class Drive extends SubsystemBase {
     return driveVelocityAverage / 4.0;
   }
 
+  /** Returns rolling average wheel radius during routine */
   public double[] getWheelRadiusCharacterizationPosition() {
     return Arrays.stream(modules).mapToDouble(Module::getPositionRads).toArray();
   }
 
+  /** Method to just spin in a circle */
   public void runWheelRadiusCharacterization(double omegaSpeed) {
     runVelocity(new ChassisSpeeds(0.0, 0.0, omegaSpeed));
   }
 
-  /** Returns the module states (turn angles and drive velocities) for all of the modules. */
+  /**
+   * Returns the module states (turn angles and drive velocities) for all of the
+   * modules.
+   */
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -335,7 +323,7 @@ public class Drive extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    //return pose;
+    // return pose;
     return m_poseEstimator.getEstimatedPosition();
   }
 
@@ -344,7 +332,10 @@ public class Drive extends SubsystemBase {
     return new Pose3d(m_poseEstimator.getEstimatedPosition());
   }
 
-  /** Returns the module positions (turn angles and drive positions) for all of the modules. */
+  /**
+   * Returns the module positions (turn angles and drive positions) for all of the
+   * modules.
+   */
   private SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] states = new SwerveModulePosition[4];
     for (int i = 0; i < 4; i++) {
@@ -353,9 +344,7 @@ public class Drive extends SubsystemBase {
     return states;
   }
 
-
   public Rotation2d getRotation() {
-    //return pose.getRotation();
     return getPose().getRotation();
   }
 
@@ -364,20 +353,20 @@ public class Drive extends SubsystemBase {
     m_poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
-    /**
+  /**
    * Adds a vision measurement to the pose estimator.
    *
    * @param visionPose The pose of the robot as measured by the vision camera.
-   * @param timestamp The timestamp of the vision measurement in seconds.
+   * @param timestamp  The timestamp of the vision measurement in seconds.
    */
   public void addVisionMeasurement(Pose2d visionPose, double timestamp) {
     m_poseEstimator.addVisionMeasurement(visionPose, timestamp);
   }
 
   @AutoLogOutput(key = "Drive/Turn CAN Disconnect")
-  public boolean[] getTurnDisconnect(){
+  public boolean[] getTurnDisconnect() {
     int i = 0;
-    for(var module : modules){
+    for (var module : modules) {
       turnCANDisconnect[i] = module.getTurnMotorDisconnect();
       i++;
     }
@@ -385,16 +374,16 @@ public class Drive extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Drive/Drive CAN Disconnect")
-  public boolean[] getDriveDisconnect(){
+  public boolean[] getDriveDisconnect() {
     int i = 0;
-    for(var module : modules){
+    for (var module : modules) {
       driveCANDisconnect[i] = module.getDriveMotorDisconnect();
       i++;
     }
     return driveCANDisconnect;
   }
 
-  public boolean getGyroDisconnect(){
+  public boolean getGyroDisconnect() {
     return gyroIO.getDisconnect();
   }
 
@@ -416,7 +405,8 @@ public class Drive extends SubsystemBase {
   private LimelightTarget_Fiducial getClosestTag(String cameraName) {
     double closest = 100;
     LimelightTarget_Fiducial target = null;
-    LimelightTarget_Fiducial[] targetList = LimelightHelpers.getLatestResults(cameraName).targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] targetList = LimelightHelpers
+        .getLatestResults(cameraName).targetingResults.targets_Fiducials;
     for (LimelightTarget_Fiducial i : targetList) {
       double value = i.tx;
       if (value < closest) {
@@ -430,68 +420,84 @@ public class Drive extends SubsystemBase {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
-      new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
+        new Translation2d(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
+        new Translation2d(TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0),
+        new Translation2d(-TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0),
+        new Translation2d(-TRACK_WIDTH_X / 2.0, -TRACK_WIDTH_Y / 2.0)
     };
   }
 
-  public Pose2d getSpeakerPose(){
-    Pose2d speaker = new Pose2d();
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-      speaker = new Pose2d(new Translation2d(0, 5.54), new Rotation2d());
-    }
-    else if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      speaker = new Pose2d(new Translation2d(16.54, 5.54), new Rotation2d());
-    }
-    return speaker;
-  }
-
-  public double getDistanceFromSpeaker(){
-    return getSpeakerPose().getTranslation().getDistance(getPose().getTranslation());
-  }
-
-  public double getRotationFromSpeaker(){
-    
-    //using the convention of 0 facing forward on blue origin(facing red) and 0 facing forward on red is facing blue wall
-    Pose2d relative = getSpeakerPose().relativeTo(getPose());
-    double angle = Units.radiansToDegrees(Math.atan(relative.getY()/relative.getX()));
-    return angle;
-  }
-
-
-    /**
-   * Returns command that orients all modules to {@code orientation}, ending when the modules have
-   * rotated.
+  /**
+   * Pose of speaker depending on current alliance
+   * 
+   * @return
    */
-  public Command orientModules(Rotation2d orientation) {
-    return orientModules(new Rotation2d[] {orientation, orientation, orientation, orientation});
+  public Pose2d getSpeakerPose() {
+
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        return new Pose2d(new Translation2d(16.54, 5.54), new Rotation2d());
+
+      }
+      if (ally.get() == Alliance.Blue) {
+        return new Pose2d(new Translation2d(0, 5.54), new Rotation2d());
+      }
+    } else {
+      return new Pose2d();
+    }
+    return new Pose2d();
   }
 
   /**
-   * Returns command that orients all modules to {@code orientations[]}, ending when the modules
+   * Distance from speaker opening
+   * 
+   * @return
+   */
+  public double getDistanceFromSpeaker() {
+    return getSpeakerPose().getTranslation().getDistance(getPose().getTranslation());
+  }
+
+  public double getRotationFromSpeaker() {
+
+    // using the convention of 0 facing forward on blue origin(facing red) and 0
+    // facing forward on red is facing blue wall
+    Pose2d relative = getSpeakerPose().relativeTo(getPose());
+    double angle = Units.radiansToDegrees(Math.atan(relative.getY() / relative.getX()));
+    return angle;
+  }
+
+  /**
+   * Returns command that orients all modules to {@code orientation}, ending when
+   * the modules have
+   * rotated.
+   */
+  public Command orientModules(Rotation2d orientation) {
+    return orientModules(new Rotation2d[] { orientation, orientation, orientation, orientation });
+  }
+
+  /**
+   * Returns command that orients all modules to {@code orientations[]}, ending
+   * when the modules
    * have rotated.
    */
   public Command orientModules(Rotation2d[] orientations) {
     return run(() -> {
-          SwerveModuleState[] states = new SwerveModuleState[4];
-          for (int i = 0; i < orientations.length; i++) {
-            modules[i].runSetpoint(
-                new SwerveModuleState(0.0, orientations[i]));
-            states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
-          }
-          currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
-        })
+      SwerveModuleState[] states = new SwerveModuleState[4];
+      for (int i = 0; i < orientations.length; i++) {
+        modules[i].runSetpoint(
+            new SwerveModuleState(0.0, orientations[i]));
+        states[i] = new SwerveModuleState(0.0, modules[i].getAngle());
+      }
+      currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), states);
+    })
         .until(
-            () ->
-                Arrays.stream(modules)
-                    .allMatch(
-                        module ->
-                            EqualsUtil.epsilonEquals(
-                                module.getAngle().getDegrees(),
-                                module.getState().angle.getDegrees(),
-                                2.0)))
+            () -> Arrays.stream(modules)
+                .allMatch(
+                    module -> EqualsUtil.epsilonEquals(
+                        module.getAngle().getDegrees(),
+                        module.getState().angle.getDegrees(),
+                        2.0)))
         .beforeStarting(() -> modulesOrienting = true)
         .finallyDo(() -> modulesOrienting = false)
         .withName("Orient Modules");
@@ -503,13 +509,13 @@ public class Drive extends SubsystemBase {
         .toArray(Rotation2d[]::new);
   }
 
-    /** Returns a command to run a quasistatic test in the specified direction. */
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-      return sysId.quasistatic(direction);
-    }
-  
-    /** Returns a command to run a dynamic test in the specified direction. */
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-      return sysId.dynamic(direction);
-    }
+  /** Returns a command to run a quasistatic test in the specified direction. */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  /** Returns a command to run a dynamic test in the specified direction. */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
+  }
 }
